@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PharmShop</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#121214">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PharmShop">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{--bg:#121214;--card:#1d1c21;--line:#2b2a31;--text:#f2f2f4;--mute:#9a9da3;--blue:#3b8ef3;--gold:#ffb020;--red:#ff5a52;--green:#34c759}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,sans-serif}
+#app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 30px)}
+h1{font-size:26px;margin:8px 0 14px}.mute{color:var(--mute);font-size:14px}
+.card{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 10px;color:var(--text);font:inherit}
+.card b{display:block;font-size:18px}
+button{font:inherit;cursor:pointer}
+.btn{width:100%;border:0;border-radius:14px;padding:15px;font-weight:700;font-size:17px;color:#231400;background:linear-gradient(90deg,#ffc83d,#ff8a3d);margin:8px 0}
+.btn.alt{background:var(--card);color:var(--text);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+input{width:100%;background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:14px;color:var(--text);font-size:17px;margin:6px 0}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:6px 0 12px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:20px;padding:8px 14px}
+.chip.on,.opt.on{border-color:var(--gold);background:#3a2a0a}
+.opt{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin:6px 0;color:var(--text)}
+.total{font-size:19px;color:var(--gold);font-weight:700;margin:12px 0}
+.back{background:none;border:0;color:var(--blue);font-size:17px;padding:4px 0 8px}
+.msg{max-width:82%;padding:9px 13px;border-radius:16px;margin:6px 0;white-space:pre-wrap;word-break:break-word}
+.msg.me{background:var(--blue);margin-left:auto}.msg.ad{background:var(--card);border:1px solid var(--line)}
+#log{min-height:50vh}
+.st{font-size:13px;padding:2px 8px;border-radius:10px;background:var(--line)}
+.ok{color:var(--green)}.bad{color:var(--red)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ---- адреса: прокси /sf на вашем Cloudflare Worker (см. README) ----
+const CH='https://flat-violet-e617pharmshop-chat.soulszlord.workers.dev', SF=CH+'/sf/api/storefront';
+const BOT='https://t.me/pharmaishop_bot', VER='pwa-1.0';
+const $app=document.getElementById('app'), ls=localStorage;
+const h=(t,a={},...k)=>{const e=document.createElement(t);for(const x in a){x.startsWith('on')?e[x]=a[x]:x==='class'?e.className=a[x]:e.setAttribute(x,a[x])}e.append(...k.flat().filter(v=>v!=null&&v!==false));return e};
+const J=(k,d)=>{try{return JSON.parse(ls[k])??d}catch{return d}}, S=(k,v)=>{ls[k]=JSON.stringify(v)};
+const dev=ls.dev||(ls.dev=crypto.randomUUID()), sec=ls.sec||(ls.sec=crypto.randomUUID()+crypto.randomUUID());
+let timer=null;
+async function req(url,method='GET',body,hd={}){
+  const r=await fetch(url,{method,headers:{'content-type':'application/json',...hd},body:body?JSON.stringify(body):undefined});
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw Error('Сервер ответил не JSON (код '+r.status+')')}
+  if(!r.ok)throw Error(j.error||j.message||'Ошибка '+r.status);return j}
+const sf=(m,p,b,hd)=>req(SF+p,m,b,hd), chat=(p,b)=>req(CH+'/api/chat/'+p,'POST',b);
+let cfg=null;const config=async()=>cfg||(cfg=await sf('GET','/config'));
+const ext=u=>window.open(u,'_blank');
+function show(...k){clearInterval(timer);$app.replaceChildren(...k);scrollTo(0,0)}
+const back=()=>h('button',{class:'back',onclick:home},'‹ Назад');
+
+// ---- статусы заказов ----
+const kind=s=>{s=(s||'').toLowerCase();if(!s)return 4;
+  if(/^(completed|complete|done|delivered|success|succeeded|fulfilled|finished|sent)$/.test(s)||/complet|success|fulfil|finish/.test(s))return 2;
+  if(/cancel|fail|expire|refund|reject|error/.test(s))return 3;
+  if(/paid|process|progress|deliver|confirm|send|queue|work/.test(s))return 1;return 0};
+const eff=o=>{let best='',r=-1;for(const f of['status','order_status','state','payment_status','delivery_status','fulfillment_status']){
+  const v=String(o[f]??'');const k=kind(v),rk={2:4,3:3,1:2,0:1}[k]??0;if(v&&rk>r){r=rk;best=v}}
+  if(r<4&&(o.completed_at||o.delivered_at||o.fulfilled_at))return'completed';return best};
+const label=o=>({2:'выполнен ✓',3:'отменён',1:'в работе',0:'ожидает оплаты'})[kind(eff(o))]||eff(o)||'—';
+
+// ---- главная ----
+function home(){
+  show(h('h1',{},'PharmShop'),
+    h('button',{class:'card',onclick:()=>buy('stars')},h('b',{},'⭐ Купить звёзды'),h('span',{class:'mute'},'Telegram Stars, доставка за секунды')),
+    h('button',{class:'card',onclick:()=>buy('premium')},h('b',{},'💎 Telegram Premium'),h('span',{class:'mute'},'Любой @username')),
+    h('button',{class:'card',onclick:orders},h('b',{},'🧾 Мои заказы'),h('span',{class:'mute'},'Статусы и оплата')),
+    h('button',{class:'card',onclick:support},h('b',{},'💬 Поддержка'),h('span',{class:'mute'},'Чат с администратором')),
+    h('button',{class:'card',onclick:()=>ext(BOT)},h('b',{},'✈️ Открыть бота'),h('span',{class:'mute'},'@pharmaishop_bot')));
+}
+
+// ---- капча (hCaptcha, невидимая) ----
+let hcLoad=null;
+function captcha(key){
+  hcLoad=hcLoad||new Promise((ok,no)=>{const s=h('script',{src:'https://js.hcaptcha.com/1/api.js?render=explicit',async:''});s.onload=ok;s.onerror=()=>no(Error('Не загрузилась капча'));document.head.append(s)});
+  return hcLoad.then(()=>new Promise((res,rej)=>{
+    const box=h('div');document.body.append(box);
+    const id=hcaptcha.render(box,{sitekey:key,size:'invisible',callback:t=>{box.remove();res(t)},'error-callback':e=>{box.remove();rej(Error('Капча: '+e))},'close-callback':()=>{rej(Error('Капча закрыта'))}});
+    hcaptcha.execute(id)}))}
+
+// ---- покупка звёзд / Premium ----
+async function buy(product){
+  const prem=product==='premium';
+  show(back(),h('h1',{},prem?'Telegram Premium':'Купить звёзды'),h('p',{class:'mute'},'Загружаем…'));
+  let c;try{c=await config()}catch(e){return show(back(),h('p',{class:'bad'},'Не удалось загрузить: '+e.message))}
+  let qty=0,method='',total=h('div',{class:'total'},'К оплате: —'),msg=h('p',{class:'mute'});
+  const user=h('input',{placeholder:'Имя в Telegram, без @',autocapitalize:'off',autocorrect:'off',value:ls.lastUser||''});
+  const q=h('input',{placeholder:'Сколько звёзд',inputmode:'numeric'});
+  let tm=0;
+  const quote=()=>{clearTimeout(tm);if(!qty||(!prem&&(qty<(c.min||50)||qty>(c.max||10000)))||!method){total.textContent='К оплате: —';return}
+    tm=setTimeout(async()=>{try{const r=await sf('POST','/quote',{quantity:qty,method_id:method,...(prem?{product:'premium'}:{})});total.textContent='К оплате: '+r.total+' '+(r.currency||'RUB')}catch{total.textContent='Не удалось рассчитать цену'}},400)};
+  const chips=h('div',{class:'chips'});
+  if(prem){(c.premium||[]).filter(p=>p.available!==false).forEach(p=>{const b=h('button',{class:'chip',onclick:()=>{qty=p.months;[...chips.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},p.months+' мес. · '+p.total+' ₽');chips.append(b)});if(chips.firstChild)chips.firstChild.click()}
+  else{(c.presets||[]).forEach(v=>chips.append(h('button',{class:'chip',onclick:()=>{q.value=qty=v;quote()}},String(v))));
+    q.oninput=()=>{qty=parseInt(q.value)||0;quote()}}
+  const ton=/(^|[^a-z])ton([^a-z]|$)|тон/i, ms=(c.methods||[]).filter(m=>!ton.test(m.name||'')&&!ton.test(m.id||''));
+  if(ms.length>1)[ms[0],ms[1]]=[ms[1],ms[0]];   // как в приложении: СБП 1 первым
+  const mbox=h('div');
+  ms.forEach(m=>{const b=h('button',{class:'opt',onclick:()=>{method=m.id;[...mbox.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},m.name);mbox.append(b)});
+  if(mbox.firstChild)mbox.firstChild.click();
+  const pay=h('button',{class:'btn',onclick:async()=>{
+    const u=user.value.trim().replace(/^@/,'');
+    if(!/^[A-Za-z0-9_]{4,32}$/.test(u))return msg.textContent='Введите имя пользователя Telegram';
+    if(!qty||!method)return msg.textContent='Выберите количество и способ оплаты';
+    pay.disabled=true;msg.className='mute';msg.textContent='Проверяем капчу…';ls.lastUser=u;
+    try{
+      const tok=await captcha(c.hcaptcha_sitekey);msg.textContent='Создаём заказ…';
+      const r=await sf('POST','/orders',{username:u,quantity:qty,method_id:method,captcha_token:tok,...(prem?{product:'premium'}:{})},{'Idempotency-Key':crypto.randomUUID()});
+      const o={...(r.order||r.data||r),username:u,quantity:qty,product:prem?'premium':'stars',ts:Date.now()};
+      const l=J('orders',[]);l.unshift(o);S('orders',l.slice(0,50));
+      if(o.payment_url)ext(o.payment_url);orders();
+    }catch(e){msg.className='bad';msg.textContent=e.message;pay.disabled=false}}},'Оплатить');
+  show(back(),h('h1',{},prem?'Telegram Premium':'Купить звёзды'),
+    h('p',{class:'mute'},prem?'Выберите срок':(c.stars_rate+' ₽ за звезду · от '+(c.min||50)+' до '+(c.max||10000)+' шт.')),
+    user,prem?null:q,chips,h('b',{},'Способ оплаты'),mbox,total,pay,msg);
+}
+
+// ---- заказы ----
+async function refresh(o){
+  const e=encodeURIComponent(o.access_token||'');
+  const tries=[[`/orders/${o.id}?access_token=${e}&token=${e}`,{}],[`/orders/${o.id}`,{'X-Access-Token':o.access_token,'X-Order-Token':o.access_token}],[`/orders/${o.id}`,{Authorization:'Bearer '+o.access_token}]];
+  for(const[p,hd]of tries){try{const r=await sf('GET',p,null,hd);Object.assign(o,r.order||r.data||r);return true}catch{}}return false}
+function orders(){
+  const l=J('orders',[]),box=h('div');
+  const draw=()=>box.replaceChildren(...(l.length?l.map(o=>h('div',{class:'card'},
+    h('b',{},(o.product==='premium'?'Premium · '+o.quantity+' мес.':o.quantity+' ★')+' → @'+o.username),
+    h('div',{class:'mute'},'№ '+(o.order_number||String(o.id||'').slice(0,8))+' · ',h('span',{class:'st '+(kind(eff(o))===2?'ok':kind(eff(o))===3?'bad':'')},label(o))),
+    kind(eff(o))<2&&o.payment_url?h('button',{class:'btn',onclick:()=>ext(o.payment_url)},'Оплатить'):null)):[h('p',{class:'mute'},'Заказов пока нет')]));
+  show(back(),h('h1',{},'Мои заказы'),box);draw();
+  (async()=>{for(const o of l.filter(o=>o.id&&kind(eff(o))<2).slice(0,10))await refresh(o);S('orders',l);draw()})();
+}
+
+// ---- поддержка ----
+function support(){
+  const log=h('div',{id:'log'}),inp=h('input',{placeholder:'Сообщение…',style:'border-color:var(--line)'});
+  let last=0,started=!!ls.chat;
+  const add=m=>{if(m.id&&m.id<=last)return;last=Math.max(last,m.id||0);log.append(h('div',{class:'msg '+(m.sender==='admin'?'ad':'me')},m.text||'📷 Фото'));scrollTo(0,document.body.scrollHeight)};
+  const load=async()=>{if(!started)return;try{const r=await chat('messages',{device:dev,secret:sec,after:last});(r.messages||[]).forEach(add)}catch{}};
+  const send=async()=>{const t=inp.value.trim();if(!t)return;inp.value='';
+    try{await chat('send',{device:dev,secret:sec,nick:ls.lastUser||'',order:(J('orders',[])[0]||{}).order_number||'',version:VER,text:t,info:navigator.userAgent});started=true;ls.chat='1';load()}
+    catch(e){log.append(h('div',{class:'msg ad bad'},'Не отправлено: '+e.message))}};
+  inp.onkeydown=e=>{if(e.key==='Enter')send()};
+  show(back(),h('h1',{},'Поддержка'),log,inp,h('button',{class:'btn',onclick:send},'Отправить'));
+  load();timer=setInterval(load,6000);
+}
+home();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
