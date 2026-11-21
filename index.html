@@ -12,29 +12,44 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
-:root{--bg:#121214;--card:#1d1c21;--line:#2b2a31;--text:#f2f2f4;--mute:#9a9da3;--blue:#3b8ef3;--gold:#ffb020;--red:#ff5a52;--green:#34c759}
+:root{--bg:#121214;--card:#1d1c21;--line:#2b2a31;--text:#f2f2f4;--mute:#9a9da3;--blue:#3b8ef3;--red:#ff5a52;--green:#34c759;--acc:#ffb020;--a1:#ffc83d;--a2:#ff8a3d;--on:#231400}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,sans-serif}
-#app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 30px)}
-h1{font-size:26px;margin:8px 0 14px}.mute{color:var(--mute);font-size:14px}
-.card{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:0 0 10px;color:var(--text);font:inherit}
-.card b{display:block;font-size:18px}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,sans-serif;overscroll-behavior:none}
+#app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 30px);position:relative;z-index:1}
+#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+h1{font-size:26px;margin:6px 0 14px}.mute{color:var(--mute);font-size:14px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise>*{animation:rise .42s cubic-bezier(.1,.7,.2,1) both;animation-delay:calc(min(var(--i),10)*55ms)}
+.press{transition:transform .24s cubic-bezier(.3,1.9,.5,1)}.press:active{transform:scale(.97);transition:transform .11s ease-out}
 button{font:inherit;cursor:pointer}
-.btn{width:100%;border:0;border-radius:14px;padding:15px;font-weight:700;font-size:17px;color:#231400;background:linear-gradient(90deg,#ffc83d,#ff8a3d);margin:8px 0}
-.btn.alt{background:var(--card);color:var(--text);border:1px solid var(--line)}
-.btn:disabled{opacity:.5}
-input{width:100%;background:var(--card);border:1px solid var(--gold);border-radius:14px;padding:14px;color:var(--text);font-size:17px;margin:6px 0}
-.chips{display:flex;gap:8px;overflow-x:auto;margin:6px 0 12px}
+.card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 10px;color:var(--text);min-height:96px}
+.card b{display:block;font-size:18px}
+.ib{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center}
+.ib svg,.bn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hd{display:flex;align-items:center;gap:12px;margin:4px 0 16px}.hd h1{margin:0;font-size:24px}
+.ny{border-radius:18px;padding:16px 18px;margin:0 0 14px;background:linear-gradient(90deg,#c62f3e,#1f7a4d)}
+.ny b{display:block;font-size:17px}.ny span{font-size:13px;color:#e8f5ec}
+.bn{display:flex;align-items:center;gap:14px;border-radius:20px;padding:16px 18px;margin:0 0 16px;background:linear-gradient(90deg,var(--a1),var(--a2));color:var(--on)}
+.bn .ib{background:rgba(255,255,255,.22)}.bn b{font-size:20px;display:block}.bn span{font-size:13px;opacity:.8}
+.bot{display:flex;align-items:center;gap:14px;width:100%;border:0;border-radius:18px;padding:16px;margin:4px 0 14px;color:#000;text-align:left;background:linear-gradient(90deg,#7cc4ff,#3b8ef3)}
+.bot b{display:block;font-size:20px}.bot span{font-size:13px}
+.btn{width:100%;border:0;border-radius:18px;padding:16px;font-weight:700;font-size:17px;color:var(--on);background:linear-gradient(90deg,var(--a1),var(--a2));margin:8px 0}
+.btn.alt{background:var(--card);color:var(--text);border:1px solid var(--line)}.btn:disabled{opacity:.5}
+input{width:100%;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:14px;color:var(--text);font-size:17px;margin:6px 0;outline:0}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:6px 0 14px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:20px;padding:8px 14px}
-.chip.on,.opt.on{border-color:var(--gold);background:#3a2a0a}
-.opt{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin:6px 0;color:var(--text)}
-.total{font-size:19px;color:var(--gold);font-weight:700;margin:12px 0}
+.chip.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 22%,var(--card))}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:8px 0;color:var(--text)}
+.opt i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--mute)}
+.opt.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 20%,var(--card))}
+@keyframes dot{from{transform:scale(.5)}to{transform:scale(1)}}
+.opt.on i{background:var(--acc);border-color:var(--acc);animation:dot .32s cubic-bezier(.3,2.4,.5,1)}
+.total{font-size:19px;color:var(--acc);font-weight:700;margin:14px 0}
+@keyframes pop{from{transform:scale(.94);opacity:.4}to{transform:none;opacity:1}}.total.pop{animation:pop .28s cubic-bezier(.3,2,.5,1);transform-origin:left}
 .back{background:none;border:0;color:var(--blue);font-size:17px;padding:4px 0 8px}
-.msg{max-width:82%;padding:9px 13px;border-radius:16px;margin:6px 0;white-space:pre-wrap;word-break:break-word}
+.msg{max-width:82%;padding:9px 13px;border-radius:16px;margin:6px 0;white-space:pre-wrap;word-break:break-word;animation:rise .3s both}
 .msg.me{background:var(--blue);margin-left:auto}.msg.ad{background:var(--card);border:1px solid var(--line)}
-#log{min-height:50vh}
-.st{font-size:13px;padding:2px 8px;border-radius:10px;background:var(--line)}
-.ok{color:var(--green)}.bad{color:var(--red)}
+#log{min-height:50vh}.st{font-size:13px;padding:2px 8px;border-radius:10px;background:var(--line)}.ok{color:var(--green)}.bad{color:var(--red)}
 </style>
 </head>
 <body>
@@ -48,6 +63,21 @@ const h=(t,a={},...k)=>{const e=document.createElement(t);for(const x in a){x.st
 const J=(k,d)=>{try{return JSON.parse(ls[k])??d}catch{return d}}, S=(k,v)=>{ls[k]=JSON.stringify(v)};
 const dev=ls.dev||(ls.dev=crypto.randomUUID()), sec=ls.sec||(ls.sec=crypto.randomUUID()+crypto.randomUUID());
 let timer=null;
+const IC={star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',crown:'M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z',gift:'M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7C10 3 6 4 8 7M12 7c2-4 6-3 4 0',send:'M21 3L3 11l7 2.5L13 21zM10 13.5L21 3',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6',chat:'M4 5h16v11H9l-5 4z',bill:'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6'};
+const ico=n=>{const d=document.createElement('div');d.innerHTML='<svg viewBox="0 0 24 24"><path d="'+IC[n]+'"/></svg>';return d.firstChild};
+const ib=(n,bg,fg)=>{const e=h('div',{class:'ib',style:'background:'+bg+';color:'+fg},ico(n));return e};
+const theme=(a1,a2,on,acc)=>{const st=$app.style;st.setProperty('--a1',a1);st.setProperty('--a2',a2);st.setProperty('--on',on);st.setProperty('--acc',acc)};
+const banner=(n,t,sub)=>h('div',{class:'bn'},ib(n,'rgba(255,255,255,.22)','currentColor'),h('div',{},h('b',{},t),h('span',{},sub)));
+const popText=(el,t)=>{if(el.textContent===t)return;el.textContent=t;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')};
+// снегопад
+(()=>{const c=h('canvas',{id:'snow'});document.body.append(c);const x=c.getContext('2d');let W,H,f=[];
+  const sz=()=>{W=c.width=innerWidth;H=c.height=innerHeight};sz();addEventListener('resize',sz);
+  const mk=any=>{const r=1.5+Math.random()*2.5;return{x:Math.random()*W,y:any?Math.random()*H:-r*2,r,v:28+r*9,d:6+Math.random()*14,p:Math.random()*6.28,a:.43+Math.random()*.43}};
+  for(let i=0;i<45;i++)f.push(mk(1));let t0=0;
+  const fr=t=>{const dt=Math.min((t-t0)/1000,.05);t0=t;x.clearRect(0,0,W,H);
+    for(const s of f){s.y+=s.v*dt;s.p+=dt;s.x+=Math.sin(s.p)*s.d*dt;if(s.y>H+10)Object.assign(s,mk(0));x.globalAlpha=s.a;x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill()}
+    requestAnimationFrame(fr)};requestAnimationFrame(fr)})();
+
 async function req(url,method='GET',body,hd={}){
   const r=await fetch(url,{method,headers:{'content-type':'application/json',...hd},body:body?JSON.stringify(body):undefined});
   const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw Error('Сервер ответил не JSON (код '+r.status+')')}
@@ -55,7 +85,8 @@ async function req(url,method='GET',body,hd={}){
 const sf=(m,p,b,hd)=>req(SF+p,m,b,hd), chat=(p,b)=>req(CH+'/api/chat/'+p,'POST',b);
 let cfg=null;const config=async()=>cfg||(cfg=await sf('GET','/config'));
 const ext=u=>window.open(u,'_blank');
-function show(...k){clearInterval(timer);$app.replaceChildren(...k);scrollTo(0,0)}
+function show(...k){clearInterval(timer);theme('#ffc83d','#ff8a3d','#231400','#ffb020');$app.replaceChildren(...k);scrollTo(0,0);$app.classList.remove('rise');[...$app.children].forEach((c,i)=>c.style.setProperty('--i',i));void $app.offsetWidth;$app.classList.add('rise')}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('press')},true);
 const back=()=>h('button',{class:'back',onclick:home},'‹ Назад');
 
 // ---- статусы заказов ----
@@ -70,18 +101,21 @@ const label=o=>({2:'выполнен ✓',3:'отменён',1:'в работе'
 
 // ---- главная ----
 function home(){
-  show(h('h1',{},'PharmShop'),
-    h('button',{class:'card',onclick:()=>buy('stars')},h('b',{},'⭐ Купить звёзды'),h('span',{class:'mute'},'Telegram Stars, доставка за секунды')),
-    h('button',{class:'card',onclick:()=>buy('premium')},h('b',{},'💎 Telegram Premium'),h('span',{class:'mute'},'Любой @username')),
-    h('button',{class:'card',onclick:orders},h('b',{},'🧾 Мои заказы'),h('span',{class:'mute'},'Статусы и оплата')),
-    h('button',{class:'card',onclick:support},h('b',{},'💬 Поддержка'),h('span',{class:'mute'},'Чат с администратором')),
-    h('button',{class:'card',onclick:()=>ext(BOT)},h('b',{},'✈️ Открыть бота'),h('span',{class:'mute'},'@pharmaishop_bot')));
+  const c=(n,bg,fg,t,sub,fn)=>h('button',{class:'card',onclick:fn},ib(n,bg,fg),h('div',{},h('b',{},t),h('span',{class:'mute'},sub)));
+  show(h('div',{class:'hd'},ib('star','linear-gradient(135deg,#ffc83d,#ff8a3d)','#231400'),h('div',{},h('h1',{},'PharmShop'),h('div',{class:'mute',style:'font-size:12px'},'Telegram магазин • Stars • Premium'))),
+    h('div',{class:'ny'},h('b',{},'🎄 С наступающим Новым годом!'),h('span',{},'Пусть в новом году будет больше звёзд ⭐')),
+    c('star','#3a2a0a','#ffb020','Звёзды','Telegram Stars, доставка за секунды',()=>buy('stars')),
+    c('crown','#2a1a4d','#b794f6','Купить Premium','Покупка подписки',()=>buy('premium')),
+    c('bill','#10303a','#22c1dc','Мои заказы','Статусы и оплата',orders),
+    c('chat','#12301f','#34c759','Поддержка','Чат с администратором',support),
+    h('button',{class:'bot',onclick:()=>ext(BOT)},ib('send','rgba(0,0,0,.12)','#000'),h('div',{},h('span',{},'Заказать в боте'),h('b',{},'@pharmaishop_bot'))),
+    h('div',{class:'mute',style:'text-align:center;font-size:12px'},'Цены на услуги могут меняться в зависимости от курса'));
 }
 
 // ---- капча (hCaptcha, невидимая) ----
 let hcLoad=null;
 function captcha(key){
-  hcLoad=hcLoad||new Promise((ok,no)=>{const s=h('script',{src:'https://js.hcaptcha.com/1/api.js?render=explicit',async:''});s.onload=ok;s.onerror=()=>no(Error('Не загрузилась капча'));document.head.append(s)});
+  hcLoad=hcLoad||new Promise((ok,no)=>{const s=h('script',{src:'https://js.hcaptcha.com/1/api.js?render=explicit&host=pharmshop.tgstars.tg',async:''});s.onload=ok;s.onerror=()=>no(Error('Не загрузилась капча'));document.head.append(s)});
   return hcLoad.then(()=>new Promise((res,rej)=>{
     const box=h('div');document.body.append(box);
     const id=hcaptcha.render(box,{sitekey:key,size:'invisible',callback:t=>{box.remove();res(t)},'error-callback':e=>{box.remove();rej(Error('Капча: '+e))},'close-callback':()=>{rej(Error('Капча закрыта'))}});
@@ -90,14 +124,14 @@ function captcha(key){
 // ---- покупка звёзд / Premium ----
 async function buy(product){
   const prem=product==='premium';
-  show(back(),h('h1',{},prem?'Telegram Premium':'Купить звёзды'),h('p',{class:'mute'},'Загружаем…'));
+  show(back(),h('p',{class:'mute'},'Загружаем…'));
   let c;try{c=await config()}catch(e){return show(back(),h('p',{class:'bad'},'Не удалось загрузить: '+e.message))}
   let qty=0,method='',total=h('div',{class:'total'},'К оплате: —'),msg=h('p',{class:'mute'});
   const user=h('input',{placeholder:'Имя в Telegram, без @',autocapitalize:'off',autocorrect:'off',value:ls.lastUser||''});
   const q=h('input',{placeholder:'Сколько звёзд',inputmode:'numeric'});
   let tm=0;
-  const quote=()=>{clearTimeout(tm);if(!qty||(!prem&&(qty<(c.min||50)||qty>(c.max||10000)))||!method){total.textContent='К оплате: —';return}
-    tm=setTimeout(async()=>{try{const r=await sf('POST','/quote',{quantity:qty,method_id:method,...(prem?{product:'premium'}:{})});total.textContent='К оплате: '+r.total+' '+(r.currency||'RUB')}catch{total.textContent='Не удалось рассчитать цену'}},400)};
+  const quote=()=>{clearTimeout(tm);if(!qty||(!prem&&(qty<(c.min||50)||qty>(c.max||10000)))||!method){popText(total,'К оплате: —');return}
+    tm=setTimeout(async()=>{try{const r=await sf('POST','/quote',{quantity:qty,method_id:method,...(prem?{product:'premium'}:{})});popText(total,'К оплате: '+r.total+' '+(r.currency||'RUB'))}catch{total.textContent='Не удалось рассчитать цену'}},400)};
   const chips=h('div',{class:'chips'});
   if(prem){(c.premium||[]).filter(p=>p.available!==false).forEach(p=>{const b=h('button',{class:'chip',onclick:()=>{qty=p.months;[...chips.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},p.months+' мес. · '+p.total+' ₽');chips.append(b)});if(chips.firstChild)chips.firstChild.click()}
   else{(c.presets||[]).forEach(v=>chips.append(h('button',{class:'chip',onclick:()=>{q.value=qty=v;quote()}},String(v))));
@@ -105,7 +139,7 @@ async function buy(product){
   const ton=/(^|[^a-z])ton([^a-z]|$)|тон/i, ms=(c.methods||[]).filter(m=>!ton.test(m.name||'')&&!ton.test(m.id||''));
   if(ms.length>1)[ms[0],ms[1]]=[ms[1],ms[0]];   // как в приложении: СБП 1 первым
   const mbox=h('div');
-  ms.forEach(m=>{const b=h('button',{class:'opt',onclick:()=>{method=m.id;[...mbox.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},m.name);mbox.append(b)});
+  ms.forEach(m=>{const b=h('button',{class:'opt',onclick:()=>{method=m.id;[...mbox.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},h('i'),m.name);mbox.append(b)});
   if(mbox.firstChild)mbox.firstChild.click();
   const pay=h('button',{class:'btn',onclick:async()=>{
     const u=user.value.trim().replace(/^@/,'');
@@ -119,9 +153,10 @@ async function buy(product){
       const l=J('orders',[]);l.unshift(o);S('orders',l.slice(0,50));
       if(o.payment_url)ext(o.payment_url);orders();
     }catch(e){msg.className='bad';msg.textContent=e.message;pay.disabled=false}}},'Оплатить');
-  show(back(),h('h1',{},prem?'Telegram Premium':'Купить звёзды'),
-    h('p',{class:'mute'},prem?'Выберите срок':(c.stars_rate+' ₽ за звезду · от '+(c.min||50)+' до '+(c.max||10000)+' шт.')),
-    user,prem?null:q,chips,h('b',{},'Способ оплаты'),mbox,total,pay,msg);
+  show(back(),banner(prem?'crown':'star',prem?'Telegram Premium':'Telegram Stars',prem?'Выберите срок и оплатите':'Доставка в течение 15 секунд'),
+    h('p',{class:'mute'},prem?'Подписка для любого @username':(c.stars_rate+' ₽ за звезду · от '+(c.min||50)+' до '+(c.max||10000)+' шт.')),
+    user,prem?null:q,chips,h('b',{style:'color:var(--acc)'},'Способ оплаты'),mbox,total,pay,msg);
+  if(prem)theme('#8b5cf6','#ec4899','#fff','#b794f6');
 }
 
 // ---- заказы ----
