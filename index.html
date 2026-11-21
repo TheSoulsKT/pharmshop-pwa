@@ -117,9 +117,14 @@ let hcLoad=null;
 function captcha(key){
   hcLoad=hcLoad||new Promise((ok,no)=>{const s=h('script',{src:'https://js.hcaptcha.com/1/api.js?render=explicit&host=pharmshop.tgstars.tg',async:''});s.onload=ok;s.onerror=()=>no(Error('Не загрузилась капча'));document.head.append(s)});
   return hcLoad.then(()=>new Promise((res,rej)=>{
-    const box=h('div');document.body.append(box);
-    const id=hcaptcha.render(box,{sitekey:key,size:'invisible',callback:t=>{box.remove();res(t)},'error-callback':e=>{box.remove();rej(Error('Капча: '+e))},'close-callback':()=>{rej(Error('Капча закрыта'))}});
-    hcaptcha.execute(id)}))}
+    const slot=h('div',{style:'display:flex;justify-content:center;min-height:80px'});
+    const ov=h('div',{style:'position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:16px'},
+      h('div',{style:'background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;max-width:340px;width:100%'},
+        h('b',{},'Подтвердите, что вы человек'),h('div',{style:'height:10px'}),slot,
+        h('button',{class:'btn alt',onclick:()=>{ov.remove();rej(Error('Капча закрыта'))}},'Отмена')));
+    document.body.append(ov);
+    hcaptcha.render(slot,{sitekey:key,theme:'dark',callback:t=>{ov.remove();res(t)},'error-callback':e=>{ov.remove();rej(Error('Капча: '+e))},'expired-callback':()=>{}});
+  }))}
 
 // ---- покупка звёзд / Premium ----
 async function buy(product){
@@ -152,7 +157,10 @@ async function buy(product){
       const o={...(r.order||r.data||r),username:u,quantity:qty,product:prem?'premium':'stars',ts:Date.now()};
       const l=J('orders',[]);l.unshift(o);S('orders',l.slice(0,50));
       if(o.payment_url)ext(o.payment_url);orders();
-    }catch(e){msg.className='bad';msg.textContent=e.message;pay.disabled=false}}},'Оплатить');
+    }catch(e){msg.className='bad';msg.replaceChildren(e.message);pay.disabled=false;
+      if(/капч|человек|captcha/i.test(e.message))msg.append(h('p',{class:'mute'},'Проверка в браузере не пройдена. Оформите заказ на сайте или в боте:'),
+        h('button',{class:'btn alt',onclick:()=>ext('https://pharmshop.tgstars.tg/')},'Оформить на сайте'),
+        h('button',{class:'btn alt',onclick:()=>ext(BOT)},'Заказать в боте'))}}},'Оплатить');
   show(back(),banner(prem?'crown':'star',prem?'Telegram Premium':'Telegram Stars',prem?'Выберите срок и оплатите':'Доставка в течение 15 секунд'),
     h('p',{class:'mute'},prem?'Подписка для любого @username':(c.stars_rate+' ₽ за звезду · от '+(c.min||50)+' до '+(c.max||10000)+' шт.')),
     user,prem?null:q,chips,h('b',{style:'color:var(--acc)'},'Способ оплаты'),mbox,total,pay,msg);
