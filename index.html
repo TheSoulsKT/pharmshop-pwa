@@ -80,8 +80,8 @@ const popText=(el,t)=>{if(el.textContent===t)return;el.textContent=t;el.classLis
 
 async function req(url,method='GET',body,hd={}){
   const r=await fetch(url,{method,headers:{'content-type':'application/json',...hd},body:body?JSON.stringify(body):undefined});
-  const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw Error('Сервер ответил не JSON (код '+r.status+')')}
-  if(!r.ok)throw Error(j.error||j.message||'Ошибка '+r.status);return j}
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch{const e=Error('Сервер ответил не JSON (код '+r.status+')');e.status=r.status;e.raw=t.slice(0,300);throw e}
+  if(!r.ok){const e=Error(j.error||j.message||'Ошибка '+r.status);e.status=r.status;e.raw=t.slice(0,300);throw e}return j}
 const sf=(m,p,b,hd)=>req(SF+p,m,b,hd), chat=(p,b)=>req(CH+'/api/chat/'+p,'POST',b);
 let cfg=null;const config=async()=>cfg||(cfg=await sf('GET','/config'));
 const ext=u=>window.open(u,'_blank');
@@ -146,24 +146,26 @@ async function buy(product){
   const mbox=h('div');
   ms.forEach(m=>{const b=h('button',{class:'opt',onclick:()=>{method=m.id;[...mbox.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},h('i'),m.name);mbox.append(b)});
   if(mbox.firstChild)mbox.firstChild.click();
+  const dbg=h('pre',{class:'mute',style:'white-space:pre-wrap;word-break:break-all;font-size:12px'});
   const pay=h('button',{class:'btn',onclick:async()=>{
     const u=user.value.trim().replace(/^@/,'');
     if(!/^[A-Za-z0-9_]{4,32}$/.test(u))return msg.textContent='Введите имя пользователя Telegram';
     if(!qty||!method)return msg.textContent='Выберите количество и способ оплаты';
-    pay.disabled=true;msg.className='mute';msg.textContent='Проверяем капчу…';ls.lastUser=u;
+    pay.disabled=true;msg.className='mute';msg.textContent='Подтвердите, что вы человек…';dbg.textContent='';ls.lastUser=u;
     try{
-      const tok=await captcha(c.hcaptcha_sitekey);msg.textContent='Создаём заказ…';
+      const tok=await captcha(c.hcaptcha_sitekey);
+      dbg.textContent='hCaptcha выдал токен, длина '+tok.length+'. Создаём заказ…';
       const r=await sf('POST','/orders',{username:u,quantity:qty,method_id:method,captcha_token:tok,...(prem?{product:'premium'}:{})},{'Idempotency-Key':crypto.randomUUID()});
       const o={...(r.order||r.data||r),username:u,quantity:qty,product:prem?'premium':'stars',ts:Date.now()};
       const l=J('orders',[]);l.unshift(o);S('orders',l.slice(0,50));
       if(o.payment_url)ext(o.payment_url);orders();
-    }catch(e){msg.className='bad';msg.replaceChildren(e.message);pay.disabled=false;
-      if(/капч|человек|captcha/i.test(e.message))msg.append(h('p',{class:'mute'},'Проверка в браузере не пройдена. Оформите заказ на сайте или в боте:'),
-        h('button',{class:'btn alt',onclick:()=>ext('https://pharmshop.tgstars.tg/')},'Оформить на сайте'),
-        h('button',{class:'btn alt',onclick:()=>ext(BOT)},'Заказать в боте'))}}},'Оплатить');
+    }catch(e){msg.className='bad';msg.textContent=e.message;pay.disabled=false;
+      dbg.textContent+='\nДиагностика: '+(e.status?'HTTP '+e.status+' · ':'')+(e.raw||'')+'\nДомен страницы: '+location.hostname}}},'Оплатить');
+  const bot=h('button',{class:'btn alt',onclick:()=>ext(BOT)},'Заказать в боте');
+  const site=h('button',{class:'btn alt',onclick:()=>ext('https://pharmshop.tgstars.tg/')},'Оформить на сайте');
   show(back(),banner(prem?'crown':'star',prem?'Telegram Premium':'Telegram Stars',prem?'Выберите срок и оплатите':'Доставка в течение 15 секунд'),
     h('p',{class:'mute'},prem?'Подписка для любого @username':(c.stars_rate+' ₽ за звезду · от '+(c.min||50)+' до '+(c.max||10000)+' шт.')),
-    user,prem?null:q,chips,h('b',{style:'color:var(--acc)'},'Способ оплаты'),mbox,total,pay,msg);
+    user,prem?null:q,chips,h('b',{style:'color:var(--acc)'},'Способ оплаты'),mbox,total,pay,msg,dbg,site,bot);
   if(prem)theme('#8b5cf6','#ec4899','#fff','#b794f6');
 }
 
