@@ -823,7 +823,7 @@ function vForm(box,alive,subs,plansAll,prov){
     if(act==='tobuy'){S.tab=1;vTabSel=1;showTab()}
     else if(act==='topup')askTopup(note);
     else if(act==='out')confirmSheet('Выйти из аккаунта VPN?','Ключ входа будет удалён с этого устройства. Войти снова можно через Telegram или почту.','Выйти',()=>{vLogout();vTabSel=-1;vPollGen++;vpnScreen()});
-    else if(act==='copy'){copyText(s.subscription_url).then(ok=>if(ok&&LS.get('clip'))setTimeout(()=>{try{navigator.clipboard.writeText(' ')}catch(e){}},60000);toast(ok?'Ссылка подписки скопирована':'Не удалось скопировать — выделите ссылку вручную'))}
+    else if(act==='copy'){copyText(s.subscription_url).then(ok=>{if(ok&&LS.get('clip'))setTimeout(()=>{try{navigator.clipboard.writeText(' ')}catch(e){}},60000);toast(ok?'Ссылка подписки скопирована':'Не удалось скопировать — выделите ссылку вручную')})}
     else if(act==='client'){
       const url=s.subscription_url,apps=[['Happ','happ://add/'+url],['v2rayTun','v2raytun://import/'+url],['Hiddify','hiddify://import/'+url]];
       listSheet('Открыть в приложении',apps.map(a=>a[0]),(i)=>{toast('Если '+apps[i][0]+' не открылся — скопируйте ссылку и добавьте подписку вручную');location.href=apps[i][1]});
