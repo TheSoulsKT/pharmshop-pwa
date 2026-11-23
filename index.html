@@ -48,6 +48,33 @@ select{width:100%;background:var(--card);color:var(--text);border:1px solid var(
 .sh .it{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:var(--text);padding:14px 4px;font:inherit}
 button.b.ghost{background:none;color:var(--mute)}button.b.dg{background:var(--red)}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:calc(14px*var(--k));z-index:60;max-width:88%;font-size:14px;text-align:center}
+.pf-top,.pf-hero,.pf-tiles,.pf-h,.pf-ach{flex:none}
+.pf-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.pf-top h2{margin:0}
+.pf-hero{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:calc(28px*var(--k));margin-bottom:14px;text-align:center;padding-bottom:20px}
+.pf-ban{position:relative;height:124px;overflow:hidden;background:var(--line);background:linear-gradient(135deg,color-mix(in srgb,var(--blue) 62%,var(--bg)),color-mix(in srgb,var(--blue) 14%,var(--card)))}
+.pf-ban:before,.pf-ban:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.1)}
+.pf-ban:before{width:190px;height:190px;right:-50px;top:-80px}.pf-ban:after{width:120px;height:120px;left:-30px;bottom:-70px}
+.pf-b{position:absolute;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:18px;animation:pfl 5s ease-in-out infinite}
+@keyframes pfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media(prefers-reduced-motion:reduce){.pf-b{animation:none}}
+.pf-avw{position:relative;width:108px;height:108px;margin:-54px auto 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pf-av{width:108px;height:108px;border-radius:50%;border:4px solid var(--card);box-shadow:0 0 0 3px var(--blue);object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;color:#fff;overflow:hidden;background:var(--line)}
+.pf-cam{position:absolute;right:-2px;bottom:2px;width:34px;height:34px;border-radius:50%;background:var(--blue);border:3px solid var(--card);display:flex;align-items:center;justify-content:center;font-size:15px}
+.pf-nick{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:0 14px}
+.pf-nick b{font-size:calc(24px*var(--ts));word-break:break-all}
+.pf-ed{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--blue);background:color-mix(in srgb,var(--blue) 14%,var(--card));color:var(--text);padding:0;font-size:15px;flex:none}
+.pf-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;padding:0 14px}
+.pf-chip{background:color-mix(in srgb,var(--blue) 12%,var(--bg));border-radius:20px;padding:7px 14px;font-size:13px}
+.pf-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.pf-t{border-radius:calc(22px*var(--k));padding:14px 8px;text-align:center;border:1px solid var(--line)}
+.pf-t i{font-style:normal;font-size:26px;display:block}.pf-t b{display:block;font-size:calc(21px*var(--ts));margin-top:4px}.pf-t span{font-size:12px;color:var(--mute)}
+.pf-t.a{background:color-mix(in srgb,var(--blue) 16%,var(--card));border-color:color-mix(in srgb,var(--blue) 45%,var(--line))}
+.pf-t.g{background:color-mix(in srgb,var(--green) 14%,var(--card));border-color:color-mix(in srgb,var(--green) 45%,var(--line))}
+.pf-h{margin:4px 0 10px;font-size:19px;font-weight:700}
+.pf-ach{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 14px;margin:0 -14px 6px;padding-left:14px;padding-right:14px;scroll-snap-type:x proximity;scroll-padding:0 14px;scrollbar-width:none}.pf-ach::-webkit-scrollbar{display:none}
+.pf-c{flex:none;width:112px;scroll-snap-align:start;border-radius:calc(22px*var(--k));padding:14px 6px 12px;text-align:center;border:1px solid var(--line);background:var(--card);opacity:.55}
+.pf-c.on{opacity:1;background:color-mix(in srgb,var(--green) 12%,var(--card));border-color:color-mix(in srgb,var(--green) 50%,var(--line))}
+.pf-c i{font-style:normal;font-size:34px;display:block;margin-bottom:6px}.pf-c b{font-size:14px;display:block}.pf-c span{font-size:12px;color:var(--mute)}.pf-c.on span{color:var(--green)}
 </style></head><body>
 <div id="view"></div>
 <nav><button data-t="vpn"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M20 12v2.5"/></g></svg><span>VPN</span></button><button data-t="chat"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="8" r="3.4"/><path d="M1 21.5A7 7 0 0 1 15 21.5"/><circle cx="17" cy="8.5" r="2.7"/><path d="M13 18.5A4 4 0 0 1 21 18.5"/></g></svg><span>Чат</span></button><button data-t="help"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><path d="M5 4.5H19Q21 4.5 21 6.5V14.5Q21 16.5 19 16.5H11L6.5 20.5V16.5H5Q3 16.5 3 14.5V6.5Q3 4.5 5 4.5Z"/></g></svg><span>Поддержка</span></button><button data-t="me"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="8" r="4"/><path d="M4 23A8 8 0 0 1 20 23"/></g></svg><span>Профиль</span></button></nav>
@@ -215,16 +242,77 @@ function helpTab(){
 }
 
 // ---------- профиль ----------
+const avCache={};
+function avatarEl(m,big){
+  const col=nickCol(m.nick),ini=esc((String(m.nick||'?').replace(/^@/,'')[0]||'?').toUpperCase());
+  return `<div class="pf-av" id="pfav" style="background:linear-gradient(135deg,${col},color-mix(in srgb,${col} 45%,#000))">${ini}</div>`;
+}
+function achList(m){
+  const cl=(k)=>!!LS.get(k);
+  return [
+    ['💬','Свой ник',true],
+    ['📸','С фото',(m.av||0)>0],
+    ['🎨','Свой стиль',TH('skin',0)!==0||TH('acc',0)!==0||TH('mode',1)!==1||TH('ts',1)!==1||TH('cs',1)!==1],
+    ['🛡️','VPN',!!LS.get('vpn_refresh')],
+    ['✍️','Общение',(m.msgs||0)>=10],
+    ['🗣️','Болтун',(m.msgs||0)>=100],
+    ['🔒','Защита',cl('vmask')||cl('clip')||cl('cpay')],
+    ['📲','Установлено',matchMedia('(display-mode: standalone)').matches||navigator.standalone===true],
+    ['✅','Галочка',!!m.badge],
+    ['👑','Корона',!!m.crown]
+  ];
+}
+function pickAvatar(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=async()=>{
+    const f=inp.files&&inp.files[0];if(!f)return;
+    try{
+      const url=URL.createObjectURL(f),img=new Image();
+      await new Promise((ok,no)=>{img.onload=ok;img.onerror=()=>no(new Error('Не удалось открыть картинку'));img.src=url});
+      const s=Math.min(img.naturalWidth,img.naturalHeight),c=document.createElement('canvas');c.width=c.height=128;
+      c.getContext('2d').drawImage(img,(img.naturalWidth-s)/2,(img.naturalHeight-s)/2,s,s,0,0,128,128);URL.revokeObjectURL(url);
+      let q=.85,b64='';
+      do{b64=c.toDataURL('image/jpeg',q).split(',')[1];q-=.15}while(b64.length>55000&&q>.2);
+      const r=await api('/api/chat/avatar_set',{image:b64});
+      avCache[r.av]=b64;toast('Фото обновлено');meTab();
+    }catch(x){toast(x.message||'Не удалось загрузить фото')}
+  };
+  inp.click();
+}
 async function meTab(){
   window.RC=0;
-  view.innerHTML='<h2>Профиль</h2><div class="mute">Загрузка…</div>';const g=gen;
+  view.innerHTML='<div class="pf-top"><h2>Профиль</h2></div><div class="mute">Загрузка…</div>';const g=gen;
   try{me=await api('/api/chat/me')}catch(x){view.innerHTML=`<div class="err">${esc(x.message)}</div>`;return}
   if(g!==gen)return;
-  if(!me.registered){view.innerHTML='<h2>Профиль</h2><div class="card mute">Выберите ник во вкладке «Чат», чтобы он появился здесь.</div>';return}
-  view.innerHTML=`<h2>Профиль</h2><div class="card"><b style="font-size:18px">${esc(me.nick)}${me.crown?CROWN:''}${me.badge?' <span style="color:var(--blue)">✓</span>':''}</b>
-  <div class="mute small">Сообщений в чате: ${me.msgs||0}</div></div>
-  <div class="card"><b>Сменить ник</b><div class="mute small" style="margin:4px 0 8px">Можно раз в 7 дней.</div><input id="nn" maxlength="21" placeholder="Новый ник"><div class="err" id="e"></div><button class="b" id="ch">Сменить</button></div>`;
-  $('#ch').onclick=async()=>{const n=$('#nn').value.trim().replace(/^@/,'');if(!n)return;try{await api('/api/chat/register',{nick:n});LS.set('nick',n);meTab()}catch(x){$('#e').textContent=x.message}};
+  if(!me.registered){view.innerHTML='<div class="pf-top"><h2>Профиль</h2></div><div class="card mute">Выберите ник во вкладке «Чат», чтобы он появился здесь.</div>';return}
+  const left=(me.nick_change_at||0)-Date.now(),days=Math.ceil(left/864e5);
+  const ach=achList(me),got=ach.filter(x=>x[2]).length;
+  const bub=[['💬','left:7%;top:14%','0s'],['✏️','left:27%;top:48%','.8s'],['🎨','left:50%;top:10%','1.6s'],['📸','left:70%;top:50%','.4s'],['🛡️','left:86%;top:14%','1.2s']];
+  view.innerHTML=`<div class="pf-top"><h2>Профиль</h2></div>
+  <div class="pf-hero">
+    <div class="pf-ban">${bub.map(b=>`<div class="pf-b" style="${b[1]};animation-delay:${b[2]}">${b[0]}</div>`).join('')}</div>
+    <div class="pf-avw" id="pfavw">${avatarEl(me)}<div class="pf-cam">📷</div></div>
+    <div class="pf-nick"><b>${esc(me.nick)}</b>${me.crown?CROWN:''}${me.badge?'<span style="color:var(--blue)">✓</span>':''}<button class="pf-ed" id="pfed" aria-label="Сменить ник">✏️</button></div>
+    <div class="mute small" style="margin-top:6px">Так вас видят в чатах</div>
+    <div class="pf-chips"><span class="pf-chip">💬 Ник в чате: ${esc(me.nick)}</span></div>
+  </div>
+  <div class="pf-tiles">
+    <div class="pf-t a"><i>💬</i><b>${me.msgs||0}</b><span>Сообщений</span></div>
+    <div class="pf-t g"><i>✏️</i><b>${left>0?'через '+days+' дн.':'можно'}</b><span>Смена ника</span></div>
+  </div>
+  <div class="pf-h">Достижения · ${got} из ${ach.length}</div>
+  <div class="pf-ach">${ach.map(a=>`<div class="pf-c${a[2]?' on':''}"><i>${a[0]}</i><b>${a[1]}</b><span>${a[2]?'✓ есть':'нет'}</span></div>`).join('')}</div>`;
+  $('#pfavw').onclick=()=>{if(me.av)listSheet('Фото профиля',['Выбрать фото','Убрать фото'],(i)=>{if(i===0)pickAvatar();else api('/api/chat/avatar_set',{image:''}).then(()=>{toast('Фото убрано');meTab()}).catch(x=>toast(x.message))});else pickAvatar()};
+  $('#pfed').onclick=()=>{
+    const o=sheetOpen('Сменить ник','<div class="mute small" style="margin:4px 0 8px">Можно раз в 7 дней.</div><input id="nn" maxlength="21" placeholder="Новый ник" value="'+esc(me.nick)+'"><div class="err" id="ne"></div><button class="b" id="ch">Сменить</button><button class="b ghost" id="nc">Отмена</button>');
+    $('#nc',o).onclick=()=>o.remove();
+    $('#ch',o).onclick=async()=>{const n=$('#nn',o).value.trim().replace(/^@/,'');if(!n)return;try{await api('/api/chat/register',{nick:n});LS.set('nick',n);o.remove();meTab()}catch(x){$('#ne',o).textContent=x.message}};
+  };
+  if(me.av){
+    const put=(b)=>{const e=$('#pfav');if(e&&g===gen)e.outerHTML=`<img class="pf-av" id="pfav" alt="" src="data:image/jpeg;base64,${b}">`};
+    if(avCache[me.av])put(avCache[me.av]);
+    else api('/api/chat/avatar_get',{uid:me.uid}).then(r=>{if(r.image){avCache[me.av]=r.image;put(r.image)}}).catch(()=>{});
+  }
 }
 // ---------- VPN (личный кабинет pvpn.vitrinka.net, как в приложении для Android) ----------
 // Запросы идут через воркер (/api/vpn/call): он подставляет cookie входа и отдаёт новый. Суммы сервер присылает в копейках.
