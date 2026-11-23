@@ -1,204 +1,831 @@
 <!doctype html>
-<html lang="ru">
-<head>
-<meta charset="utf-8">
+<html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>PharmShop</title>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#121214">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PharmShop">
+<meta name="theme-color" content="#0f1115"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon.svg">
+<title>PharmShop</title>
 <style>
-:root{--bg:#121214;--card:#1d1c21;--line:#2b2a31;--text:#f2f2f4;--mute:#9a9da3;--blue:#3b8ef3;--red:#ff5a52;--green:#34c759;--acc:#ffb020;--a1:#ffc83d;--a2:#ff8a3d;--on:#231400}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 -apple-system,system-ui,sans-serif;overscroll-behavior:none}
-#app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 30px);position:relative;z-index:1}
-#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-h1{font-size:26px;margin:6px 0 14px}.mute{color:var(--mute);font-size:14px}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.rise>*{animation:rise .42s cubic-bezier(.1,.7,.2,1) both;animation-delay:calc(min(var(--i),10)*55ms)}
-.press{transition:transform .24s cubic-bezier(.3,1.9,.5,1)}.press:active{transform:scale(.97);transition:transform .11s ease-out}
-button{font:inherit;cursor:pointer}
-.card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 10px;color:var(--text);min-height:96px}
-.card b{display:block;font-size:18px}
-.ib{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center}
-.ib svg,.bn svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.hd{display:flex;align-items:center;gap:12px;margin:4px 0 16px}.hd h1{margin:0;font-size:24px}
-.ny{border-radius:18px;padding:16px 18px;margin:0 0 14px;background:linear-gradient(90deg,#c62f3e,#1f7a4d)}
-.ny b{display:block;font-size:17px}.ny span{font-size:13px;color:#e8f5ec}
-.bn{display:flex;align-items:center;gap:14px;border-radius:20px;padding:16px 18px;margin:0 0 16px;background:linear-gradient(90deg,var(--a1),var(--a2));color:var(--on)}
-.bn .ib{background:rgba(255,255,255,.22)}.bn b{font-size:20px;display:block}.bn span{font-size:13px;opacity:.8}
-.bot{display:flex;align-items:center;gap:14px;width:100%;border:0;border-radius:18px;padding:16px;margin:4px 0 14px;color:#000;text-align:left;background:linear-gradient(90deg,#7cc4ff,#3b8ef3)}
-.bot b{display:block;font-size:20px}.bot span{font-size:13px}
-.btn{width:100%;border:0;border-radius:18px;padding:16px;font-weight:700;font-size:17px;color:var(--on);background:linear-gradient(90deg,var(--a1),var(--a2));margin:8px 0}
-.btn.alt{background:var(--card);color:var(--text);border:1px solid var(--line)}.btn:disabled{opacity:.5}
-input{width:100%;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:14px;color:var(--text);font-size:17px;margin:6px 0;outline:0}
-.chips{display:flex;gap:8px;overflow-x:auto;margin:6px 0 14px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:20px;padding:8px 14px}
-.chip.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 22%,var(--card))}
-.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:8px 0;color:var(--text)}
-.opt i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--mute)}
-.opt.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 20%,var(--card))}
-@keyframes dot{from{transform:scale(.5)}to{transform:scale(1)}}
-.opt.on i{background:var(--acc);border-color:var(--acc);animation:dot .32s cubic-bezier(.3,2.4,.5,1)}
-.total{font-size:19px;color:var(--acc);font-weight:700;margin:14px 0}
-@keyframes pop{from{transform:scale(.94);opacity:.4}to{transform:none;opacity:1}}.total.pop{animation:pop .28s cubic-bezier(.3,2,.5,1);transform-origin:left}
-.back{background:none;border:0;color:var(--blue);font-size:17px;padding:4px 0 8px}
-.msg{max-width:82%;padding:9px 13px;border-radius:16px;margin:6px 0;white-space:pre-wrap;word-break:break-word;animation:rise .3s both}
-.msg.me{background:var(--blue);margin-left:auto}.msg.ad{background:var(--card);border:1px solid var(--line)}
-#log{min-height:50vh}.st{font-size:13px;padding:2px 8px;border-radius:10px;background:var(--line)}.ok{color:var(--green)}.bad{color:var(--red)}
-</style>
-</head>
-<body>
-<div id="app"></div>
+:root{--bg:#0f1115;--card:#1a1d24;--line:#2a2e38;--text:#f2f4f8;--mute:#8b92a1;--blue:#4c9aff;--green:#34c759;--red:#ff5d5d}
+@media(prefers-color-scheme:light){:root{--bg:#f5f6f8;--card:#fff;--line:#dde0e6;--text:#14161a;--mute:#6b7280;--blue:#1f6feb;--green:#1e9e45;--red:#d93025}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.4 -apple-system,system-ui,Segoe UI,Roboto,sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+#view{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 14px 0}
+nav{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;color:var(--mute);padding:10px 0;font:inherit;font-size:12px}
+nav button.on{color:var(--blue);font-weight:600}
+h2{margin:0 0 10px;font-size:20px}.mute{color:var(--mute)}.small{font-size:12px}.err{color:var(--red);min-height:18px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+input,textarea{width:100%;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:11px 14px;font:inherit}
+button.b{background:var(--blue);color:#fff;border:0;border-radius:14px;padding:11px 16px;font:inherit;font-weight:600;width:100%;margin-top:8px}
+button.chip{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:7px 14px;font:inherit;margin-right:6px}
+button.chip.on{border-color:var(--blue);color:var(--blue)}
+#list{flex:1;overflow-y:auto;padding:4px 0 8px}
+.m{max-width:82%;margin:6px 0;padding:7px 11px;border-radius:16px;background:var(--card);border:1px solid var(--line);word-wrap:break-word;white-space:pre-wrap}
+.m.me{margin-left:auto;background:var(--blue);color:#fff;border-color:transparent}
+.m .n{font-size:12px;font-weight:700;display:block}.m .t{font-size:10px;opacity:.65;display:block;text-align:right}
+.crown{width:14px;height:14px;vertical-align:-2px;margin-left:4px}
+.row{display:flex;gap:8px;align-items:flex-end;padding:8px 0 10px}.row textarea{flex:1;resize:none;max-height:100px}
+#send{width:46px;height:46px;border-radius:50%;border:0;background:var(--blue);color:#fff;font-size:18px;font-weight:700;flex:none}
+#send.cd{background:var(--card);color:var(--text);border:1px solid var(--line)}
+.dm{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+[hidden]{display:none!important}
+.vp{flex:1;min-height:0;overflow-y:auto;padding-bottom:12px}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px;margin-bottom:14px}
+.seg button{flex:1;background:none;border:0;border-radius:12px;padding:11px 0;color:var(--text);font:inherit;font-weight:600}
+.seg button.on{background:var(--blue);color:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.gb{background:none;border:1px solid var(--line);border-radius:12px;color:var(--text);padding:12px 8px;font:inherit;font-size:14px;min-height:46px}
+.gb.pr{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.lnk{font-size:12px;color:var(--mute);word-break:break-all;-webkit-user-select:all;user-select:all;margin-bottom:8px}
+select{width:100%;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;margin:4px 0 10px}
+.paybar{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:6px}
+.lk{color:var(--blue);padding:8px 0;font-size:14px;cursor:pointer}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;z-index:50}
+.sh{width:100%;max-height:80%;overflow-y:auto;background:var(--card);border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.sh .it{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:var(--text);padding:14px 4px;font:inherit}
+button.b.ghost{background:none;color:var(--mute)}button.b.dg{background:var(--red)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:14px;z-index:60;max-width:88%;font-size:14px;text-align:center}
+</style></head><body>
+<div id="view"></div>
+<nav><button data-t="chat">Чат</button><button data-t="help">Поддержка</button><button data-t="vpn">VPN</button><button data-t="me">Профиль</button></nav>
 <script>
-// ---- адреса: прокси /sf на вашем Cloudflare Worker (см. README) ----
-const CH='https://flat-violet-e617pharmshop-chat.soulszlord.workers.dev', SF=CH+'/sf/api/storefront';
-const BOT='https://t.me/pharmaishop_bot', VER='pwa-1.0';
-const $app=document.getElementById('app'), ls=localStorage;
-const h=(t,a={},...k)=>{const e=document.createElement(t);for(const x in a){x.startsWith('on')?e[x]=a[x]:x==='class'?e.className=a[x]:e.setAttribute(x,a[x])}e.append(...k.flat().filter(v=>v!=null&&v!==false));return e};
-const J=(k,d)=>{try{return JSON.parse(ls[k])??d}catch{return d}}, S=(k,v)=>{ls[k]=JSON.stringify(v)};
-const dev=ls.dev||(ls.dev=crypto.randomUUID()), sec=ls.sec||(ls.sec=crypto.randomUUID()+crypto.randomUUID());
-let timer=null;
-const IC={star:'M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z',crown:'M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z',gift:'M4 11h16v9H4zM3 7h18v4H3zM12 7v13M12 7C10 3 6 4 8 7M12 7c2-4 6-3 4 0',send:'M21 3L3 11l7 2.5L13 21zM10 13.5L21 3',user:'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6',chat:'M4 5h16v11H9l-5 4z',bill:'M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6'};
-const ico=n=>{const d=document.createElement('div');d.innerHTML='<svg viewBox="0 0 24 24"><path d="'+IC[n]+'"/></svg>';return d.firstChild};
-const ib=(n,bg,fg)=>{const e=h('div',{class:'ib',style:'background:'+bg+';color:'+fg},ico(n));return e};
-const theme=(a1,a2,on,acc)=>{const st=$app.style;st.setProperty('--a1',a1);st.setProperty('--a2',a2);st.setProperty('--on',on);st.setProperty('--acc',acc)};
-const banner=(n,t,sub)=>h('div',{class:'bn'},ib(n,'rgba(255,255,255,.22)','currentColor'),h('div',{},h('b',{},t),h('span',{},sub)));
-const popText=(el,t)=>{if(el.textContent===t)return;el.textContent=t;el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')};
-// снегопад
-(()=>{const c=h('canvas',{id:'snow'});document.body.append(c);const x=c.getContext('2d');let W,H,f=[];
-  const sz=()=>{W=c.width=innerWidth;H=c.height=innerHeight};sz();addEventListener('resize',sz);
-  const mk=any=>{const r=1.5+Math.random()*2.5;return{x:Math.random()*W,y:any?Math.random()*H:-r*2,r,v:28+r*9,d:6+Math.random()*14,p:Math.random()*6.28,a:.43+Math.random()*.43}};
-  for(let i=0;i<45;i++)f.push(mk(1));let t0=0;
-  const fr=t=>{const dt=Math.min((t-t0)/1000,.05);t0=t;x.clearRect(0,0,W,H);
-    for(const s of f){s.y+=s.v*dt;s.p+=dt;s.x+=Math.sin(s.p)*s.d*dt;if(s.y>H+10)Object.assign(s,mk(0));x.globalAlpha=s.a;x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill()}
-    requestAnimationFrame(fr)};requestAnimationFrame(fr)})();
-
-async function req(url,method='GET',body,hd={}){
-  const r=await fetch(url,{method,headers:{'content-type':'application/json',...hd},body:body?JSON.stringify(body):undefined});
-  const t=await r.text();let j;try{j=JSON.parse(t)}catch{const e=Error('Сервер ответил не JSON (код '+r.status+')');e.status=r.status;e.raw=t.slice(0,300);throw e}
-  if(!r.ok){const e=Error(j.error||j.message||'Ошибка '+r.status);e.status=r.status;e.raw=t.slice(0,300);throw e}return j}
-const sf=(m,p,b,hd)=>req(SF+p,m,b,hd), chat=(p,b)=>req(CH+'/api/chat/'+p,'POST',b);
-let cfg=null;const config=async()=>cfg||(cfg=await sf('GET','/config'));
-const ext=u=>window.open(u,'_blank');
-function show(...k){clearInterval(timer);theme('#ffc83d','#ff8a3d','#231400','#ffb020');$app.replaceChildren(...k);scrollTo(0,0);$app.classList.remove('rise');[...$app.children].forEach((c,i)=>c.style.setProperty('--i',i));void $app.offsetWidth;$app.classList.add('rise')}
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('press')},true);
-const back=()=>h('button',{class:'back',onclick:home},'‹ Назад');
-
-// ---- статусы заказов ----
-const kind=s=>{s=(s||'').toLowerCase();if(!s)return 4;
-  if(/^(completed|complete|done|delivered|success|succeeded|fulfilled|finished|sent)$/.test(s)||/complet|success|fulfil|finish/.test(s))return 2;
-  if(/cancel|fail|expire|refund|reject|error/.test(s))return 3;
-  if(/paid|process|progress|deliver|confirm|send|queue|work/.test(s))return 1;return 0};
-const eff=o=>{let best='',r=-1;for(const f of['status','order_status','state','payment_status','delivery_status','fulfillment_status']){
-  const v=String(o[f]??'');const k=kind(v),rk={2:4,3:3,1:2,0:1}[k]??0;if(v&&rk>r){r=rk;best=v}}
-  if(r<4&&(o.completed_at||o.delivered_at||o.fulfilled_at))return'completed';return best};
-const label=o=>({2:'выполнен ✓',3:'отменён',1:'в работе',0:'ожидает оплаты'})[kind(eff(o))]||eff(o)||'—';
-
-// ---- главная ----
-function home(){
-  const c=(n,bg,fg,t,sub,fn)=>h('button',{class:'card',onclick:fn},ib(n,bg,fg),h('div',{},h('b',{},t),h('span',{class:'mute'},sub)));
-  show(h('div',{class:'hd'},ib('star','linear-gradient(135deg,#ffc83d,#ff8a3d)','#231400'),h('div',{},h('h1',{},'PharmShop'),h('div',{class:'mute',style:'font-size:12px'},'Telegram магазин • Stars • Premium'))),
-    h('div',{class:'ny'},h('b',{},'🎄 С наступающим Новым годом!'),h('span',{},'Пусть в новом году будет больше звёзд ⭐')),
-    c('star','#3a2a0a','#ffb020','Звёзды','Telegram Stars, доставка за секунды',()=>buy('stars')),
-    c('crown','#2a1a4d','#b794f6','Купить Premium','Покупка подписки',()=>buy('premium')),
-    c('bill','#10303a','#22c1dc','Мои заказы','Статусы и оплата',orders),
-    c('chat','#12301f','#34c759','Поддержка','Чат с администратором',support),
-    h('button',{class:'bot',onclick:()=>ext(BOT)},ib('send','rgba(0,0,0,.12)','#000'),h('div',{},h('span',{},'Заказать в боте'),h('b',{},'@pharmaishop_bot'))),
-    h('div',{class:'mute',style:'text-align:center;font-size:12px'},'Цены на услуги могут меняться в зависимости от курса'));
+const API='https://flat-violet-e617pharmshop-chat.soulszlord.workers.dev';
+const SITEKEY='3d88c4d4-c8f4-4e0a-8db6-21e62e840604';
+const COOLDOWN=10000;
+const $=(s,r=document)=>r.querySelector(s);
+const esc=(t)=>String(t).replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LS={get(k,d=''){try{return localStorage.getItem(k)||d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let device=LS.get('device'),secret=LS.get('secret');
+if(!device){device=crypto.randomUUID();secret=[...crypto.getRandomValues(new Uint8Array(24))].map(x=>x.toString(16).padStart(2,'0')).join('');LS.set('device',device);LS.set('secret',secret)}
+async function api(path,extra={}){
+  const r=await fetch(API+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({device,secret,...extra})});
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok){const e=new Error(j.error||('Ошибка '+r.status));e.retry=j.retry_ms||0;throw e}
+  return j;
 }
+const CROWN='<svg class="crown" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18L3 7l5.5 5L12 5l3.5 7L21 7l-.5 11z"/><path d="M4 21h16"/></svg>';
+const nameHtml=(m)=>`<span class="n">${esc(m.nick)}${m.crown?CROWN:''}${m.badge?' <span style="color:var(--blue)">✓</span>':''}</span>`;
+const clock=(ts)=>new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+let tab=LS.get('tab','chat'),sub=0,timer=null,me=null,nextAt=Number(LS.get('nextAt','0'));
+const view=$('#view');
+function stop(){clearTimeout(timer);timer=null;gen++}
+let gen=0;
+function go(t){tab=t;LS.set('tab',t);stop();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({chat:chatTab,help:helpTab,vpn:vpnScreen,me:meTab})[t]()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 
-// ---- капча (hCaptcha, невидимая) ----
-let hcLoad=null;
-function captcha(key){
-  hcLoad=hcLoad||new Promise((ok,no)=>{const s=h('script',{src:'https://js.hcaptcha.com/1/api.js?render=explicit&host=pharmshop.tgstars.tg',async:''});s.onload=ok;s.onerror=()=>no(Error('Не загрузилась капча'));document.head.append(s)});
-  return hcLoad.then(()=>new Promise((res,rej)=>{
-    const slot=h('div',{style:'display:flex;justify-content:center;min-height:80px'});
-    const ov=h('div',{style:'position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:16px'},
-      h('div',{style:'background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;max-width:340px;width:100%'},
-        h('b',{},'Подтвердите, что вы человек'),h('div',{style:'height:10px'}),slot,
-        h('button',{class:'btn alt',onclick:()=>{ov.remove();rej(Error('Капча закрыта'))}},'Отмена')));
-    document.body.append(ov);
-    hcaptcha.render(slot,{sitekey:key,theme:'dark',callback:t=>{ov.remove();res(t)},'error-callback':e=>{ov.remove();rej(Error('Капча: '+e))},'expired-callback':()=>{}});
-  }))}
-
-// ---- покупка звёзд / Premium ----
-async function buy(product){
-  const prem=product==='premium';
-  show(back(),h('p',{class:'mute'},'Загружаем…'));
-  let c;try{c=await config()}catch(e){return show(back(),h('p',{class:'bad'},'Не удалось загрузить: '+e.message))}
-  let qty=0,method='',total=h('div',{class:'total'},'К оплате: —'),msg=h('p',{class:'mute'});
-  const user=h('input',{placeholder:'Имя в Telegram, без @',autocapitalize:'off',autocorrect:'off',value:ls.lastUser||''});
-  const q=h('input',{placeholder:'Сколько звёзд',inputmode:'numeric'});
-  let tm=0;
-  const quote=()=>{clearTimeout(tm);if(!qty||(!prem&&(qty<(c.min||50)||qty>(c.max||10000)))||!method){popText(total,'К оплате: —');return}
-    tm=setTimeout(async()=>{try{const r=await sf('POST','/quote',{quantity:qty,method_id:method,...(prem?{product:'premium'}:{})});popText(total,'К оплате: '+r.total+' '+(r.currency||'RUB'))}catch{total.textContent='Не удалось рассчитать цену'}},400)};
-  const chips=h('div',{class:'chips'});
-  if(prem){(c.premium||[]).filter(p=>p.available!==false).forEach(p=>{const b=h('button',{class:'chip',onclick:()=>{qty=p.months;[...chips.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},p.months+' мес. · '+p.total+' ₽');chips.append(b)});if(chips.firstChild)chips.firstChild.click()}
-  else{(c.presets||[]).forEach(v=>chips.append(h('button',{class:'chip',onclick:()=>{q.value=qty=v;quote()}},String(v))));
-    q.oninput=()=>{qty=parseInt(q.value)||0;quote()}}
-  const ton=/(^|[^a-z])ton([^a-z]|$)|тон/i, ms=(c.methods||[]).filter(m=>!ton.test(m.name||'')&&!ton.test(m.id||''));
-  if(ms.length>1)[ms[0],ms[1]]=[ms[1],ms[0]];   // как в приложении: СБП 1 первым
-  const mbox=h('div');
-  ms.forEach(m=>{const b=h('button',{class:'opt',onclick:()=>{method=m.id;[...mbox.children].forEach(x=>x.classList.remove('on'));b.classList.add('on');quote()}},h('i'),m.name);mbox.append(b)});
-  if(mbox.firstChild)mbox.firstChild.click();
-  const dbg=h('pre',{class:'mute',style:'white-space:pre-wrap;word-break:break-all;font-size:12px'});
-  const pay=h('button',{class:'btn',onclick:async()=>{
-    const u=user.value.trim().replace(/^@/,'');
-    if(!/^[A-Za-z0-9_]{4,32}$/.test(u))return msg.textContent='Введите имя пользователя Telegram';
-    if(!qty||!method)return msg.textContent='Выберите количество и способ оплаты';
-    pay.disabled=true;msg.className='mute';msg.textContent='Подтвердите, что вы человек…';dbg.textContent='';ls.lastUser=u;
+// ---------- общая лента ----------
+function pane({fetchFn,sendFn,mine,showNames,cool,empty}){
+  const g=gen;let last=0,rev=-1,lastDay='';
+  view.insertAdjacentHTML('beforeend',`<div id="list"><div class="mute">${empty}</div></div><div class="err" id="e"></div><div class="row"><textarea id="f" rows="1" placeholder="Сообщение" maxlength="1000"></textarea><button id="send">➤</button></div>`);
+  const list=$('#list'),f=$('#f'),send=$('#send'),e=$('#e');
+  function add(m){
+    if(m.id<=last)return;last=m.id;if(last&&list.firstChild&&list.firstChild.classList.contains('mute'))list.innerHTML='';
+    const own=mine(m);
+    list.insertAdjacentHTML('beforeend',`<div class="m ${own?'me':''}" data-id="${m.id}">${showNames&&!own?nameHtml(m):''}${esc(m.text)}<span class="t">${clock(m.ts)}</span></div>`);
+  }
+  async function poll(){
+    if(g!==gen)return;
     try{
-      const tok=await captcha(c.hcaptcha_sitekey);
-      dbg.textContent='hCaptcha выдал токен, длина '+tok.length+'. Создаём заказ…';
-      const r=await sf('POST','/orders',{username:u,quantity:qty,method_id:method,captcha_token:tok,...(prem?{product:'premium'}:{})},{'Idempotency-Key':crypto.randomUUID()});
-      const o={...(r.order||r.data||r),username:u,quantity:qty,product:prem?'premium':'stars',ts:Date.now()};
-      const l=J('orders',[]);l.unshift(o);S('orders',l.slice(0,50));
-      if(o.payment_url)ext(o.payment_url);orders();
-    }catch(e){msg.className='bad';msg.textContent=e.message;pay.disabled=false;
-      dbg.textContent+='\nДиагностика: '+(e.status?'HTTP '+e.status+' · ':'')+(e.raw||'')+'\nДомен страницы: '+location.hostname}}},'Оплатить');
-  const bot=h('button',{class:'btn alt',onclick:()=>ext(BOT)},'Заказать в боте');
-  const site=h('button',{class:'btn alt',onclick:()=>ext('https://pharmshop.tgstars.tg/')},'Оформить на сайте');
-  show(back(),banner(prem?'crown':'star',prem?'Telegram Premium':'Telegram Stars',prem?'Выберите срок и оплатите':'Доставка в течение 15 секунд'),
-    h('p',{class:'mute'},prem?'Подписка для любого @username':(c.stars_rate+' ₽ за звезду · от '+(c.min||50)+' до '+(c.max||10000)+' шт.')),
-    user,prem?null:q,chips,h('b',{style:'color:var(--acc)'},'Способ оплаты'),mbox,total,pay,msg,dbg,site,bot);
-  if(prem)theme('#8b5cf6','#ec4899','#fff','#b794f6');
+      const r=await fetchFn(last,rev);
+      if(g!==gen)return;
+      if(r.reset){list.innerHTML='<div class="mute">'+empty+'</div>';last=0}
+      rev=r.rev??rev;
+      const atEnd=list.scrollHeight-list.scrollTop-list.clientHeight<80,before=last;
+      (r.messages||[]).forEach(add);
+      if(r.me)me=r.me;
+      if(last!==before&&(atEnd||before===0))list.scrollTop=list.scrollHeight;
+      e.textContent='';
+    }catch(x){e.textContent=x.message}
+    timer=setTimeout(poll,4000);
+  }
+  function tick(){
+    if(g!==gen)return;const left=nextAt-Date.now();
+    if(left>0&&cool()){send.className='cd';send.textContent=Math.ceil(left/1000);setTimeout(tick,250)}else{send.className='';send.textContent='➤'}
+  }
+  async function doSend(){
+    const left=nextAt-Date.now();
+    if(left>0&&cool()){e.textContent='Следующее сообщение через '+Math.ceil(left/1000)+' с';return}
+    const text=f.value.trim();if(!text)return;f.value='';
+    if(cool()){nextAt=Date.now()+COOLDOWN;LS.set('nextAt',nextAt);tick()}
+    try{await sendFn(text);clearTimeout(timer);poll()}
+    catch(x){f.value=text;e.textContent=x.message;if(x.retry){nextAt=Date.now()+x.retry;LS.set('nextAt',nextAt)}else if(cool()){nextAt=0}tick()}
+  }
+  send.onclick=doSend;f.onkeydown=(k)=>{if(k.key==='Enter'&&!k.shiftKey){k.preventDefault();doSend()}};
+  tick();poll();
 }
 
-// ---- заказы ----
-async function refresh(o){
-  const e=encodeURIComponent(o.access_token||'');
-  const tries=[[`/orders/${o.id}?access_token=${e}&token=${e}`,{}],[`/orders/${o.id}`,{'X-Access-Token':o.access_token,'X-Order-Token':o.access_token}],[`/orders/${o.id}`,{Authorization:'Bearer '+o.access_token}]];
-  for(const[p,hd]of tries){try{const r=await sf('GET',p,null,hd);Object.assign(o,r.order||r.data||r);return true}catch{}}return false}
-function orders(){
-  const l=J('orders',[]),box=h('div');
-  const draw=()=>box.replaceChildren(...(l.length?l.map(o=>h('div',{class:'card'},
-    h('b',{},(o.product==='premium'?'Premium · '+o.quantity+' мес.':o.quantity+' ★')+' → @'+o.username),
-    h('div',{class:'mute'},'№ '+(o.order_number||String(o.id||'').slice(0,8))+' · ',h('span',{class:'st '+(kind(eff(o))===2?'ok':kind(eff(o))===3?'bad':'')},label(o))),
-    kind(eff(o))<2&&o.payment_url?h('button',{class:'btn',onclick:()=>ext(o.payment_url)},'Оплатить'):null)):[h('p',{class:'mute'},'Заказов пока нет')]));
-  show(back(),h('h1',{},'Мои заказы'),box);draw();
-  (async()=>{for(const o of l.filter(o=>o.id&&kind(eff(o))<2).slice(0,10))await refresh(o);S('orders',l);draw()})();
+// ---------- чат ----------
+async function chatTab(){
+  view.innerHTML='<div class="mute">Загрузка…</div>';const g=gen;
+  try{me=await api('/api/chat/me')}catch(x){view.innerHTML=`<div class="err">${esc(x.message)}</div><button class="b" onclick="go('chat')">Повторить</button>`;return}
+  if(g!==gen)return;
+  if(!me.registered)return register();
+  view.innerHTML=`<div style="margin-bottom:10px"><button class="chip ${sub?'':'on'}" id="t0">Общий чат</button><button class="chip ${sub?'on':''}" id="t1">Личные</button></div>`;
+  $('#t0').onclick=()=>{sub=0;go('chat')};$('#t1').onclick=()=>{sub=1;go('chat')};
+  if(!sub)pane({empty:'Здесь пока тихо. Напишите первым!',showNames:true,mine:(m)=>m.uid===me.uid,cool:()=>!(me&&me.badge),
+    fetchFn:(a,r)=>api('/api/room/messages',{after:a,rev:r}),sendFn:(t)=>api('/api/room/send',{text:t})});
+  else dmList();
+}
+function register(){
+  view.innerHTML=`<div class="card"><b>🤝 Чат создан, чтобы помогать друг другу</b><div class="mute small">Задавайте вопросы, делитесь опытом и подсказывайте другим. Будьте вежливы: за спам и оскорбления доступ могут закрыть.</div></div>
+  <h2>Выберите ник</h2><div class="mute small" style="margin-bottom:10px">3–20 символов: латиница или кириллица (не вперемешку), цифры и «_». Ник можно менять раз в 7 дней. Перед входом нужно пройти проверку «я не робот».</div>
+  <input id="nick" maxlength="21" autocomplete="off" placeholder="Ник"><div class="err" id="e"></div><div id="cap"></div><button class="b" id="go">Занять ник</button>`;
+  const e=$('#e');let busy=false,wid=null;
+  $('#go').onclick=async()=>{
+    if(busy)return;const nick=$('#nick').value.trim().replace(/^@/,'');if(!nick)return;busy=true;e.textContent='Проверяем ник…';
+    try{await api('/api/chat/register',{nick,check:true})}catch(x){e.textContent=x.message;busy=false;return}
+    if(!window.hcaptcha){e.textContent='Капча не загрузилась. Проверьте интернет и обновите страницу';busy=false;return}
+    e.textContent='Пройдите проверку…';$('#cap').innerHTML='';
+    wid=hcaptcha.render('#cap',{sitekey:SITEKEY,theme:'dark',callback:async(token)=>{
+      e.textContent='Входим в чат…';
+      try{await api('/api/chat/register',{nick,captcha:token});LS.set('nick',nick);go('chat')}
+      catch(x){e.textContent=x.message;busy=false;try{hcaptcha.reset(wid)}catch(_){}}},
+      'error-callback':()=>{e.textContent='Проверка не пройдена. Попробуйте ещё раз';busy=false},
+      'close-callback':()=>{busy=false}});
+  };
+}
+async function dmList(){
+  const g=gen;
+  view.insertAdjacentHTML('beforeend','<button class="chip" id="find" style="margin-bottom:8px;align-self:flex-start">✉ Написать по нику</button><div id="dl" style="overflow-y:auto;flex:1"></div>');
+  $('#find').onclick=async()=>{const n=prompt('Ник собеседника');if(!n)return;try{const r=await api('/api/dm/find',{nick:n});dmOpen(r.uid,r.nick)}catch(x){alert(x.message)}};
+  async function load(){
+    if(g!==gen)return;
+    try{const r=await api('/api/dm/list');if(g!==gen)return;
+      $('#dl').innerHTML=r.chats.length?r.chats.map(c=>`<div class="dm" data-u="${c.uid}" data-n="${esc(c.nick)}"><div><b>${esc(c.nick)}${c.crown?CROWN:''}</b><div class="mute small">${c.sender===me.uid?'Вы: ':''}${esc(c.text).slice(0,80)}</div></div>${c.unread?`<b style="color:var(--blue)">${c.unread}</b>`:''}</div>`).join(''):'<div class="mute">Личных чатов пока нет. Найдите человека по нику.</div>';
+      document.querySelectorAll('.dm').forEach(d=>d.onclick=()=>dmOpen(Number(d.dataset.u),d.dataset.n));
+    }catch(x){}
+    timer=setTimeout(load,6000);
+  }
+  load();
+}
+function dmOpen(uid,nick){
+  stop();view.innerHTML=`<div style="margin-bottom:8px"><button class="chip" id="back">← Назад</button><b>${esc(nick)}</b></div>`;
+  $('#back').onclick=()=>{sub=1;go('chat')};
+  pane({empty:'Переписки пока нет. Напишите первым.',showNames:false,mine:(m)=>m.uid===me.uid,cool:()=>false,
+    fetchFn:(a)=>api('/api/dm/messages',{with:uid,after:a}),sendFn:(t)=>api('/api/dm/send',{to:uid,text:t})});
 }
 
-// ---- поддержка ----
-function support(){
-  const log=h('div',{id:'log'}),inp=h('input',{placeholder:'Сообщение…',style:'border-color:var(--line)'});
-  let last=0,started=!!ls.chat;
-  const add=m=>{if(m.id&&m.id<=last)return;last=Math.max(last,m.id||0);log.append(h('div',{class:'msg '+(m.sender==='admin'?'ad':'me')},m.text||'📷 Фото'));scrollTo(0,document.body.scrollHeight)};
-  const load=async()=>{if(!started)return;try{const r=await chat('messages',{device:dev,secret:sec,after:last});(r.messages||[]).forEach(add)}catch{}};
-  const send=async()=>{const t=inp.value.trim();if(!t)return;inp.value='';
-    try{await chat('send',{device:dev,secret:sec,nick:ls.lastUser||'',order:(J('orders',[])[0]||{}).order_number||'',version:VER,text:t,info:navigator.userAgent});started=true;ls.chat='1';load()}
-    catch(e){log.append(h('div',{class:'msg ad bad'},'Не отправлено: '+e.message))}};
-  inp.onkeydown=e=>{if(e.key==='Enter')send()};
-  show(back(),h('h1',{},'Поддержка'),log,inp,h('button',{class:'btn',onclick:send},'Отправить'));
-  load();timer=setInterval(load,6000);
+// ---------- поддержка ----------
+function helpTab(){
+  view.innerHTML='<h2>Поддержка</h2><div class="mute small" style="margin-bottom:6px">Опишите проблему — ответ придёт сюда.</div>';
+  pane({empty:'Напишите, чем помочь.',showNames:false,mine:(m)=>m.from==='user',cool:()=>false,
+    fetchFn:async(a)=>{const r=await api('/api/chat/messages',{after:a});return r},
+    sendFn:(t)=>api('/api/chat/send',{nick:LS.get('nick'),order:'',version:'pwa',text:t,info:navigator.userAgent.slice(0,200)})});
 }
-home();
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+
+// ---------- профиль ----------
+async function meTab(){
+  view.innerHTML='<h2>Профиль</h2><div class="mute">Загрузка…</div>';const g=gen;
+  try{me=await api('/api/chat/me')}catch(x){view.innerHTML=`<div class="err">${esc(x.message)}</div>`;return}
+  if(g!==gen)return;
+  if(!me.registered){view.innerHTML='<h2>Профиль</h2><div class="card mute">Выберите ник во вкладке «Чат», чтобы он появился здесь.</div>';return}
+  view.innerHTML=`<h2>Профиль</h2><div class="card"><b style="font-size:18px">${esc(me.nick)}${me.crown?CROWN:''}${me.badge?' <span style="color:var(--blue)">✓</span>':''}</b>
+  <div class="mute small">Сообщений в чате: ${me.msgs||0}</div></div>
+  <div class="card"><b>Сменить ник</b><div class="mute small" style="margin:4px 0 8px">Можно раз в 7 дней.</div><input id="nn" maxlength="21" placeholder="Новый ник"><div class="err" id="e"></div><button class="b" id="ch">Сменить</button></div>`;
+  $('#ch').onclick=async()=>{const n=$('#nn').value.trim().replace(/^@/,'');if(!n)return;try{await api('/api/chat/register',{nick:n});LS.set('nick',n);meTab()}catch(x){$('#e').textContent=x.message}};
+}
+// ---------- VPN (личный кабинет pvpn.vitrinka.net, как в приложении для Android) ----------
+// Запросы идут через воркер (/api/vpn/call): он подставляет cookie входа и отдаёт новый. Суммы сервер присылает в копейках.
+const VPN_AUTH='/api/client/web';
+class VpnAuth extends Error{}
+class VpnFail extends Error{constructor(m,captcha){super(m);this.captcha=!!captcha}}
+let vTok='',vExp=0,vBusy=false,vsid=0,vPollGen=0,vRefreshing=null,cfgP=null;
+const vRef=()=>LS.get('vpn_refresh');
+const vOk=(r)=>r.code>=200&&r.code<300;
+
+async function vraw(m,p,b,o={}){
+  const r=await fetch(API+'/api/vpn/call',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({device,m,p,b:b==null?null:String(b),bearer:o.bearer||'',refresh:o.refresh||'',ref:o.ref||'/app/plans'})});
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok)throw new Error(j.error||('Ошибка '+r.status));
+  return j; // {code,text,refresh}
+}
+function vErr(r){
+  const t=(r.text||'').trim();
+  if(t[0]==='{'){try{const j=JSON.parse(t);for(const k of['detail','error','message']){const v=j[k];if(v!=null)return 'HTTP '+r.code+': '+String(typeof v==='string'?v:JSON.stringify(v)).slice(0,200)}}catch(e){}}
+  return 'HTTP '+r.code;
+}
+function vLogout(){vTok='';vExp=0;LS.set('vpn_refresh','');LS.set('vpn_pay','')}
+const vLoggedIn=()=>!!vRef()||(vTok&&Date.now()<vExp);
+function vSave(j,refresh){
+  const s=j.session||j,tok=s.access_token;
+  if(!tok)throw new Error('Сервер не вернул токен');
+  vTok=tok;vExp=Date.now()+(Number(s.expires_in)||3600)*1000;
+  if(refresh)LS.set('vpn_refresh',refresh);
+}
+async function vDoRefresh(){
+  const rc=vRef();if(!rc)throw new VpnAuth('Нужно войти заново');
+  let last=0;
+  // как сайт шлёт это продление (POST или GET) — из адресов не видно, пробуем по очереди
+  for(const [m,b] of [['POST',null],['POST','{}'],['GET',null]]){
+    const r=await vraw(m,VPN_AUTH+'/auth/refresh',b,{refresh:rc});
+    if(vOk(r)){vSave(JSON.parse(r.text),r.refresh);return}
+    last=r.code;
+    if(r.code===401||r.code===403){vLogout();throw new VpnAuth('Сессия истекла, войдите заново')}
+  }
+  throw new Error('Не удалось продлить сессию (код '+last+')');
+}
+async function vEnsure(){
+  if(vTok&&Date.now()<vExp-60000)return vTok;
+  if(!vRefreshing)vRefreshing=vDoRefresh().finally(()=>{vRefreshing=null});
+  await vRefreshing;return vTok;
+}
+async function vAuthed(m,p,b){
+  let r=await vraw(m,p,b,{bearer:await vEnsure()});
+  if(r.code===401){
+    vExp=0;r=await vraw(m,p,b,{bearer:await vEnsure()});
+    if(r.code===401){vLogout();throw new VpnAuth('Сессия истекла, войдите заново')}
+  }
+  if(!vOk(r))throw new Error(vErr(r));
+  return r.text;
+}
+const vj=(o)=>JSON.stringify(o);
+const vget=async(p)=>JSON.parse(await vAuthed('GET',p));
+const vpost=async(p,o)=>JSON.parse(await vAuthed('POST',p,vj(o)));
+
+// ---------- капча сайта (ALTCHA, подбор по PBKDF2) ----------
+function vFail(r,path){
+  if(r.code===429)return new VpnFail('Слишком много попыток. Подождите немного.');
+  let code='',reason='',msg='';
+  try{const j=JSON.parse((r.text||'').trim());code=j.code||'';reason=(j.context&&j.context.reason)||'';for(const k of['message','detail','error']){if(typeof j[k]==='string'&&j[k]){msg=j[k];break}}}catch(e){}
+  if(code==='app.captcha'){
+    return new VpnFail(reason==='captcha_replay'?'Проверка устарела. Попробуйте ещё раз.':reason==='captcha_missing'?'Проверка ещё не завершилась. Подождите секунду и повторите.':'Проверка не пройдена. Попробуйте ещё раз.',true);
+  }
+  if(r.code===404||r.code===405)return new VpnFail('Сервер не знает адрес '+path+' (HTTP '+r.code+')');
+  return new VpnFail(msg?msg.slice(0,200)+' (HTTP '+r.code+')':'Ошибка сервера (HTTP '+r.code+')');
+}
+// объект по ключу «как есть»: подпись капчи считается по исходному порядку полей
+function rawObject(text,key){
+  const k=text.indexOf('"'+key+'"');if(k<0)throw new Error('Капча: в ответе нет поля '+key);
+  const st=text.indexOf('{',k);if(st<0)throw new Error('Капча: не удалось разобрать ответ');
+  let d=0,inS=false,esc2=false;
+  for(let i=st;i<text.length;i++){
+    const c=text[i];
+    if(inS){if(esc2)esc2=false;else if(c==='\\')esc2=true;else if(c==='"')inS=false}
+    else if(c==='"')inS=true;else if(c==='{')d++;else if(c==='}'){d--;if(d===0)return text.slice(st,i+1)}
+  }
+  throw new Error('Капча: не удалось разобрать ответ');
+}
+const hexToBytes=(h)=>{if(h.length%2)throw new Error('Капча: неверное hex-значение');const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o};
+const bytesToHex=(b)=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+async function solveCaptcha(ref){
+  const r=await vraw('GET','/api/captcha/challenge',null,{ref});
+  if(!vOk(r))throw vFail(r,'/api/captcha/challenge');
+  const j=JSON.parse(r.text);
+  if('enabled' in j&&!j.enabled)return '';
+  const p=j.parameters,sig=j.signature,rawParams=rawObject(r.text,'parameters');
+  const hash={'PBKDF2/SHA-256':'SHA-256','PBKDF2/SHA-384':'SHA-384','PBKDF2/SHA-512':'SHA-512'}[p.algorithm||'PBKDF2/SHA-256'];
+  if(!hash)throw new Error('Капча: неизвестный алгоритм '+p.algorithm);
+  const cost=p.cost,keyLen=p.keyLength||32,prefix=String(p.keyPrefix).toLowerCase();
+  const nonce=hexToBytes(p.nonce),salt=hexToBytes(p.salt);
+  const t0=Date.now(),deadline=t0+90000;let found=null,next=0;
+  async function work(){
+    while(!found&&Date.now()<deadline){
+      const counter=next++,pwd=new Uint8Array(nonce.length+4);
+      pwd.set(nonce);new DataView(pwd.buffer).setUint32(nonce.length,counter>>>0,false); // счётчик — 4 байта, старший первым
+      const key=await crypto.subtle.importKey('raw',pwd,'PBKDF2',false,['deriveBits']);
+      const hex=bytesToHex(await crypto.subtle.deriveBits({name:'PBKDF2',hash,salt,iterations:cost},key,keyLen*8));
+      if(hex.startsWith(prefix)&&!found)found={counter,hex};
+    }
+  }
+  await Promise.all([work(),work(),work(),work()]);
+  if(!found)throw new Error('Не удалось пройти проверку за 90 секунд');
+  const sol=vj({counter:found.counter,derivedKey:found.hex,time:Date.now()-t0});
+  const payload='{"challenge":{"parameters":'+rawParams+',"signature":'+vj(sig)+'},"solution":'+sol+'}';
+  return btoa(unescape(encodeURIComponent(payload)));
+}
+async function authPost(path,body,ref,withCaptcha){
+  if(withCaptcha){const cap=await solveCaptcha(ref);if(cap)body.captcha=cap}
+  const r=await vraw('POST',path,vj(body),{ref});
+  if(!vOk(r))throw vFail(r,path);
+  return r;
+}
+
+// ---------- запросы кабинета ----------
+const VP={
+  async startLogin(){const r=await vraw('POST',VPN_AUTH+'/telegram-login',vj({slug:null}));if(!vOk(r))throw new Error(vErr(r));return JSON.parse(r.text)},
+  async pollLogin(id){
+    const r=await vraw('GET',VPN_AUTH+'/telegram-login/'+encodeURIComponent(id));
+    if(!vOk(r))throw new Error(vErr(r));
+    const j=JSON.parse(r.text);if(j.state==='confirmed')vSave(j,r.refresh);return j.state;
+  },
+  async loginEmail(email,password){
+    const mk=()=>({email,password});let r;
+    try{r=await authPost(VPN_AUTH+'/auth/login',mk(),'/login',false)}
+    catch(f){if(!(f instanceof VpnFail)||!f.captcha)throw f;r=await authPost(VPN_AUTH+'/auth/login',mk(),'/login',true)}
+    vSave(JSON.parse(r.text),r.refresh);
+  },
+  registerRequest:(email,password)=>authPost(VPN_AUTH+'/auth/register/request',{email,password,slug:null},'/register',true),
+  async registerConfirm(email,code,password){
+    const r=await authPost(VPN_AUTH+'/auth/register/confirm',{email,code,password,slug:null},'/register',false);
+    vSave(JSON.parse(r.text),r.refresh);
+  },
+  resetRequest:(email)=>authPost(VPN_AUTH+'/auth/password/reset/request',{email},'/reset',true),
+  async resetConfirm(email,code,newPassword){
+    const r=await authPost(VPN_AUTH+'/auth/password/reset/confirm',{email,code,new_password:newPassword},'/reset',false);
+    let j;try{j=JSON.parse(r.text)}catch(e){return false}
+    const s=j.session||j;if(!s.access_token)return false;
+    vSave(j,r.refresh);return true;
+  },
+  plans:()=>vget('/api/client/plans'),
+  providers:()=>vget('/api/client/payments/providers'),
+  quote:(u)=>vget('/api/client/payments/quote?plan_uuid='+encodeURIComponent(u)),
+  async intent(planUuid,provider){
+    const key=[...crypto.getRandomValues(new Uint8Array(12))].map(x=>x.toString(16).padStart(2,'0')).join('');
+    let last;
+    for(let i=0;i<2;i++){ // один ключ при повторе — сервер не создаст дубль платежа
+      try{return await vpost('/api/client/payments/intent',{plan_uuid:planUuid,provider,idempotency_key:key})}
+      catch(e){if(e instanceof VpnAuth||!(e instanceof TypeError))throw e;last=e}
+    }
+    throw last;
+  },
+  paymentStatus:(id)=>vget('/api/client/payments/'+encodeURIComponent(id)+'/status'),
+  subs:()=>vget('/api/client/me/subscriptions'),
+  renewQuote:(id,days)=>vget('/api/client/subscriptions/'+id+'/renew-quote'+(days!=null?'?days='+days:'')),
+  renew:(id,provider,days)=>{const b={provider};if(days!=null)b.days=days;return vpost('/api/client/subscriptions/'+id+'/renew',b)},
+  devices:(id)=>vget('/api/client/subscriptions/'+id+'/devices'),
+  deviceBlocks:(id)=>vget('/api/client/subscriptions/'+id+'/device-blocks'),
+  disconnectDevice:(id,devId)=>vAuthed('DELETE','/api/client/subscriptions/'+id+'/devices/'+devId),
+  unblockDevice:(id,hwid)=>vAuthed('POST','/api/client/subscriptions/'+id+'/device-blocks/unblock',vj({hwid})),
+  rotateLink:(id)=>vpost('/api/client/subscriptions/'+id+'/rotate-link',{}),
+  freeze:(id)=>vpost('/api/client/subscriptions/'+id+'/freeze',{}),
+  unfreeze:(id)=>vpost('/api/client/subscriptions/'+id+'/unfreeze',{}),
+  async trafficPacks(id){const j=await vget('/api/client/subscriptions/'+id+'/traffic/packs');return j.packs||[]},
+  trafficIntent:(id,gb,provider)=>vpost('/api/client/subscriptions/'+id+'/traffic-intent',{gb_amount:gb,provider}),
+  topup:(minor,provider)=>vpost('/api/client/payments/topup',{amount_display_minor:minor,provider}),
+  profile:()=>vget('/api/client/me/profile'),
+  upgradeQuote:(id,uuid)=>vpost('/api/client/subscriptions/'+id+'/upgrade/quote',{new_plan_uuid:uuid}),
+  upgrade:(id,uuid)=>vpost('/api/client/subscriptions/'+id+'/upgrade',{new_plan_uuid:uuid}),
+  subId(s){for(const k of['id','uuid','subscription_id','subscription_uuid']){const v=s[k];if(v!=null&&v!==''&&v!=='null')return String(v)}return ''},
+};
+
+// ---------- подписи ----------
+const vRub=(minor)=>Math.floor((Number(minor)+99)/100)+' ₽';
+function plural(n,a,b,c){const m100=n%100,m10=n%10;return n+' '+(m100>=11&&m100<=14?c:m10===1?a:(m10>=2&&m10<=4)?b:c)}
+const vDays=(n)=>plural(n|0,'день','дня','дней');
+const vDevs=(n)=>plural(n|0,'устройство','устройства','устройств');
+function vDate(s){const d=String(s||'').slice(0,10).split('-');return d.length===3?d[2]+'.'+d[1]+'.'+d[0]:String(s||'')}
+function vDateTime(s){s=String(s||'');if(s.length<16)return s;const d=s.slice(0,10).split('-');return d.length===3?d[2]+'.'+d[1]+' '+s.slice(11,16):s}
+const vPlanName=(n)=>String(n||'').charAt(0).toUpperCase()+String(n||'').slice(1);
+const vGb=(b)=>(Number(b)/1073741824).toFixed(1).replace('.',',')+' ГБ';
+const vProv=(id)=>({platega:'СБП',aurapay:'СБП 2',antilopay:'СБП 3',cryptobot:'CryptoBot (через Telegram)',xrocket:'xRocket (через Telegram)',lzt:'LZT Market'}[id]||id);
+function vPlanLabel(p){
+  const tag=p.is_special?' · особый':p.is_popular?' · популярный':'';
+  return vPlanName(p.name)+' · '+vDevs(p.devices)+' — '+vRub(p.total_price_display)+tag;
+}
+// статус платежа: 2 — готово, 3 — отменён/истёк, остальное — ждём
+function statusKind(raw){
+  const s=String(raw||'').toLowerCase().trim();
+  if(!s)return 4;
+  if(['completed','complete','done','delivered','success','succeeded','fulfilled','finished','sent'].includes(s))return 2;
+  if(['cancel','fail','expire','refund','reject','error'].some(x=>s.includes(x)))return 3;
+  if(['complet','success','fulfil','finish'].some(x=>s.includes(x)))return 2;
+  if(['paid','process','progress','deliver','confirm','send','queue','work'].some(x=>s.includes(x)))return 1;
+  if(['pend','wait','new','creat','unpaid','await'].some(x=>s.includes(x)))return 0;
+  return 4;
+}
+
+// ---------- мелкие окна ----------
+function toast(t){
+  const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);
+  setTimeout(()=>e.remove(),2600);
+}
+function sheetOpen(title,html){
+  const o=document.createElement('div');o.className='ov';
+  o.innerHTML='<div class="sh"><b>'+esc(title)+'</b>'+html+'</div>';
+  o.onclick=(e)=>{if(e.target===o)o.remove()};
+  document.body.appendChild(o);return o;
+}
+function listSheet(title,items,cb){
+  const o=sheetOpen(title,items.map((t,i)=>'<button class="it" data-i="'+i+'">'+esc(t)+'</button>').join(''));
+  o.querySelectorAll('.it').forEach(b=>b.onclick=()=>{o.remove();cb(Number(b.dataset.i))});
+}
+function confirmSheet(title,text,ok,cb,danger){
+  const o=sheetOpen(title,'<div class="mute small" style="margin:8px 0 4px">'+esc(text)+'</div><button class="b'+(danger?' dg':'')+'" id="sk">'+esc(ok)+'</button><button class="b ghost" id="sc">Отмена</button>');
+  $('#sc',o).onclick=()=>o.remove();$('#sk',o).onclick=()=>{o.remove();cb()};
+}
+function inputSheet(title,hint,prefill,cb){
+  const o=sheetOpen(title,'<input id="si" inputmode="numeric" style="margin-top:10px" placeholder="'+esc(hint)+'" value="'+esc(prefill||'')+'"><button class="b" id="sk">Готово</button><button class="b ghost" id="sc">Отмена</button>');
+  $('#sc',o).onclick=()=>o.remove();
+  $('#sk',o).onclick=()=>{if(cb($('#si',o).value.trim())!==false)o.remove()};
+  setTimeout(()=>$('#si',o).focus(),50);
+}
+
+function sectionCfg(k){
+  if(!cfgP)cfgP=api('/api/app/config').catch(()=>{cfgP=null;return {}});
+  return cfgP.then(c=>(c.sections&&c.sections[k])||null);
+}
+
+// ---------- экран ----------
+async function vpnScreen(){
+  const g=gen,sid=++vsid;vPollGen++;
+  const alive=()=>g===gen&&sid===vsid;
+  view.innerHTML='<h2>VPN</h2><div id="vp" class="vp"></div>';
+  const box=$('#vp');
+  const sec=await sectionCfg('vpn');
+  if(!alive())return;
+  if(sec&&sec.enabled===false){box.innerHTML='<div class="card mute">'+esc(sec.message||'Раздел временно недоступен')+'</div>';return}
+  if(!vLoggedIn())return vLoginView(box,alive);
+  box.innerHTML='<div class="mute">Загружаем данные…</div>';
+  try{
+    const [subs,plans,prov]=await Promise.all([VP.subs(),VP.plans(),VP.providers()]);
+    if(!alive())return;
+    vForm(box,alive,subs,plans,prov);
+  }catch(x){
+    if(!alive())return;
+    if(x instanceof VpnAuth)return vpnScreen(); // сессия кончилась — откроется вход
+    box.innerHTML='<div class="mute">Не удалось загрузить данные: '+esc(x.message)+'</div><button class="b" id="rt">Повторить</button>';
+    $('#rt').onclick=()=>vpnScreen();
+  }
+}
+
+// ---------- вход: Telegram и почта ----------
+function vLoginView(box,alive){
+  box.innerHTML='<div class="card"><b style="font-size:18px">Вход через Telegram</b><div class="mute small" style="margin:6px 0 10px">Откроется бот Pharm VPN. Нажмите в нём Start и вернитесь в приложение — вход подтвердится сам.</div><button class="b" id="tg">Войти через Telegram</button><div class="mute small" id="tgi" style="margin-top:8px"></div></div><div class="card" id="em"></div>';
+  const info=$('#tgi');
+  function pollLogin(id,until){
+    if(!alive())return;
+    if(Date.now()>until){info.textContent='Время ожидания вышло. Нажмите кнопку ещё раз.';return}
+    VP.pollLogin(id).catch(()=>'error').then((res)=>{
+      if(!alive())return;
+      if(res==='confirmed')return vpnScreen();
+      if(res==='pending'||res==='error')setTimeout(()=>pollLogin(id,until),2000);
+      else info.textContent='Вход не подтверждён ('+res+'). Нажмите кнопку ещё раз.';
+    });
+  }
+  $('#tg').onclick=async()=>{
+    if(vBusy)return;vBusy=true;
+    const w=window.open('about:blank','_blank'); // открываем сразу, пока жив тап: иначе браузер заблокирует окно
+    info.textContent='Создаём вход…';
+    try{
+      const r=await VP.startLogin(),url=String(r.bot_url||''),num=Number(r.number)||0;
+      const until=Date.now()+(Number(r.expires_in)||300)*1000;
+      if(!/^https:\/\//.test(url))throw new Error('Сайт не вернул ссылку на бота');
+      info.innerHTML=(num?'Ждём подтверждение в Telegram… Номер входа: '+num:'Ждём подтверждение в Telegram…')+' <a href="'+esc(url)+'" target="_blank" rel="noopener">Открыть бота</a>';
+      if(w)w.location.href=url;
+      pollLogin(String(r.poll_id),until);
+    }catch(x){if(w)w.close();info.textContent='Ошибка: '+x.message}
+    finally{vBusy=false}
+  };
+  vEmailAuth($('#em'),alive);
+}
+function vEmailAuth(card,alive){
+  let working=false,savedEmail='';
+  const okMail=(s)=>/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(s);
+  const tabs=(m)=>'<div style="margin-bottom:12px"><button class="chip '+(m==='login'?'on':'')+'" data-m="login">Войти</button><button class="chip '+(m==='reg'?'on':'')+'" data-m="reg">Регистрация</button></div>';
+  function bind(){
+    card.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{if(!working)render(b.dataset.m)});
+  }
+  function task(info,wait,work,ok){
+    if(working)return;working=true;info.style.color='var(--mute)';info.textContent=wait;
+    work().then(()=>{working=false;if(alive())ok()}).catch((e)=>{working=false;if(alive()){info.style.color='var(--red)';info.textContent=(e&&e.message)||'Не удалось выполнить запрос'}});
+  }
+  const fail=(info,m)=>{info.style.color='var(--red)';info.textContent=m};
+  const link=(id,t)=>'<div class="lk" id="'+id+'">'+t+'</div>';
+  function render(mode,step){
+    if(mode==='login'){
+      card.innerHTML=tabs('login')+'<b style="font-size:18px">Вход по почте</b><div style="height:10px"></div><input id="e" type="email" autocomplete="email" placeholder="Почта" value="'+esc(savedEmail)+'"><div style="height:8px"></div><input id="p" type="password" autocomplete="current-password" placeholder="Пароль"><button class="b" id="go">Войти</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('fg','Забыли пароль?');
+      bind();const info=$('#i',card);
+      $('#go',card).onclick=()=>{
+        const e=$('#e',card).value.trim(),p=$('#p',card).value;savedEmail=e;
+        if(!okMail(e))return fail(info,'Проверьте адрес почты');
+        if(!p)return fail(info,'Введите пароль');
+        task(info,'Входим…',()=>VP.loginEmail(e,p),()=>vpnScreen());
+      };
+      $('#fg',card).onclick=()=>{if(working)return;savedEmail=$('#e',card).value.trim();render('reset')};
+    }else if(mode==='reg'&&!step){
+      card.innerHTML=tabs('reg')+'<b style="font-size:18px">Регистрация</b><div class="mute small" style="margin:6px 0 10px">Укажите почту и придумайте пароль — пришлём код подтверждения.</div><input id="e" type="email" autocomplete="email" placeholder="Почта" value="'+esc(savedEmail)+'"><div style="height:8px"></div><input id="p" type="password" autocomplete="new-password" placeholder="Пароль"><button class="b" id="go">Получить код</button><div class="small mute" id="i" style="margin-top:8px"></div>';
+      bind();const info=$('#i',card);
+      $('#go',card).onclick=()=>{
+        const e=$('#e',card).value.trim(),p=$('#p',card).value;savedEmail=e;
+        if(!okMail(e))return fail(info,'Проверьте адрес почты');
+        if(p.length<6)return fail(info,'Пароль слишком короткий');
+        task(info,'Проверка и отправка кода… это займёт несколько секунд',()=>VP.registerRequest(e,p),()=>render('reg',{pwd:p}));
+      };
+    }else if(mode==='reg'){
+      const pwd=step.pwd;
+      card.innerHTML=tabs('reg')+'<b style="font-size:18px">Код из письма</b><div class="mute small" style="margin:6px 0 10px">Код отправлен на '+esc(savedEmail)+'</div><input id="c" inputmode="numeric" placeholder="Код из письма"><button class="b" id="go">Подтвердить</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('rs','Отправить код ещё раз')+link('ch','Изменить почту или пароль');
+      bind();const info=$('#i',card);
+      $('#go',card).onclick=()=>{
+        const c=$('#c',card).value.trim();if(!c)return fail(info,'Введите код из письма');
+        task(info,'Подтверждаем…',()=>VP.registerConfirm(savedEmail,c,pwd),()=>vpnScreen());
+      };
+      $('#rs',card).onclick=()=>task(info,'Проверка и отправка кода… это займёт несколько секунд',()=>VP.registerRequest(savedEmail,pwd),()=>{info.style.color='var(--mute)';info.textContent='Код отправлен ещё раз'});
+      $('#ch',card).onclick=()=>{if(!working)render('reg')};
+    }else if(mode==='reset'&&!step){
+      card.innerHTML='<b style="font-size:18px">Сброс пароля</b><div class="mute small" style="margin:6px 0 10px">Пришлём код на почту — по нему можно задать новый пароль.</div><input id="e" type="email" autocomplete="email" placeholder="Почта" value="'+esc(savedEmail)+'"><button class="b" id="go">Получить код</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('bk','Назад ко входу');
+      const info=$('#i',card);
+      $('#go',card).onclick=()=>{
+        const e=$('#e',card).value.trim();savedEmail=e;
+        if(!okMail(e))return fail(info,'Проверьте адрес почты');
+        task(info,'Проверка и отправка кода… это займёт несколько секунд',()=>VP.resetRequest(e),()=>render('reset',{sent:1}));
+      };
+      $('#bk',card).onclick=()=>{if(!working)render('login')};
+    }else{
+      card.innerHTML='<b style="font-size:18px">Сброс пароля</b><div class="mute small" style="margin:6px 0 10px">Код отправлен на '+esc(savedEmail)+'</div><input id="c" inputmode="numeric" placeholder="Код из письма"><div style="height:8px"></div><input id="p" type="password" autocomplete="new-password" placeholder="Новый пароль"><button class="b" id="go">Сменить пароль</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('rs','Отправить код ещё раз')+link('bk','Назад ко входу');
+      const info=$('#i',card);
+      $('#go',card).onclick=()=>{
+        const c=$('#c',card).value.trim(),p=$('#p',card).value;
+        if(!c)return fail(info,'Введите код из письма');
+        if(p.length<6)return fail(info,'Пароль слишком короткий');
+        let signed=false;
+        task(info,'Меняем пароль…',async()=>{signed=await VP.resetConfirm(savedEmail,c,p)},()=>{
+          if(signed)vpnScreen();else{toast('Пароль изменён — войдите с новым');render('login')}
+        });
+      };
+      $('#rs',card).onclick=()=>task(info,'Проверка и отправка кода…',()=>VP.resetRequest(savedEmail),()=>{info.style.color='var(--mute)';info.textContent='Код отправлен ещё раз'});
+      $('#bk',card).onclick=()=>{if(!working)render('login')};
+    }
+  }
+  render('login');
+}
+
+// ---------- подписки и покупка ----------
+let vTabSel=-1;
+function vForm(box,alive,subs,plansAll,prov){
+  const methods=(prov.providers||[]).filter(Boolean).map(id=>[id,vProv(id)]);
+  const list=plansAll.filter(p=>!p.is_lifetime).sort((a,b)=>(a.days-b.days)||(a.total_price_display-b.total_price_display)); // бессрочные не берём
+  const canBuy=list.length>0&&methods.length>0;
+  const S={tab:(vTabSel===0||vTabSel===1)?vTabSel:(subs.length>0?0:1),
+    plan:list.find(p=>p.is_popular)||list[0]||{},method:methods.length?methods[0][0]:'',quote:null,qTok:0};
+  box.innerHTML='<div id="pb"></div><div class="seg"><button data-tab="0">Моя подписка</button><button data-tab="1">Купить подписку</button></div><div id="vc"></div>';
+  const vc=$('#vc',box);
+
+  // платёж создан, но ещё не подтверждён
+  function paintPending(){
+    const id=LS.get('vpn_pay'),pb=$('#pb',box);
+    if(!id){pb.innerHTML='';return}
+    pb.innerHTML='<div class="card" style="border-color:var(--blue)"><div id="pw">⏳ Ждём подтверждение оплаты…</div><div class="g2" style="margin-top:10px"><button class="gb pr" id="pn">Проверить сейчас</button><button class="gb" id="px">Не жду</button></div></div>';
+    $('#pn',box).onclick=()=>{$('#pw',box).textContent='⏳ Проверяем оплату…';pollPay(id,0,++vPollGen)};
+    $('#px',box).onclick=()=>{LS.set('vpn_pay','');vPollGen++;paintPending()};
+  }
+  function pollPay(id,tries,gp){
+    if(!alive()||gp!==vPollGen)return;
+    VP.paymentStatus(id).then((j)=>{
+      const st=j.status;
+      return (j.fulfillment==='done'||statusKind(st)===2)?'done':statusKind(st)===3?'failed':'wait';
+    }).catch((e)=>e instanceof VpnAuth?'auth':'wait').then((res)=>{
+      if(!alive()||gp!==vPollGen)return;
+      const pw=$('#pw',box);
+      if(res==='done'){LS.set('vpn_pay','');toast('Оплата прошла — подписка готова');vpnScreen()}
+      else if(res==='failed'){LS.set('vpn_pay','');toast('Платёж отменён или истёк');vpnScreen()}
+      else if(res==='auth')vpnScreen();
+      else if(tries>=60){if(pw)pw.textContent='Оплата пока не подтвердилась. Нажмите «Проверить сейчас» после оплаты.'}
+      else{if(pw)pw.textContent='⏳ Ждём подтверждение оплаты…';setTimeout(()=>pollPay(id,tries+1,gp),4000)}
+    });
+  }
+  // вернулись во вкладку после оплаты — проверяем сразу
+  const onVis=()=>{if(document.visibilityState==='visible'&&alive()&&LS.get('vpn_pay'))pollPay(LS.get('vpn_pay'),0,++vPollGen);else if(!alive())document.removeEventListener('visibilitychange',onVis)};
+  document.addEventListener('visibilitychange',onVis);
+
+  // создаёт платёж (покупка, продление, трафик, пополнение) и открывает страницу оплаты
+  async function payWith(note,create){
+    if(vBusy)return;vBusy=true;
+    const w=window.open('about:blank','_blank'); // пока жив тап, иначе окно оплаты заблокируют
+    note.hidden=false;note.textContent='Создаём платёж…';
+    try{
+      const r=await create(),id=r.payment_id||'',url=String(r.invoice_url||'');
+      if(id)LS.set('vpn_pay',id);
+      if(!/^https:\/\//.test(url)){if(w)w.close();note.textContent='Сайт не вернул ссылку на оплату';return}
+      note.innerHTML='Платёж создан. Если страница оплаты не открылась — <a href="'+esc(url)+'" target="_blank" rel="noopener">откройте её здесь</a>.';
+      if(w)w.location.href=url;
+      if(id){paintPending();pollPay(id,0,++vPollGen)}
+    }catch(x){
+      if(w)w.close();
+      if(x instanceof VpnAuth)return vpnScreen();
+      note.textContent='Ошибка: '+x.message;
+    }finally{vBusy=false}
+  }
+  const guard=(fn)=>async(...a)=>{try{await fn(...a)}catch(x){if(x instanceof VpnAuth)vpnScreen();else toast('Ошибка: '+x.message)}};
+
+  // ---------- вкладка «Моя подписка» ----------
+  function subCard(s,i){
+    const active=!!s.is_active,url=String(s.subscription_url||''),lim=Number(s.traffic_limit_bytes)||0;
+    const name=vPlanName(s.plan_name||'Подписка'),end=vDate(s.end_date);
+    const line=s.is_frozen?'Заморожена · до '+end:active?'Активна · осталось '+vDays(s.days_left)+' · до '+end:'Не активна · до '+end;
+    const sid=VP.subId(s);
+    let h='<div class="card" data-i="'+i+'" style="'+(active?'border-color:var(--blue)':'')+'"><b style="font-size:16px">'+esc(name)+' · '+vDevs(s.devices)+'</b>';
+    h+='<div class="small" style="margin:4px 0 8px;color:'+(active?'var(--green)':'var(--mute)')+'">'+esc(line)+'</div>';
+    if(lim>0)h+='<div class="small mute" style="margin-bottom:8px">Трафик: '+vGb(s.used_traffic_bytes)+' из '+vGb(lim)+'</div>';
+    const acts=[];
+    if(/^https:\/\//.test(url)){
+      h+='<div class="lnk">'+esc(url)+'</div>';
+      acts.push(['copy','Скопировать ссылку',1],['client','Открыть в клиенте']);
+    }
+    if(sid){
+      acts.push(['renew','Продлить',1]);
+      if(!s.is_trial&&!s.is_lifetime)acts.push(['upg','Больше устройств']);
+      acts.push([s.is_frozen?'unfreeze':'freeze',s.is_frozen?'Разморозить':'Заморозить']);
+      acts.push(['rot','Обновить ссылку']);
+      if(lim>0)acts.push(['traf','Докупить трафик']);
+      acts.push(['devs','Устройства']);
+    }
+    h+='<div class="g2">'+acts.map(a=>'<button class="gb'+(a[2]?' pr':'')+'" data-act="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>';
+    h+='<div class="small mute" data-note hidden style="margin-top:8px"></div><div data-devs hidden style="margin-top:8px"></div></div>';
+    return h;
+  }
+  function fillMine(){
+    let h='';
+    if(!subs.length)h='<div class="card"><b style="font-size:16px">Подписки пока нет</b><div class="mute small" style="margin:4px 0 12px">Выберите тариф на вкладке «Купить подписку» — ключ появится здесь сразу после оплаты.</div><button class="b" data-act="tobuy">Купить подписку</button></div>';
+    else h=subs.map(subCard).join('');
+    const ex=[];
+    if(methods.length)ex.push('<button class="gb" data-act="topup">Пополнить баланс</button>');
+    ex.push('<button class="gb" data-act="out">Выйти из аккаунта VPN</button>');
+    h+='<div class="g2">'+ex.join('')+'</div><div class="small mute" id="tn" hidden style="margin-top:8px"></div>';
+    vc.innerHTML=h;
+  }
+
+  // ---------- вкладка «Купить подписку» ----------
+  function paintTotal(){
+    const q=S.quote;let minor=-1;
+    if(q){const bp=q.provider_totals&&q.provider_totals[S.method];minor=(bp!=null&&bp>=0)?bp:(q.total_display_minor!=null?q.total_display_minor:-1)}
+    const t=$('#tot',box);if(t)t.textContent=minor>=0?vRub(minor):'—';
+  }
+  function requestQuote(){
+    const my=++S.qTok,uuid=S.plan.uuid;S.quote=null;
+    const cap=$('#cap',box);if(cap)cap.textContent='К оплате · '+vDays(S.plan.days);
+    const t=$('#tot',box);if(t)t.textContent='…';
+    VP.quote(uuid).then((r)=>{if(my===S.qTok&&alive()){S.quote=r;paintTotal()}}).catch(()=>{if(my===S.qTok&&alive()){const t2=$('#tot',box);if(t2)t2.textContent='—'}});
+  }
+  function fillBuy(){
+    if(!canBuy){vc.innerHTML='<div class="mute">Покупка VPN сейчас недоступна</div>';return}
+    const dayVals=[...new Set(list.map(p=>p.days))];
+    const opt=(v,t,sel)=>'<option value="'+esc(v)+'"'+(sel?' selected':'')+'>'+esc(t)+'</option>';
+    const levels=()=>list.filter(p=>p.days===S.plan.days).map(p=>opt(p.uuid,vPlanLabel(p),p.uuid===S.plan.uuid)).join('');
+    vc.innerHTML='<label class="mute small">Срок</label><select id="sd">'+dayVals.map(d=>opt(d,vDays(d),d===S.plan.days)).join('')+'</select>'
+      +'<label class="mute small">Уровень подписки</label><select id="sl">'+levels()+'</select>'
+      +'<label class="mute small">Способ оплаты</label><select id="sm">'+methods.map(m=>opt(m[0],m[1],m[0]===S.method)).join('')+'</select>'
+      +'<div class="paybar"><div style="flex:1"><div class="mute small" id="cap">К оплате</div><div id="tot" style="font-size:20px;font-weight:700">—</div></div><button class="b" id="pay" style="width:auto;margin:0;padding:12px 26px">Оплатить</button></div><div class="small mute" id="pi" hidden style="margin-top:8px"></div>';
+    $('#sd',vc).onchange=(e)=>{
+      const d=Number(e.target.value),inDays=list.filter(p=>p.days===d);
+      S.plan=inDays.find(p=>p.name===S.plan.name)||inDays.find(p=>p.is_popular)||inDays[0];
+      $('#sl',vc).innerHTML=levels();requestQuote();
+    };
+    $('#sl',vc).onchange=(e)=>{S.plan=list.find(p=>p.uuid===e.target.value)||S.plan;requestQuote()};
+    $('#sm',vc).onchange=(e)=>{S.method=e.target.value;paintTotal()};
+    $('#pay',vc).onclick=()=>payWith($('#pi',vc),()=>VP.intent(S.plan.uuid,S.method));
+    requestQuote();
+  }
+  function showTab(){
+    box.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',Number(b.dataset.tab)===S.tab));
+    S.tab===0?fillMine():fillBuy();
+  }
+  box.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{const t=Number(b.dataset.tab);if(S.tab!==t){S.tab=t;vTabSel=t;showTab()}});
+
+  // ---------- действия ----------
+  const pickMethod=(title,cb)=>listSheet(title,methods.map(m=>m[1]),(i)=>cb(methods[i][0]));
+  function askTopup(note,prefillMinor){
+    const prefill=prefillMinor>0?String(Math.floor((prefillMinor+99)/100)):'';
+    inputSheet('Пополнить баланс','сумма, ₽',prefill,(text)=>{
+      const rub=parseInt(text,10);
+      if(!(rub>=1)){toast('Введите сумму в рублях');return false}
+      pickMethod('Способ оплаты',(prov2)=>payWith(note,()=>VP.topup(rub*100,prov2)));
+    });
+  }
+  function pickRenewDays(sid,note){
+    const opts=['1 месяц','7 дней','14 дней','60 дней','90 дней','Свой срок…'],vals=[null,7,14,60,90,-1];
+    listSheet('На сколько продлить?',opts,(i)=>{
+      if(vals[i]===-1)inputSheet('Свой срок, дней','от 3 до 365','',(t)=>{
+        const n=parseInt(t,10);if(!(n>=3&&n<=365)){toast('Введите число от 3 до 365');return false}
+        quoteRenew(sid,note,n);
+      });
+      else quoteRenew(sid,note,vals[i]);
+    });
+  }
+  async function quoteRenew(sid,note,days){
+    note.hidden=false;note.textContent='Считаем цену…';
+    let q=null;
+    try{q=await VP.renewQuote(sid,days)}
+    catch(e){if(e instanceof VpnAuth)return vpnScreen()} // цену узнать не вышло — продлить всё равно можно
+    note.hidden=true;
+    const totals=q&&q.provider_totals;
+    const items=methods.map(([id,name])=>{const m=totals&&totals[id];return m!=null&&m>=0?name+' — '+vRub(m):name});
+    const end=String((q&&q.new_end_date)||'');
+    const title=end.length>=10?'Продлить до '+vDate(end):'Продлить подписку';
+    listSheet(title,items,(i)=>payWith(note,()=>VP.renew(sid,methods[i][0],days)));
+  }
+  async function startUpgrade(s,sid,note){
+    note.hidden=false;note.textContent='Считаем доплату…';
+    try{
+      const days=s.days,dev=s.devices,cur=s.plan_uuid;
+      const plans=await VP.plans();
+      const cands=plans.filter(p=>!p.is_lifetime&&p.days===days&&p.devices>dev&&p.uuid!==cur).sort((a,b)=>a.devices-b.devices);
+      const ok=[];let lastErr=null;
+      for(const p of cands){try{ok.push([p,await VP.upgradeQuote(sid,p.uuid)])}catch(e){if(e instanceof VpnAuth)throw e;lastErr=e}}
+      let balance=-1;
+      try{balance=(await VP.profile()).balance_display_minor}catch(e){if(e instanceof VpnAuth)throw e}
+      if(balance==null)balance=-1;
+      note.hidden=true;
+      if(!cands.length)return toast('Тарифов с большим числом устройств нет');
+      if(!ok.length){note.hidden=false;note.textContent='Не удалось посчитать доплату: '+(lastErr&&lastErr.message);return}
+      const items=ok.map(([p,q])=>vPlanName(p.name)+' · '+vDevs(p.devices)+' — доплата '+vRub(q.charged_display_minor));
+      listSheet('Больше устройств',items,(i)=>{
+        const [p,q]=ok[i],charge=Number(q.charged_display_minor)||0,name=vPlanName(p.name)+' · '+vDevs(p.devices);
+        if(q.enough_balance===false){
+          const have=balance>=0?'На балансе '+vRub(balance)+'.':'';
+          confirmSheet('Не хватает баланса','Нужно '+vRub(charge)+'. '+have+' Пополните баланс и повторите.','Пополнить',()=>{
+            const need=balance>=0?charge-balance:charge;askTopup(note,need>0?need:charge);
+          });
+        }else confirmSheet('Перейти на «'+name+'»?','С баланса спишется '+vRub(charge)+'. Срок подписки не изменится.','Перейти',guard(async()=>{
+          if(vBusy)return;vBusy=true;
+          try{await VP.upgrade(sid,p.uuid);toast('Тариф изменён');vpnScreen()}finally{vBusy=false}
+        }));
+      });
+    }catch(e){
+      if(e instanceof VpnAuth)return vpnScreen();
+      note.hidden=false;note.textContent='Не удалось загрузить тарифы: '+e.message;
+    }
+  }
+  async function loadDevices(card,sid){
+    const dv=$('[data-devs]',card);dv.innerHTML='<div class="small mute">Загружаем устройства…</div>';
+    try{
+      const devs=await VP.devices(sid);
+      let blocks=[];try{blocks=await VP.deviceBlocks(sid)}catch(e){if(e instanceof VpnAuth)throw e}
+      let h='<b>Устройства: '+devs.length+'</b>';
+      if(!devs.length)h+='<div class="small mute">Пока ни одно устройство не подключено</div>';
+      devs.forEach((d,k)=>{
+        const nm=d.name||d.model||'Устройство';
+        const sub=[d.os,d.ip,'был '+vDateTime(d.last_seen)].filter(x=>x&&x!=='null').join(' · ');
+        h+='<div class="dm"><div><div>'+esc(nm)+'</div><div class="small mute">'+esc(sub)+'</div></div><button class="chip" data-dd="'+k+'" style="margin:0">Отключить</button></div>';
+      });
+      if(blocks.length){
+        h+='<div class="small mute" style="margin-top:8px">Отключённые</div>';
+        blocks.forEach((b,k)=>{h+='<div class="dm"><div><div>'+esc(b.name||'Устройство')+'</div><div class="small mute">отключено '+esc(vDateTime(b.blocked_at))+'</div></div><button class="chip" data-du="'+k+'" style="margin:0">Вернуть</button></div>'});
+      }
+      dv.innerHTML=h;
+      dv.querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{
+        const d=devs[Number(b.dataset.dd)],nm=d.name||d.model||'Устройство';
+        confirmSheet('Отключить «'+nm+'»?','Устройство потеряет доступ. Вернуть его можно в списке отключённых.','Отключить',guard(async()=>{
+          await VP.disconnectDevice(sid,d.id);toast('Устройство отключено');loadDevices(card,sid);
+        }),true);
+      });
+      dv.querySelectorAll('[data-du]').forEach(b=>b.onclick=guard(async()=>{
+        await VP.unblockDevice(sid,blocks[Number(b.dataset.du)].hwid);toast('Устройство возвращено');loadDevices(card,sid);
+      }));
+    }catch(e){
+      if(e instanceof VpnAuth)return vpnScreen();
+      dv.innerHTML='<div class="small mute">Не удалось загрузить: '+esc(e.message)+'</div>';
+    }
+  }
+  async function copyText(t){
+    try{await navigator.clipboard.writeText(t);return true}catch(e){}
+    try{const ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok}catch(e){return false}
+  }
+
+  box.addEventListener('click',(e)=>{
+    const b=e.target.closest('[data-act]');if(!b)return;
+    const act=b.dataset.act,card=b.closest('[data-i]');
+    const s=card?subs[Number(card.dataset.i)]:null,sid=s?VP.subId(s):'';
+    const note=card?$('[data-note]',card):$('#tn',box);
+    if(act==='tobuy'){S.tab=1;vTabSel=1;showTab()}
+    else if(act==='topup')askTopup(note);
+    else if(act==='out')confirmSheet('Выйти из аккаунта VPN?','Ключ входа будет удалён с этого устройства. Войти снова можно через Telegram или почту.','Выйти',()=>{vLogout();vTabSel=-1;vPollGen++;vpnScreen()});
+    else if(act==='copy'){copyText(s.subscription_url).then(ok=>toast(ok?'Ссылка подписки скопирована':'Не удалось скопировать — выделите ссылку вручную'))}
+    else if(act==='client'){
+      const url=s.subscription_url,apps=[['Happ','happ://add/'+url],['v2rayTun','v2raytun://import/'+url],['Hiddify','hiddify://import/'+url]];
+      listSheet('Открыть в приложении',apps.map(a=>a[0]),(i)=>{toast('Если '+apps[i][0]+' не открылся — скопируйте ссылку и добавьте подписку вручную');location.href=apps[i][1]});
+    }
+    else if(act==='renew'){if(!vBusy)pickRenewDays(sid,note)}
+    else if(act==='upg'){if(!vBusy)startUpgrade(s,sid,note)}
+    else if(act==='freeze'||act==='unfreeze'){
+      const frozen=act==='unfreeze';
+      const go=guard(async()=>{
+        if(vBusy)return;vBusy=true;
+        try{await(frozen?VP.unfreeze(sid):VP.freeze(sid));toast(frozen?'Подписка разморожена':'Подписка заморожена');vpnScreen()}finally{vBusy=false}
+      });
+      if(frozen)go();else confirmSheet('Заморозить подписку?','Подписка будет приостановлена. Разморозить её можно в любой момент.','Заморозить',go);
+    }
+    else if(act==='rot'){
+      const avail=String(s.link_rotation_available_at||''),now=new Date().toISOString().slice(0,19);
+      if(avail.length>=19&&avail!=='null'&&avail.slice(0,19)>now)return toast('Ссылку можно обновить с '+vDateTime(avail));
+      confirmSheet('Обновить ссылку?','Старая ссылка перестанет работать, и по ней больше никто не подключится. Кто уже подключился по ней, останется до конца срока подписки.','Обновить',guard(async()=>{
+        if(vBusy)return;vBusy=true;
+        try{await VP.rotateLink(sid);toast('Ссылка обновлена');vpnScreen()}finally{vBusy=false}
+      }));
+    }
+    else if(act==='traf'){
+      if(vBusy)return;note.hidden=false;note.textContent='Загружаем пакеты…';
+      VP.trafficPacks(sid).then((packs)=>{
+        note.hidden=true;
+        if(!packs.length)return toast('Пакетов трафика сейчас нет');
+        const items=packs.map(p=>p.gb+' ГБ — '+vRub(p.total_display));
+        listSheet('Докупить трафик',items,(i)=>pickMethod('Способ оплаты',(prov2)=>payWith(note,()=>VP.trafficIntent(sid,packs[i].gb,prov2))));
+      }).catch((x)=>{if(x instanceof VpnAuth)vpnScreen();else note.textContent='Не удалось загрузить пакеты: '+x.message});
+    }
+    else if(act==='devs'){
+      const dv=$('[data-devs]',card);
+      if(!dv.hidden){dv.hidden=true;return}
+      dv.hidden=false;if(!dv.dataset.ok){dv.dataset.ok=1;loadDevices(card,sid)}
+    }
+  });
+
+  paintPending();showTab();
+  const pend=LS.get('vpn_pay');if(pend)pollPay(pend,0,++vPollGen);
+}
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+go(tab);
 </script>
-</body>
-</html>
+<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
+</body></html>
