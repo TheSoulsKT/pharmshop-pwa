@@ -40,8 +40,29 @@ const SCHEMA = [
      text TEXT NOT NULL, ts INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS idx_dm_pair ON dm_messages (a, b, id)`,
   `CREATE INDEX IF NOT EXISTS idx_dm_sender ON dm_messages (sender, ts)`,
+  `CREATE INDEX IF NOT EXISTS idx_dm_b ON dm_messages (b, id)`,
   // до какого сообщения uid прочитал переписку с peer
   `CREATE TABLE IF NOT EXISTS dm_reads (uid INTEGER NOT NULL, peer INTEGER NOT NULL, last_id INTEGER NOT NULL, PRIMARY KEY (uid, peer))`,
+  // реакции на сообщения общего чата: у одного человека на одном сообщении одна реакция
+  `CREATE TABLE IF NOT EXISTS room_reactions (
+     msg INTEGER NOT NULL, uid INTEGER NOT NULL, emoji TEXT NOT NULL, ts INTEGER NOT NULL, PRIMARY KEY (msg, uid))`,
+  // заказы, оформленные через приложение (приложение присылает их само: /api/orders/report). id — номер заказа на сайте.
+  // kind: 2 — выполнен, 3 — отменён / ошибка, остальное — в работе. created — время создания заказа (мс).
+  `CREATE TABLE IF NOT EXISTS orders (
+     id TEXT PRIMARY KEY, device TEXT NOT NULL, order_number TEXT NOT NULL DEFAULT '', username TEXT NOT NULL DEFAULT '',
+     product TEXT NOT NULL DEFAULT 'stars', quantity INTEGER NOT NULL DEFAULT 0, total TEXT NOT NULL DEFAULT '',
+     currency TEXT NOT NULL DEFAULT '', method TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT '',
+     kind INTEGER NOT NULL DEFAULT 4, created INTEGER NOT NULL, updated INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS idx_orders_created ON orders (created)`,
+  `CREATE INDEX IF NOT EXISTS idx_orders_device ON orders (device)`,
+  // устройства, которые купили в приложении, но ещё не писали в чат: секрет запоминается при первом заказе
+  `CREATE TABLE IF NOT EXISTS devices (device TEXT PRIMARY KEY, secret_hash TEXT NOT NULL, ts INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS idx_react_uid ON room_reactions (uid, ts)`,
+  // оценки поддержки: round = номер «Решено» (threads.solved) на момент оценки, на каждое закрытие одна оценка
+  `CREATE TABLE IF NOT EXISTS support_ratings (
+     device TEXT NOT NULL, round INTEGER NOT NULL, stars INTEGER NOT NULL, comment TEXT NOT NULL DEFAULT '', ts INTEGER NOT NULL,
+     PRIMARY KEY (device, round))`,
+  `CREATE INDEX IF NOT EXISTS idx_ratings_ts ON support_ratings (ts)`,
 ];
 // Новые колонки для уже существующей базы (ошибка «колонка уже есть» игнорируется).
 const MIGRATIONS = [
@@ -63,6 +84,7 @@ const MIGRATIONS = [
   `ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''`,              // маленькая аватарка (JPEG в base64), та же, что в профиле приложения
   `ALTER TABLE users ADD COLUMN avatar_v INTEGER DEFAULT 0`,          // версия аватарки (время загрузки); 0 — аватарки нет
   `ALTER TABLE users ADD COLUMN crown INTEGER DEFAULT 0`,             // 1 — «зелёная корона»: собраны все достижения (сообщает приложение)
+  `ALTER TABLE room_messages ADD COLUMN reply_to INTEGER DEFAULT 0`,  // номер сообщения, на которое это — ответ (0 — не ответ)
 ];
 const MAX_AVATAR = 60_000;       // символов base64 (~45 КБ): приложение присылает 128×128
 const MAX_DIAG = 4000;            // символов JSON с диагностикой устройства
@@ -82,6 +104,22 @@ const STATUSES = ['new', 'work', 'done'];
 const IP_RE = /^[0-9a-fA-F:.]{3,64}$/;
 const DAY = 24 * 60 * 60 * 1000;
 const SESSION_MS = 30 * DAY;
+
+// ---------- кэш в памяти воркера: опросы «ничего нового» без обращения к D1 ----------
+// У воркера может быть несколько экземпляров, и у каждого своя память, поэтому кэш короткоживущий: запись, сделанная
+// в другом экземпляре, доходит сюда не позже чем через TTL. Свои записи экземпляр видит сразу (кэш сбрасывается).
+// Кэшируются только опросы (чтение). Любая запись (отправка, реакция, удаление, мут) всегда проверяется по базе.
+const AUTH_TTL = 20_000;    // пользователь чата в опросах: бан, мут и «галочка» вступают в силу в опросах не позже чем через это время
+const ROOM_TTL = 3_000;     // номер последнего сообщения комнаты, ревизия ленты и версия реакций
+const DM_TTL = 3_000;       // номер последнего личного сообщения
+const ADMIN_TTL = 60_000;   // проверенная сессия админа
+const AUTH_MEM = new Map();
+const ADMIN_MEM = new Map();
+const ROOM_MEM = { id: 0, rev: 0, rx: 0, at: 0 };
+const DM_MEM = { id: 0, at: 0 };
+const authDirty = () => AUTH_MEM.clear();
+const roomDirty = () => { ROOM_MEM.at = 0; };
+const dmDirty = () => { DM_MEM.at = 0; };
 const MAX_BODY = 2_000_000;           // байт; фото ≤ ~1,4 МБ в base64
 // Лимиты чата: окно 10 минут. IP может быть общим (мобильный интернет, Wi-Fi), поэтому для него лимит щедрее.
 const RATE_WINDOW = 10 * 60 * 1000;
@@ -99,6 +137,11 @@ const CHAT_TEXT_MAX = 1000;
 // hCaptcha при первом входе в чат. Ключ сайта публичный, секрет — в переменной HCAPTCHA_SECRET (Variables and Secrets).
 const HCAPTCHA_SITEKEY = '3d88c4d4-c8f4-4e0a-8db6-21e62e840604';
 const MUTE_FOREVER = 4102444800000;    // 1 января 2100
+// Реакции в общем чате. Список должен совпадать с REACTIONS в приложении (Community.kt).
+const REACTIONS = ['👍', '❤️', '😂', '🔥', '😮', '😢'];
+const RATE_REACT_PER_MIN = 30;
+const RATING_COMMENT_MAX = 300;
+const noVS = (v) => String(v || '').replace(/\uFE0F/g, '');   // «❤» и «❤️» считаем одной реакцией
 
 async function sha256(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
@@ -121,6 +164,12 @@ async function ensureSchema(db) {
 async function adminAuth(request, env, path) {
   const ip = request.headers.get('cf-connecting-ip') || 'unknown';
   const now = Date.now();
+  // сессия, уже проверенная по базе меньше минуты назад: частые опросы админки не ходят в D1 ради проверки токена
+  const tok0 = request.headers.get('x-admin-token') || '';
+  if (path !== '/api/admin/login' && tok0.length >= 32) {
+    const c = ADMIN_MEM.get(tok0);
+    if (c && c > now) return true;
+  }
   const row = await env.DB.prepare('SELECT n, ts FROM fails WHERE ip = ?').bind(ip).first();
   if (row && row.n >= 5 && now - row.ts < LOCK_MS) return 'locked';
 
@@ -131,6 +180,10 @@ async function adminAuth(request, env, path) {
   if (path !== '/api/admin/login' && token.length >= 32 && fp) {
     const s = await env.DB.prepare('SELECT code_fp, exp FROM sessions WHERE hash = ?').bind(await sha256(token)).first();
     ok = !!s && s.exp > now && s.code_fp === fp;
+    if (ok) {
+      if (ADMIN_MEM.size > 50) ADMIN_MEM.clear();
+      ADMIN_MEM.set(token, Math.min(s.exp, now + ADMIN_TTL));
+    }
   } else if (code.length > 0 && !!env.ADMIN_CODE && (path === '/api/admin/login' || env.LEGACY_ADMIN_CODE !== 'off')) {
     ok = (await sha256(code)) === (await sha256(env.ADMIN_CODE));
   }
@@ -160,6 +213,7 @@ async function adminLogin(env) {
 
 async function adminLogout(request, env) {
   const token = request.headers.get('x-admin-token') || '';
+  if (token) ADMIN_MEM.delete(token);
   if (token) await env.DB.prepare('DELETE FROM sessions WHERE hash = ?').bind(await sha256(token)).run();
   return json({ ok: true });
 }
@@ -398,8 +452,8 @@ async function userMessages(body, env) {
   const device = String(body.device || '');
   const secret = String(body.secret || '');
   if (!UUID.test(device) || secret.length < 16) return err('Некорректный запрос');
-  const t = await env.DB.prepare('SELECT secret_hash, admin_read_ts, solved FROM threads WHERE device = ?').bind(device).first();
-  if (!t) return json({ messages: [], read_ts: 0, solved: 0 });
+  const t = await env.DB.prepare('SELECT secret_hash, admin_read_ts, solved, status FROM threads WHERE device = ?').bind(device).first();
+  if (!t) return json({ messages: [], read_ts: 0, solved: 0, status: 'new', rating: 0 });
   if (t.secret_hash !== (await sha256(secret))) return err('Нет доступа', 403);
   const { results } = await env.DB.prepare(MSG_SQL).bind(device, Number(body.after) || 0).all();
   // пользователь открыл чат — ответы админа прочитаны (пишем в базу, только если есть что отметить)
@@ -407,7 +461,38 @@ async function userMessages(body, env) {
     `UPDATE threads SET user_read_ts = ? WHERE device = ?
        AND user_read_ts < (SELECT COALESCE(MAX(ts), 0) FROM messages WHERE device = ? AND sender = 'admin')`
   ).bind(Date.now(), device, device).run();
-  return json({ messages: results, read_ts: t.admin_read_ts || 0, solved: t.solved || 0 });
+  // оценка текущего «Решено»: 0 — ещё не оценивали (приложение тогда показывает «Оцените помощь»)
+  const rt = (t.solved || 0) > 0
+    ? await env.DB.prepare('SELECT stars FROM support_ratings WHERE device = ? AND round = ?').bind(device, t.solved).first()
+    : null;
+  return json({
+    messages: results, read_ts: t.admin_read_ts || 0, solved: t.solved || 0,
+    status: STATUSES.includes(t.status) ? t.status : 'new', rating: rt ? rt.stars : 0,
+  });
+}
+
+// Пользователь оценивает решённое обращение (1–5 и короткий отзыв). Одна оценка на каждое «Решено»; её можно изменить.
+async function userRate(body, env, ctx) {
+  const device = String(body.device || '');
+  const secret = String(body.secret || '');
+  if (!UUID.test(device) || secret.length < 16) return err('Некорректный запрос');
+  const t = await env.DB.prepare('SELECT secret_hash, status, solved, nick FROM threads WHERE device = ?').bind(device).first();
+  if (!t) return err('Чат не найден', 404);
+  if (t.secret_hash !== (await sha256(secret))) return err('Нет доступа', 403);
+  if (t.status !== 'done' || !(t.solved > 0)) return err('Оценить можно после того, как обращение решено');
+  const stars = Math.round(Number(body.stars));
+  if (!(stars >= 1 && stars <= 5)) return err('Поставьте оценку от 1 до 5');
+  const comment = String(body.comment || '').replace(/\s+/g, ' ').trim().slice(0, RATING_COMMENT_MAX);
+  await env.DB.prepare(
+    `INSERT INTO support_ratings (device, round, stars, comment, ts) VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(device, round) DO UPDATE SET stars = excluded.stars, comment = excluded.comment, ts = excluded.ts`
+  ).bind(device, t.solved, stars, comment, Date.now()).run();
+  // низкая оценка — сразу в Telegram админу (если настроен)
+  if (stars <= 2 && env.BOT_TOKEN && env.CHAT_ID) {
+    const note = `⭐ Низкая оценка поддержки: ${stars}/5\nОт: ${t.nick ? '@' + t.nick : 'гость'}${comment ? '\n\n' + comment : ''}`;
+    ctx.waitUntil(telegramNote(env, note, '').catch(() => {}));
+  }
+  return json({ ok: true, stars });
 }
 
 // Лёгкий опрос для фоновых уведомлений: сколько ответов админа пользователь ещё не прочитал.
@@ -466,7 +551,8 @@ async function adminThreads(body, env) {
     args.push(like, like, like);
   }
   const { results } = await env.DB.prepare(
-    `SELECT device, nick, last_order, last_text, last_ts, unread, last_ip, last_dev, status
+    `SELECT device, nick, last_order, last_text, last_ts, unread, last_ip, last_dev, status,
+            (SELECT stars FROM support_ratings s WHERE s.device = threads.device ORDER BY ts DESC LIMIT 1) AS rating
        FROM threads WHERE ${where.join(' AND ')} ORDER BY last_ts DESC LIMIT 100`
   ).bind(...args).all();
 
@@ -496,7 +582,28 @@ async function adminThreads(body, env) {
   for (const r of c1) counts[STATUSES.includes(r.status) ? r.status : 'new'] += r.n;
   const c2 = await env.DB.prepare(`SELECT COUNT(*) AS n FROM threads WHERE last_text != '' AND unread > 0`).first();
   counts.unread = c2 ? c2.n : 0;
-  return json({ threads, counts });
+  return json({ threads, counts, rating: await ratingStats(env) });
+}
+
+// Сводка оценок поддержки: средняя, количество и сколько раз поставили каждое число звёзд
+async function ratingStats(env) {
+  const { results } = await env.DB.prepare('SELECT stars, COUNT(*) AS n FROM support_ratings GROUP BY stars').all();
+  const dist = [0, 0, 0, 0, 0];
+  let n = 0, sum = 0;
+  for (const r of results) {
+    if (r.stars >= 1 && r.stars <= 5) { dist[r.stars - 1] = r.n; n += r.n; sum += r.n * r.stars; }
+  }
+  return { n, avg: n ? Math.round((sum / n) * 100) / 100 : 0, dist };
+}
+
+// Последние оценки с отзывами (для админ-панели)
+async function adminRatings(body, env) {
+  const { results } = await env.DB.prepare(
+    `SELECT s.device, s.stars, s.comment, s.ts, COALESCE(t.nick, '') AS nick
+       FROM support_ratings s LEFT JOIN threads t ON t.device = s.device
+      ORDER BY s.ts DESC LIMIT 50`
+  ).all();
+  return json({ ratings: results, stats: await ratingStats(env) });
 }
 
 // Что известно о пользователе: диагностика и аналитика из приложения + сводка по чату
@@ -513,6 +620,7 @@ async function adminProfile(body, env) {
     diag, diag_ts: t.diag_ts || 0, created: t.created || 0,
     messages: m ? m.n : 0, first_message: m ? m.first_ts || 0 : 0,
     last_ip: t.last_ip || '', geo: geo ? geo.geo : '',
+    ratings: (await env.DB.prepare('SELECT stars, comment, ts FROM support_ratings WHERE device = ? ORDER BY ts DESC LIMIT 10').bind(device).all()).results,
   });
 }
 
@@ -594,10 +702,11 @@ async function adminBlocks(env) {
 }
 
 // ---------- удалённые настройки: объявление, разделы, обязательное обновление ----------
-const SECTION_KEYS = ['stars', 'premium', 'vpn', 'gifts', 'nft_buy', 'nft_rent', 'stars_sell', 'nft_sell'];
+const SECTION_KEYS = ['stars', 'premium', 'vpn', 'chat', 'gifts', 'nft_buy', 'nft_rent', 'stars_sell', 'nft_sell'];
 const DEFAULT_APP = {
   announcement: { active: false, text: '', level: 'info', id: 0 },
   sections: {},
+  chat_maint: { on: false, reason: '' },   // технические работы вкладки «Чат» (общий чат и личные сообщения)
   min_version_code: 0,
   update_message: '',
 };
@@ -631,6 +740,9 @@ function applyPatch(cur, patch) {
     }
     out.sections = secs;
   }
+  if (patch.chat_maint && typeof patch.chat_maint === 'object') {
+    out.chat_maint = { on: !!patch.chat_maint.on, reason: cut(patch.chat_maint.reason, 300) };
+  }
   if (patch.min_version_code !== undefined) {
     const n = Math.floor(Number(patch.min_version_code));
     out.min_version_code = Number.isFinite(n) ? Math.min(Math.max(n, 0), 1_000_000) : 0;
@@ -644,18 +756,113 @@ async function adminSaveSettings(body, env) {
   const next = applyPatch(await loadApp(env), body || {});
   await env.DB.prepare(`INSERT INTO settings (k, v) VALUES ('app', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v`)
     .bind(JSON.stringify(next)).run();
+  MAINT_MEM.at = 0;   // новые настройки (в том числе тех. работы чата) подхватываются сразу
   return json(next);
 }
 
 // публично: приложение спрашивает при запуске и при открытии главного экрана
 async function appConfig(env) {
   const a = await loadApp(env);
+  // PWA узнаёт о технических работах чата из sections.chat (enabled: false), приложение Android — из chat_maint.
+  // Поэтому при включённом chat_maint отдаём оба признака (явно заданный раздел chat не перезаписываем).
+  const sections = { ...a.sections };
+  if (a.chat_maint && a.chat_maint.on && !(sections.chat && sections.chat.enabled === false)) {
+    sections.chat = { ...(sections.chat || {}), enabled: false };
+    if (a.chat_maint.reason) sections.chat.message = String(a.chat_maint.reason).slice(0, 100);
+  }
   return json({
     announcement: a.announcement.active ? { active: true, text: a.announcement.text, level: a.announcement.level, id: a.announcement.id } : { active: false },
-    sections: a.sections,
+    sections,
+    chat_maint: a.chat_maint && a.chat_maint.on ? { on: true, reason: a.chat_maint.reason || '' } : { on: false, reason: '' },
     min_version_code: a.min_version_code,
     update_message: a.update_message,
   });
+}
+
+// Тех. работы чата: пока включены, общий чат и личные сообщения не работают (поддержка и заказы не затронуты).
+const CHAT_MAINT_PATHS = new Set(['/api/chat/register', '/api/chat/avatar_set', '/api/chat/avatar_get']);
+// Флаг хранится в памяти воркера на MAINT_TTL: проверка стоит на каждом запросе чата, и без кэша каждый опрос читал бы настройки из D1.
+const MAINT_TTL = 10_000;
+const MAINT_MEM = { on: false, reason: '', at: 0 };
+async function chatMaintenance(env, path) {
+  if (!(path.startsWith('/api/room/') || path.startsWith('/api/dm/') || CHAT_MAINT_PATHS.has(path))) return null;
+  if (Date.now() - MAINT_MEM.at > MAINT_TTL) {
+    const a = await loadApp(env);
+    MAINT_MEM.on = !!(a.chat_maint && a.chat_maint.on);
+    MAINT_MEM.reason = (a.chat_maint && a.chat_maint.reason) || '';
+    MAINT_MEM.at = Date.now();
+  }
+  if (!MAINT_MEM.on) return null;
+  const reason = MAINT_MEM.reason;
+  return json({ error: 'Чат на технических работах' + (reason ? ': ' + reason : ''), maintenance: true, reason }, 503);
+}
+
+// ---------- заказы приложения ----------
+const MAX_ORDERS_PER_DEVICE = 500;
+const ORDER_ID = /^[^\s]{1,80}$/;   // номер заказа на сайте: любые символы кроме пробелов
+const clip = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001F]/g, ' ').trim().slice(0, n);
+
+// Приложение присылает свои новые заказы и смену их статуса. Устройство подтверждается секретом (как в чате и push):
+// если секрет уже известен серверу (чат, push, прошлый заказ), он должен совпасть; иначе запоминается первый.
+async function ordersReport(body, env) {
+  const device = String(body.device || '');
+  const secret = String(body.secret || '');
+  if (!UUID.test(device) || secret.length < 16) return err('Некорректный запрос');
+  const list = Array.isArray(body.orders) ? body.orders.slice(0, 20) : [];
+  if (!list.length) return json({ ok: true, saved: 0 });
+  const hash = await sha256(secret);
+  const known = await env.DB.prepare(
+    `SELECT secret_hash FROM threads WHERE device = ? UNION ALL SELECT secret_hash FROM users WHERE device = ?
+     UNION ALL SELECT secret_hash FROM push_user WHERE device = ? UNION ALL SELECT secret_hash FROM devices WHERE device = ?`
+  ).bind(device, device, device, device).all();
+  if (known.results.some((r) => r.secret_hash !== hash)) return err('Нет доступа', 403);
+  const now = Date.now();
+  if (!known.results.length) {
+    await env.DB.prepare('INSERT OR IGNORE INTO devices (device, secret_hash, ts) VALUES (?, ?, ?)').bind(device, hash, now).run();
+  }
+  const have = await env.DB.prepare('SELECT COUNT(*) AS n FROM orders WHERE device = ?').bind(device).first();
+  if (have && have.n >= MAX_ORDERS_PER_DEVICE) return err('Слишком много заказов', 429);
+  const stmts = [];
+  for (const o of list) {
+    if (!o || typeof o !== 'object') continue;
+    const id = String(o.id == null ? '' : o.id);
+    if (!ORDER_ID.test(id)) continue;
+    const created = Date.parse(String(o.created_at || ''));
+    const qty = Math.floor(Number(o.quantity));
+    const kind = Math.floor(Number(o.kind));
+    // заказ с этим номером уже принадлежит другому устройству — не перезаписываем (WHERE в конце)
+    stmts.push(env.DB.prepare(
+      `INSERT INTO orders (id, device, order_number, username, product, quantity, total, currency, method, status, kind, created, updated)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(id) DO UPDATE SET status = excluded.status, kind = excluded.kind, total = excluded.total, updated = excluded.updated
+       WHERE orders.device = excluded.device`
+    ).bind(
+      id, device, clip(o.order_number, 40), clip(o.username, 64).replace(/^@/, ''), o.product === 'premium' ? 'premium' : 'stars',
+      Number.isFinite(qty) ? Math.min(Math.max(qty, 0), 10_000_000) : 0, clip(o.total, 24), clip(o.currency, 8), clip(o.method, 60),
+      clip(o.status, 40), kind >= 0 && kind <= 4 ? kind : 4, Number.isFinite(created) ? created : now, now
+    ));
+  }
+  if (stmts.length) await env.DB.batch(stmts);
+  return json({ ok: true, saved: stmts.length });
+}
+
+// Админка → «Заказы». filter: all | active | done | failed; before — показать заказы старше этого времени (мс).
+async function adminOrders(body, env) {
+  const filter = ['active', 'done', 'failed'].includes(body.filter) ? body.filter : 'all';
+  let before = Number(body.before);
+  if (!(before > 0) || before > 4102444800000) before = 4102444800000;
+  const cond = { all: '1 = 1', active: 'o.kind NOT IN (2, 3)', done: 'o.kind = 2', failed: 'o.kind = 3' }[filter];
+  const { results } = await env.DB.prepare(
+    `SELECT o.id, o.order_number, o.username, o.product, o.quantity, o.total, o.currency, o.method, o.status, o.kind, o.created,
+            COALESCE(NULLIF(t.nick, ''), u.nick, '') AS nick
+       FROM orders o LEFT JOIN threads t ON t.device = o.device LEFT JOIN users u ON u.device = o.device
+      WHERE ${cond} AND o.created < ? ORDER BY o.created DESC LIMIT 40`
+  ).bind(before).all();
+  const c = await env.DB.prepare(
+    `SELECT COUNT(*) AS n, COALESCE(SUM(kind = 2), 0) AS done, COALESCE(SUM(kind = 3), 0) AS failed FROM orders`
+  ).first();
+  const n = c ? c.n : 0, done = c ? c.done : 0, failed = c ? c.failed : 0;
+  return json({ orders: results, counts: { all: n, active: n - done - failed, done, failed } });
 }
 
 async function adminMessages(body, env) {
@@ -734,6 +941,30 @@ async function chatUser(body, env, request) {
     await env.DB.prepare('UPDATE users SET last_seen = ?, last_ip = ? WHERE id = ?').bind(now, ip, u.id).run();
   }
   return { u, ip, now };
+}
+
+// То же, что chatUser, но для опросов: пользователь, уже проверенный по базе меньше AUTH_TTL назад (с тем же IP и секретом),
+// проверяется без запросов к D1. Только для чтения; отправка, реакции и прочие записи используют chatUser.
+async function chatUserFast(body, env, request) {
+  const device = String(body.device || '');
+  const secret = String(body.secret || '');
+  if (!UUID.test(device) || secret.length < 16) return chatUser(body, env, request);
+  const ip = (request.headers.get('cf-connecting-ip') || 'unknown').slice(0, 64);
+  const now = Date.now();
+  const c = AUTH_MEM.get(device);
+  if (c && now - c.at < AUTH_TTL && c.ip === ip && c.hash === (await sha256(secret))) {
+    if (now - c.seen > 60_000) {   // отметка «был в сети» — раз в минуту, как и раньше
+      c.seen = now;
+      await env.DB.prepare('UPDATE users SET last_seen = ?, last_ip = ? WHERE id = ?').bind(now, ip, c.u.id).run();
+    }
+    return { u: c.u, ip, now };
+  }
+  const a = await chatUser(body, env, request);
+  if (!a.e) {
+    if (AUTH_MEM.size > 2000) AUTH_MEM.clear();
+    AUTH_MEM.set(device, { u: a.u, ip, hash: a.u.secret_hash, at: a.now, seen: a.now });
+  }
+  return a;
 }
 
 const meOf = (u, now) => ({ registered: true, uid: u.id, nick: u.nick, badge: u.badge ? 1 : 0, crown: u.crown ? 1 : 0, av: u.avatar_v || 0, muted_until: u.muted_until > now ? u.muted_until : 0 });
@@ -854,23 +1085,59 @@ async function crownSet(body, env, request) {
   const a = await chatUser(body, env, request);
   if (a.e) return a.e;
   const v = body.crown === true || body.crown === 1 ? 1 : 0;
-  if ((a.u.crown ? 1 : 0) !== v) await env.DB.prepare('UPDATE users SET crown = ? WHERE id = ?').bind(v, a.u.id).run();
+  if ((a.u.crown ? 1 : 0) !== v) { await env.DB.prepare('UPDATE users SET crown = ? WHERE id = ?').bind(v, a.u.id).run(); authDirty(); }
   return json({ ok: true, crown: v });
 }
 
 // ----- общий чат (одна комната) -----
-const ROOM_SQL = `SELECT r.id, r.uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, r.text, r.ts
-                    FROM room_messages r LEFT JOIN users u ON u.id = r.uid`;
+// reply_to > 0 и q_id = null — оригинал, на который отвечали, уже удалён
+const ROOM_SQL = `SELECT r.id, r.uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, r.text, r.ts,
+                         COALESCE(r.reply_to, 0) AS reply_to, q.id AS q_id, COALESCE(qu.nick, 'удалён') AS q_nick, substr(q.text, 1, 140) AS q_text
+                    FROM room_messages r LEFT JOIN users u ON u.id = r.uid
+                    LEFT JOIN room_messages q ON q.id = r.reply_to AND r.reply_to > 0
+                    LEFT JOIN users qu ON qu.id = q.uid`;
 
-async function roomRev(env) {
-  const r = await env.DB.prepare(`SELECT v FROM settings WHERE k = 'room_rev'`).first();
-  return r ? Number(r.v) || 0 : 0;
+// Реакции на последние 100 сообщений ленты: [{m: номер сообщения, e: эмодзи, n: сколько, me: 1 — это моя}].
+// Приходят, когда у клиента устаревшая версия реакций (rx), поэтому реакции на старых сообщениях обновляются без перечитывания ленты.
+async function roomReactions(env, uid) {
+  const f = await env.DB.prepare('SELECT COALESCE(MIN(id), 0) AS m FROM (SELECT id FROM room_messages ORDER BY id DESC LIMIT 100)').first();
+  const from = f ? f.m : 0;
+  if (!from) return [];
+  const { results } = await env.DB.prepare(
+    `SELECT msg AS m, emoji AS e, COUNT(*) AS n, MAX(CASE WHEN uid = ? THEN 1 ELSE 0 END) AS me
+       FROM room_reactions WHERE msg >= ? GROUP BY msg, emoji ORDER BY msg, MIN(ts)`
+  ).bind(uid, from).all();
+  return results;
+}
+
+// Состояние комнаты одним запросом: номер последнего сообщения, ревизия ленты (rev) и версия реакций (rx).
+// Хранится в памяти воркера на ROOM_TTL: пока ничего не менялось, опросы клиентов обходятся без запросов к D1.
+async function roomState(env, fresh = false) {
+  if (!fresh && Date.now() - ROOM_MEM.at < ROOM_TTL) return { ...ROOM_MEM };
+  const r = await env.DB.prepare(
+    `SELECT COALESCE((SELECT MAX(id) FROM room_messages), 0) AS id,
+            COALESCE((SELECT CAST(v AS INTEGER) FROM settings WHERE k = 'room_rev'), 0) AS rev,
+            COALESCE((SELECT CAST(v AS INTEGER) FROM settings WHERE k = 'room_rx'), 0) AS rx`
+  ).first();
+  ROOM_MEM.id = r ? r.id || 0 : 0;
+  ROOM_MEM.rev = r ? r.rev || 0 : 0;
+  ROOM_MEM.rx = r ? r.rx || 0 : 0;
+  ROOM_MEM.at = Date.now();
+  return { ...ROOM_MEM };
 }
 // Любое удаление сообщений увеличивает «ревизию»: клиенты, увидев новое число, перечитывают ленту заново.
 async function bumpRoomRev(env) {
   await env.DB.prepare(
     `INSERT INTO settings (k, v) VALUES ('room_rev', '1') ON CONFLICT(k) DO UPDATE SET v = CAST(v AS INTEGER) + 1`
   ).run();
+  roomDirty();
+}
+// Любое изменение реакций увеличивает их версию (rx): клиенты получают реакции, только когда версия сменилась.
+async function bumpRoomRx(env) {
+  await env.DB.prepare(
+    `INSERT INTO settings (k, v) VALUES ('room_rx', '1') ON CONFLICT(k) DO UPDATE SET v = CAST(v AS INTEGER) + 1`
+  ).run();
+  roomDirty();
 }
 async function roomFetch(env, after) {
   if (after > 0) {
@@ -881,14 +1148,23 @@ async function roomFetch(env, after) {
   return results.reverse();
 }
 
+// Опрос общего чата. Клиент присылает after (последнее сообщение), rev (ревизия ленты) и rx (версия реакций).
+// Если ничего не изменилось — отвечаем из памяти воркера без запросов к D1. Реакции приходят, только когда rx сменился
+// (или клиент старый и rx не присылает — тогда как раньше, с каждым опросом).
 async function roomMessages(body, env, request) {
-  const a = await chatUser(body, env, request);
+  const a = await chatUserFast(body, env, request);
   if (a.e) return a.e;
-  const rev = await roomRev(env);
+  const st = await roomState(env);
   let after = Number(body.after) || 0;
-  const reset = body.rev === undefined || Number(body.rev) !== rev;
+  const hasRx = body.rx !== undefined;
+  const reset = body.rev === undefined || Number(body.rev) !== st.rev;
+  if (!reset && hasRx && Number(body.rx) === st.rx && after >= st.id) {
+    return json({ messages: [], rev: st.rev, rx: st.rx, reset: false, me: meOf(a.u, a.now) });
+  }
   if (reset) after = 0;
-  return json({ messages: await roomFetch(env, after), rev, reset, me: meOf(a.u, a.now) });
+  const out = { messages: await roomFetch(env, after), rev: st.rev, rx: st.rx, reset, me: meOf(a.u, a.now) };
+  if (reset || !hasRx || Number(body.rx) !== st.rx) out.reactions = await roomReactions(env, a.u.id);
+  return json(out);
 }
 
 async function roomSend(body, env, request) {
@@ -909,7 +1185,14 @@ async function roomSend(body, env, request) {
       return json({ error: `Подождите ${Math.ceil(wait / 1000)} с до следующего сообщения`, retry_ms: wait }, 429);
     }
   }
-  await env.DB.prepare('INSERT INTO room_messages (uid, text, ts) VALUES (?, ?, ?)').bind(u.id, text, now).run();
+  // ответ на сообщение: если оригинала уже нет, отправляем как обычное
+  let replyTo = Number(body.reply_to) || 0;
+  if (replyTo > 0) {
+    const q = await env.DB.prepare('SELECT id FROM room_messages WHERE id = ?').bind(replyTo).first();
+    if (!q) replyTo = 0;
+  } else replyTo = 0;
+  await env.DB.prepare('INSERT INTO room_messages (uid, text, ts, reply_to) VALUES (?, ?, ?, ?)').bind(u.id, text, now, replyTo).run();
+  roomDirty();
   return json({ ok: true, msgs: await countMsgs(env, u.id), cooldown_ms: u.badge ? 0 : ROOM_COOLDOWN_MS });
 }
 
@@ -921,9 +1204,40 @@ async function roomDelete(body, env, request) {
   const m = await env.DB.prepare('SELECT uid FROM room_messages WHERE id = ?').bind(id).first();
   if (!m) return json({ ok: true });
   if (m.uid !== a.u.id && !a.u.badge) return err('Нет прав', 403);
-  await env.DB.prepare('DELETE FROM room_messages WHERE id = ?').bind(id).run();
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM room_messages WHERE id = ?').bind(id),
+    env.DB.prepare('DELETE FROM room_reactions WHERE msg = ?').bind(id),
+  ]);
   await bumpRoomRev(env);
   return json({ ok: true });
+}
+
+// Реакция на сообщение. Та же реакция второй раз — снимается, другая — заменяет прежнюю. emoji = '' тоже снимает.
+async function roomReact(body, env, request) {
+  const a = await chatUser(body, env, request);
+  if (a.e) return a.e;
+  const { u, now } = a;
+  if (u.muted_until > now) return err('Вам закрыта отправка сообщений в общий чат', 403);
+  const id = Number(body.id) || 0;
+  const raw = noVS(body.emoji);
+  const emoji = raw ? REACTIONS.find((x) => noVS(x) === raw) : '';
+  if (emoji === undefined) return err('Такой реакции нет');
+  const m = await env.DB.prepare('SELECT id FROM room_messages WHERE id = ?').bind(id).first();
+  if (!m) return err('Сообщение уже удалено', 404);
+  const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM room_reactions WHERE uid = ? AND ts > ?').bind(u.id, now - 60_000).first();
+  if (r && r.n >= RATE_REACT_PER_MIN) return err('Слишком часто. Подождите минуту', 429);
+  const cur = await env.DB.prepare('SELECT emoji FROM room_reactions WHERE msg = ? AND uid = ?').bind(id, u.id).first();
+  if (!emoji || (cur && cur.emoji === emoji)) {
+    await env.DB.prepare('DELETE FROM room_reactions WHERE msg = ? AND uid = ?').bind(id, u.id).run();
+  } else {
+    await env.DB.prepare(
+      `INSERT INTO room_reactions (msg, uid, emoji, ts) VALUES (?, ?, ?, ?)
+         ON CONFLICT(msg, uid) DO UPDATE SET emoji = excluded.emoji, ts = excluded.ts`
+    ).bind(id, u.id, emoji, now).run();
+  }
+  await bumpRoomRx(env);
+  const st = await roomState(env, true);   // версия читается до самих реакций: данные не старше неё
+  return json({ ok: true, rx: st.rx, reactions: await roomReactions(env, u.id) });
 }
 
 // Модератор закрывает пользователю отправку в общий чат. minutes: 0 — снять, иначе из списка. Другого модератора заглушить нельзя.
@@ -938,6 +1252,7 @@ async function roomMute(body, env, request) {
   if (!t) return err('Пользователь не найден', 404);
   if (t.id === a.u.id || t.badge) return err('Модератора может ограничить только администратор', 403);
   await env.DB.prepare('UPDATE users SET muted_until = ? WHERE id = ?').bind(minutes ? a.now + minutes * 60_000 : 0, uid).run();
+  authDirty();
   return json({ ok: true });
 }
 
@@ -945,6 +1260,14 @@ async function roomMute(body, env, request) {
 const pairOf = (x, y) => (x < y ? [x, y] : [y, x]);
 const DM_SQL = `SELECT d.id, d.sender AS uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, d.text, d.ts
                   FROM dm_messages d LEFT JOIN users u ON u.id = d.sender WHERE d.a = ? AND d.b = ?`;
+// Номер последнего личного сообщения (по всем перепискам), в памяти воркера на DM_TTL.
+async function dmState(env) {
+  if (Date.now() - DM_MEM.at < DM_TTL) return { ...DM_MEM };
+  const r = await env.DB.prepare('SELECT COALESCE(MAX(id), 0) AS id FROM dm_messages').first();
+  DM_MEM.id = r ? r.id || 0 : 0;
+  DM_MEM.at = Date.now();
+  return { ...DM_MEM };
+}
 async function dmFetch(env, a, b, after) {
   if (after > 0) {
     const { results } = await env.DB.prepare(`${DM_SQL} AND d.id > ? ORDER BY d.id LIMIT 200`).bind(a, b, after).all();
@@ -965,8 +1288,24 @@ async function dmFind(body, env, request) {
   return json({ uid: t.id, nick: t.nick, badge: t.badge ? 1 : 0, crown: t.crown ? 1 : 0, av: t.avatar_v || 0 });
 }
 
+// Только число непрочитанных личных: дешёвый опрос для вкладки «Общий чат». Список переписок целиком — /api/dm/list.
+// Клиент присылает mid — номер последнего личного сообщения из прошлого ответа; пока он не изменился, число то же (same: true).
+async function dmUnread(body, env, request) {
+  const a = await chatUserFast(body, env, request);
+  if (a.e) return a.e;
+  const st = await dmState(env);
+  if (body.mid !== undefined && Number(body.mid) === st.id && st.id > 0) return json({ same: true, mid: st.id });
+  const me = a.u.id;
+  const r = await env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM dm_messages x
+      WHERE x.sender != ? AND (x.a = ? OR x.b = ?)
+        AND x.id > COALESCE((SELECT last_id FROM dm_reads r WHERE r.uid = ? AND r.peer = x.sender), 0)`
+  ).bind(me, me, me, me).first();
+  return json({ unread: r ? r.n || 0 : 0, mid: st.id });
+}
+
 async function dmList(body, env, request) {
-  const a = await chatUser(body, env, request);
+  const a = await chatUserFast(body, env, request);
   if (a.e) return a.e;
   const me = a.u.id;
   const { results } = await env.DB.prepare(
@@ -980,19 +1319,26 @@ async function dmList(body, env, request) {
        JOIN dm_messages m ON m.id = p.last_id
       ORDER BY p.last_id DESC LIMIT 100`
   ).bind(me, me, me, me, me, me).all();
-  return json({ chats: results, unread: results.reduce((s, r) => s + (r.unread || 0), 0) });
+  return json({ chats: results, unread: results.reduce((s, r) => s + (r.unread || 0), 0), mid: (await dmState(env)).id });
 }
 
 async function dmMessages(body, env, request) {
-  const a = await chatUser(body, env, request);
+  const a = await chatUserFast(body, env, request);
   if (a.e) return a.e;
   const peerId = Number(body.with) || 0;
+  const after = Number(body.after) || 0;
+  const [x, y] = pairOf(a.u.id, peerId);
+  // опрос открытой переписки, пока нигде в личных ничего нового нет: только «до какого сообщения прочитал собеседник»
+  if (after > 0 && (await dmState(env)).id <= after) {
+    const pr0 = await env.DB.prepare('SELECT last_id FROM dm_reads WHERE uid = ? AND peer = ?').bind(peerId, a.u.id).first();
+    return json({ messages: [], peer_read: pr0 ? pr0.last_id : 0 });
+  }
   const peer = await env.DB.prepare('SELECT id, nick, badge, crown, avatar_v FROM users WHERE id = ?').bind(peerId).first();
   if (!peer) return err('Пользователь не найден', 404);
-  const [x, y] = pairOf(a.u.id, peer.id);
-  const messages = await dmFetch(env, x, y, Number(body.after) || 0);
-  // открыли переписку — всё, что написал собеседник, прочитано
-  const last = await env.DB.prepare('SELECT MAX(id) AS m FROM dm_messages WHERE a = ? AND b = ? AND sender = ?').bind(x, y, peer.id).first();
+  const messages = await dmFetch(env, x, y, after);
+  // открыли переписку — всё, что написал собеседник, прочитано (отмечаем, только если это первая загрузка или пришло новое)
+  const last = after > 0 && !messages.length ? null
+    : await env.DB.prepare('SELECT MAX(id) AS m FROM dm_messages WHERE a = ? AND b = ? AND sender = ?').bind(x, y, peer.id).first();
   if (last && last.m) {
     await env.DB.prepare(
       'INSERT INTO dm_reads (uid, peer, last_id) VALUES (?, ?, ?) ON CONFLICT(uid, peer) DO UPDATE SET last_id = MAX(last_id, excluded.last_id)'
@@ -1016,6 +1362,7 @@ async function dmSend(body, env, request) {
   if (r && r.last && a.now - r.last < 700) return err('Слишком часто, подождите секунду', 429);
   const [x, y] = pairOf(a.u.id, peer.id);
   await env.DB.prepare('INSERT INTO dm_messages (a, b, sender, text, ts) VALUES (?, ?, ?, ?, ?)').bind(x, y, a.u.id, text, a.now).run();
+  dmDirty();
   return json({ ok: true, msgs: await countMsgs(env, a.u.id) });
 }
 
@@ -1046,6 +1393,7 @@ async function adminUsers(body, env) {
 async function adminUserBadge(body, env) {
   const uid = Number(body.uid) || 0;
   const r = await env.DB.prepare('UPDATE users SET badge = ? WHERE id = ?').bind(body.badge ? 1 : 0, uid).run();
+  authDirty();
   if (!r.meta || !r.meta.changes) return err('Пользователь не найден', 404);
   return json({ ok: true });
 }
@@ -1057,6 +1405,7 @@ async function adminUserMute(body, env) {
   if (!Number.isFinite(m) || m < -1 || m > 525_600) return err('Некорректный запрос');
   const until = m === 0 ? 0 : m === -1 ? MUTE_FOREVER : Date.now() + m * 60_000;
   const r = await env.DB.prepare('UPDATE users SET muted_until = ? WHERE id = ?').bind(until, uid).run();
+  authDirty();
   if (!r.meta || !r.meta.changes) return err('Пользователь не найден', 404);
   return json({ ok: true });
 }
@@ -1065,23 +1414,35 @@ async function adminUserMute(body, env) {
 async function adminUserReset(body, env) {
   const uid = Number(body.uid) || 0;
   await env.DB.batch([
+    env.DB.prepare('DELETE FROM room_reactions WHERE uid = ? OR msg IN (SELECT id FROM room_messages WHERE uid = ?)').bind(uid, uid),
     env.DB.prepare('DELETE FROM room_messages WHERE uid = ?').bind(uid),
     env.DB.prepare('DELETE FROM dm_reads WHERE uid = ? OR peer = ?').bind(uid, uid),
     env.DB.prepare('DELETE FROM users WHERE id = ?').bind(uid),
   ]);
+  authDirty();
   await bumpRoomRev(env);
   return json({ ok: true });
 }
 
 async function adminRoomMessages(body, env) {
-  const rev = await roomRev(env);
+  const st = await roomState(env);
   let after = Number(body.after) || 0;
-  const reset = body.rev === undefined || Number(body.rev) !== rev;
+  const hasRx = body.rx !== undefined;
+  const reset = body.rev === undefined || Number(body.rev) !== st.rev;
+  if (!reset && hasRx && Number(body.rx) === st.rx && after >= st.id) {
+    return json({ messages: [], rev: st.rev, rx: st.rx, reset: false });
+  }
   if (reset) after = 0;
-  return json({ messages: await roomFetch(env, after), rev, reset });
+  const out = { messages: await roomFetch(env, after), rev: st.rev, rx: st.rx, reset };
+  if (reset || !hasRx || Number(body.rx) !== st.rx) out.reactions = await roomReactions(env, 0);
+  return json(out);
 }
 async function adminRoomDelete(body, env) {
-  await env.DB.prepare('DELETE FROM room_messages WHERE id = ?').bind(Number(body.id) || 0).run();
+  const id = Number(body.id) || 0;
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM room_messages WHERE id = ?').bind(id),
+    env.DB.prepare('DELETE FROM room_reactions WHERE msg = ?').bind(id),
+  ]);
   await bumpRoomRev(env);
   return json({ ok: true });
 }
@@ -1179,11 +1540,15 @@ const app = {
     let body = {};
     try { body = await request.json(); } catch (e) { /* пустое тело */ }
 
+    const maint = await chatMaintenance(env, path);
+    if (maint) return maint;
     if (path === '/api/vpn/call') return vpnCall(body);
+    if (path === '/api/orders/report') return ordersReport(body, env);
     if (path === '/api/chat/send') return userSend(body, env, ctx, request);
     if (path === '/api/chat/messages') return userMessages(body, env);
     if (path === '/api/chat/image') return userImage(body, env);
     if (path === '/api/chat/poll') return userPoll(body, env);
+    if (path === '/api/chat/rate') return userRate(body, env, ctx);
     if (path === '/api/push/register') return pushRegister(body, env);
     if (path === '/api/app/config') return appConfig(env);
     if (path === '/api/chat/me') return chatMe(body, env, request);
@@ -1194,9 +1559,11 @@ const app = {
     if (path === '/api/room/messages') return roomMessages(body, env, request);
     if (path === '/api/room/send') return roomSend(body, env, request);
     if (path === '/api/room/delete') return roomDelete(body, env, request);
+    if (path === '/api/room/react') return roomReact(body, env, request);
     if (path === '/api/room/mute') return roomMute(body, env, request);
     if (path === '/api/dm/find') return dmFind(body, env, request);
     if (path === '/api/dm/list') return dmList(body, env, request);
+    if (path === '/api/dm/unread') return dmUnread(body, env, request);
     if (path === '/api/dm/messages') return dmMessages(body, env, request);
     if (path === '/api/dm/send') return dmSend(body, env, request);
 
@@ -1213,8 +1580,10 @@ const app = {
       if (path === '/api/admin/related') return adminRelated(body, env);
       if (path === '/api/admin/profile') return adminProfile(body, env);
       if (path === '/api/admin/status') return adminSetStatus(body, env);
-      if (path === '/api/admin/block') return adminBlock(body, env);
-      if (path === '/api/admin/unblock') return adminUnblock(body, env);
+      if (path === '/api/admin/ratings') return adminRatings(body, env);
+      if (path === '/api/admin/orders') return adminOrders(body, env);
+      if (path === '/api/admin/block') { authDirty(); return adminBlock(body, env); }
+      if (path === '/api/admin/unblock') { authDirty(); return adminUnblock(body, env); }
       if (path === '/api/admin/blocks') return adminBlocks(env);
       if (path === '/api/admin/settings') return adminSettings(env);
       if (path === '/api/admin/settings_save') return adminSaveSettings(body, env);

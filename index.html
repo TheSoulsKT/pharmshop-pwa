@@ -139,6 +139,111 @@ body[data-lt="1"].gl::before{opacity:.6}
 .ach-nm{font-size:21px}.ach-st{padding:4px 14px;border-radius:20px;font-size:13px;background:var(--bg);color:var(--mute)}
 .ach-st.on{background:color-mix(in srgb,var(--green) 16%,var(--bg));color:var(--green)}
 .ach-rq{width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:calc(16px*var(--k));padding:12px 14px;line-height:1.4}
+
+/* ===== VPN 2.0 + экран техработ ===== */
+.ic{flex:none;vertical-align:middle}
+@keyframes vfade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes vring{0%{transform:scale(.72);opacity:.6}100%{transform:scale(1.42);opacity:0}}
+@keyframes vfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes vspin{to{transform:rotate(360deg)}}
+@keyframes vshine{0%{transform:translateX(-130%)}55%,100%{transform:translateX(330%)}}
+@keyframes vpulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,currentColor 55%,transparent)}70%{box-shadow:0 0 0 7px transparent}}
+@keyframes vpop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes vsk{to{background-position:-200% 0}}
+@keyframes vbump{0%{transform:scale(1)}40%{transform:scale(1.14);color:var(--blue)}100%{transform:scale(1)}}
+@keyframes vslide{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
+@keyframes vdots{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-9px)}}
+@keyframes vtw{0%,100%{transform:scale(.2);opacity:.2}50%{transform:scale(1);opacity:1}}
+.vp>*{animation:vfade .5s both}.vp>*:nth-child(2){animation-delay:.07s}.vp>*:nth-child(3){animation-delay:.14s}.vp>*:nth-child(4){animation-delay:.21s}.vp>*:nth-child(5){animation-delay:.28s}
+.vtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.vtop h2{margin:0}
+.vtag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--blue);padding:6px 12px;border-radius:20px;background:color-mix(in srgb,var(--blue) 14%,var(--card));border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line))}
+.vhero{position:relative;text-align:center;padding:26px 18px 22px;border-radius:calc(28px*var(--k));border:1px solid var(--line);overflow:hidden;margin-bottom:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--blue) 24%,var(--card)),var(--card) 72%)}
+.vhero.vs.ok{background:linear-gradient(160deg,color-mix(in srgb,var(--green) 22%,var(--card)),var(--card) 72%);border-color:color-mix(in srgb,var(--green) 40%,var(--line))}
+.vhero.vs.off{background:var(--card)}.vhero.vs.fr{background:linear-gradient(160deg,color-mix(in srgb,#22C1DC 22%,var(--card)),var(--card) 72%)}
+.vhero h3{margin:0 0 5px;font-size:calc(20px*var(--ts))}
+.vhero.vs{padding:16px 16px 16px}.vhero.vs .vsh{width:76px;height:76px;margin-bottom:20px}.vhero.vs .core{width:56px;height:56px}.vhero.vs .core .ic{width:28px;height:28px}
+.vsh{--sc:var(--blue);position:relative;width:104px;height:104px;margin:0 auto 30px;display:flex;align-items:center;justify-content:center;color:var(--sc)}
+.vsh>i{position:absolute;inset:6px;border-radius:50%;border:2px solid currentColor;animation:vring 3s ease-out infinite}.vsh>i:nth-child(2){animation-delay:1s}.vsh>i:nth-child(3){animation-delay:2s}
+.vsh .core{position:relative;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--on);background:linear-gradient(145deg,var(--sc),color-mix(in srgb,var(--sc) 52%,#000));box-shadow:0 12px 32px color-mix(in srgb,var(--sc) 45%,transparent);animation:vfloat 4s ease-in-out infinite}
+.vsh.ok{--sc:var(--green)}.vsh.fr{--sc:#22C1DC}.vsh.off{--sc:var(--mute)}.vsh.off>i{animation:none;opacity:.18}.vsh.off .core{box-shadow:none}
+.vorb{position:absolute;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);background:color-mix(in srgb,var(--blue) 14%,var(--card));border:1px solid color-mix(in srgb,var(--blue) 30%,var(--line));animation:vfloat 5s ease-in-out infinite}
+.vorb.o1{left:12%;top:22%}.vorb.o2{right:12%;top:30%;animation-delay:1.2s}.vorb.o3{left:30%;top:6%;width:28px;height:28px;animation-delay:2.2s}
+.vbtn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;border:0;border-radius:calc(16px*var(--k));padding:14px 18px;font:inherit;font-weight:700;color:var(--on);background:linear-gradient(135deg,var(--blue),color-mix(in srgb,var(--blue) 62%,#8B7CFF));box-shadow:0 8px 22px color-mix(in srgb,var(--blue) 34%,transparent);transition:transform .15s,box-shadow .2s,opacity .2s;-webkit-tap-highlight-color:transparent}
+.vbtn:after{content:"";position:absolute;top:0;bottom:0;left:0;width:34%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);animation:vshine 3.8s ease-in-out infinite;pointer-events:none}
+.vbtn:active{transform:scale(.97)}
+.vbtn.tg{background:linear-gradient(135deg,#2AABEE,#1E96D6);color:#fff;box-shadow:0 8px 22px rgba(42,171,238,.35)}
+.vbtn.alt{background:color-mix(in srgb,var(--blue) 13%,var(--card));color:var(--text);box-shadow:none;border:1px solid color-mix(in srgb,var(--blue) 32%,var(--line))}
+.vbtn.alt.dgt{background:color-mix(in srgb,var(--red) 10%,var(--card));border-color:color-mix(in srgb,var(--red) 35%,var(--line));color:var(--red)}
+.vbtn.gh{background:none;box-shadow:none;color:var(--mute)}.vbtn.alt:after,.vbtn.gh:after{display:none}
+.vbtn.ld{opacity:.75;pointer-events:none}.vbtn.ld:before{content:"";width:16px;height:16px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:vspin .7s linear infinite}
+.vbtn.ld>.ic{display:none}
+.vrow2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.vrow2:only-child{grid-template-columns:1fr}
+.vor{display:flex;align-items:center;gap:12px;margin:16px 4px;color:var(--mute);font-size:12px}.vor:before,.vor:after{content:"";flex:1;height:1px;background:var(--line)}
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:calc(24px*var(--k));padding:16px;margin-bottom:14px}
+.vh{margin-bottom:12px}.vh b{font-size:calc(18px*var(--ts))}.vh .mute{margin-top:3px}
+.vseg{position:relative;display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border:1px solid var(--line);border-radius:calc(18px*var(--k));padding:4px;margin-bottom:14px}
+.vseg>i{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:calc(14px*var(--k));background:linear-gradient(135deg,var(--blue),color-mix(in srgb,var(--blue) 62%,#8B7CFF));box-shadow:0 4px 14px color-mix(in srgb,var(--blue) 35%,transparent);transform:translateX(calc(var(--p,0)*100%));transition:transform .38s cubic-bezier(.3,1.25,.4,1)}
+.vseg button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;background:none;border:0;padding:11px 0;color:var(--mute);font:inherit;font-weight:700;transition:color .25s}.vseg button.on{color:var(--on)}
+#sg{background:var(--card)}
+.vin{position:relative;margin-bottom:10px}.vin>.ic{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--mute);transition:color .2s;pointer-events:none}
+.vin input{padding:13px 44px 13px 46px;transition:border-color .2s,box-shadow .2s}.vin input:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 22%,transparent)}.vin:focus-within>.ic{color:var(--blue)}
+.vin .eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--mute);padding:10px;display:flex}
+.vmsg{min-height:18px;margin-top:10px;font-size:13px;color:var(--mute);text-align:center}.vmsg.bad{color:var(--red);animation:vfade .25s}.vmsg.ok{color:var(--green)}
+.vlk{color:var(--blue);padding:10px 0 0;font-size:14px;font-weight:600;text-align:center;cursor:pointer}
+.vinfo{display:flex;align-items:center;gap:10px;margin-top:10px;padding:12px 14px;border-radius:calc(16px*var(--k));background:var(--card);border:1px solid var(--line);font-size:13px}.vinfo a{color:var(--blue);font-weight:700}
+.vspn{flex:none;width:18px;height:18px;border:2.5px solid var(--blue);border-right-color:transparent;border-radius:50%;animation:vspin .8s linear infinite}
+.vsk{height:120px;border-radius:calc(24px*var(--k));margin-bottom:12px;background:linear-gradient(90deg,var(--card) 25%,var(--line) 50%,var(--card) 75%);background-size:200% 100%;animation:vsk 1.4s linear infinite}
+.vc{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:calc(24px*var(--k));padding:16px;margin-bottom:14px;animation:vfade .5s both;animation-delay:var(--d,0s)}
+.vc.on{border-color:color-mix(in srgb,var(--green) 45%,var(--line));background:linear-gradient(160deg,color-mix(in srgb,var(--green) 9%,var(--card)),var(--card) 60%)}
+.vc-h{display:flex;gap:14px;align-items:center;margin-bottom:6px}.vc-t{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}.vc-t>b{font-size:calc(18px*var(--ts))}
+.vring{position:relative;flex:none;width:74px;height:74px}.vring svg{transform:rotate(-90deg)}.vring circle{fill:none;stroke-width:7;stroke-linecap:round}.vring .bg{stroke:var(--line)}.vring .fg{transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1)}
+.vring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:20px;line-height:1}.vring b small{font-size:10px;color:var(--mute);font-weight:500;margin-top:3px}
+.vpill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--bg);border:1px solid var(--line);color:var(--mute)}
+.vst{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--c)}.vst i{width:8px;height:8px;border-radius:50%;background:currentColor;animation:vpulse 1.9s infinite}
+.vtr{margin:12px 0 2px}.vtrh{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mute);margin-bottom:7px}.vtrh span{display:inline-flex;align-items:center;gap:6px}.vtrh b{color:var(--text)}
+.vbar{height:9px;border-radius:5px;background:var(--line);overflow:hidden}.vbar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}.vbar.hi i{background:linear-gradient(90deg,#FFC233,var(--red))}
+.vlink{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px dashed color-mix(in srgb,var(--blue) 40%,var(--line));border-radius:calc(16px*var(--k));padding:6px 6px 6px 14px;margin:14px 0 10px}
+.vlink span{flex:1;min-width:0;font-size:12px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-user-select:all;user-select:all}
+.vib{flex:none;width:40px;height:40px;border-radius:13px;border:0;background:color-mix(in srgb,var(--blue) 18%,var(--card));color:var(--blue);display:flex;align-items:center;justify-content:center;transition:transform .15s}.vib:active{transform:scale(.88)}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.vt{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:calc(18px*var(--k));padding:12px 4px 11px;color:var(--text);font:inherit;font-size:11.5px;font-weight:600;line-height:1.2;transition:transform .15s,border-color .2s}
+.vt:active{transform:scale(.93);border-color:var(--c,var(--blue))}.vt.dg{--c:var(--red)}
+.vti{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--c,var(--blue)) 16%,transparent);color:var(--c,var(--blue))}
+.vnote{margin-top:10px;padding:0 2px}.vnote a{color:var(--blue);font-weight:700}
+.vdevs{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);animation:vfade .35s both}
+.vdev{display:flex;align-items:center;gap:10px;padding:9px 0}.vdev+.vdev{border-top:1px solid var(--line)}.vdn{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.vdi{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--blue)}
+.vchip{flex:none;border:1px solid color-mix(in srgb,var(--blue) 35%,var(--line));background:color-mix(in srgb,var(--blue) 12%,var(--card));color:var(--blue);border-radius:20px;padding:7px 13px;font:inherit;font-size:12px;font-weight:700}.vchip.dg{border-color:color-mix(in srgb,var(--red) 35%,var(--line));background:color-mix(in srgb,var(--red) 10%,var(--card));color:var(--red)}
+.vempty{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 18px}.vempty .vbtn{margin-top:8px}
+.vemo{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);background:color-mix(in srgb,var(--blue) 14%,var(--bg));animation:vfloat 4s ease-in-out infinite}
+.vpend{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:6px;border-radius:calc(20px*var(--k));background:color-mix(in srgb,var(--blue) 12%,var(--card));border:1px solid color-mix(in srgb,var(--blue) 40%,var(--line))}
+.vlab{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--mute);margin:16px 2px 9px}
+.vpills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:2px 14px}.vpills::-webkit-scrollbar{display:none}
+.vpills button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:22px;padding:10px 18px;font:inherit;font-weight:700;transition:transform .2s,background .2s,color .2s,border-color .2s}.vpills button.on{background:var(--blue);border-color:var(--blue);color:var(--on);transform:scale(1.05)}
+.vplan{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:calc(20px*var(--k));padding:13px 14px;margin-bottom:10px;color:var(--text);font:inherit;transition:transform .15s,border-color .2s,background .2s;animation:vfade .4s both}
+.vplan:active{transform:scale(.98)}.vplan.on{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 12%,var(--card))}
+.vn{flex:none;width:46px;height:46px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;background:color-mix(in srgb,var(--blue) 16%,var(--bg));color:var(--blue)}
+.vm{flex:1;min-width:0}.vm b{display:block}.vm span{font-size:12px;color:var(--mute)}.vpr{font-weight:800;font-size:17px}
+.vbd{position:absolute;top:-8px;right:16px;font-size:10px;font-weight:800;padding:2px 9px;border-radius:10px;background:linear-gradient(135deg,#FFC233,#FF9A3D);color:#000}
+.vck{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:transparent;transition:background .2s,border-color .2s}.vplan.on .vck{background:var(--blue);border-color:var(--blue);color:var(--on);animation:vpop .35s}
+.vmeths{display:flex;flex-wrap:wrap;gap:8px}.vmeths button{display:flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--card);color:var(--text);border-radius:16px;padding:10px 14px;font:inherit;font-weight:600;font-size:13px;transition:all .2s}.vmeths button.on{border-color:var(--blue);color:var(--blue);background:color-mix(in srgb,var(--blue) 12%,var(--card))}
+.vpay{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;margin:16px 0 4px;border-radius:calc(24px*var(--k));background:color-mix(in srgb,var(--card) 90%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid color-mix(in srgb,var(--blue) 35%,var(--line));box-shadow:0 -6px 26px rgba(0,0,0,.22)}
+.vpay .vbtn{width:auto;padding:14px 22px}.vtot{font-size:24px;font-weight:800;line-height:1.1}.vtot.bump{animation:vbump .4s}
+.sh .it:active{background:color-mix(in srgb,var(--blue) 12%,transparent)}
+body.gl .vc,body.gl .vplan,body.gl .vhero,body.gl .vcard,body.gl .vseg,body.gl .vinfo{-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+body.noanim .vsh>i,body.noanim .vsh .core,body.noanim .vorb,body.noanim .vbtn:after,body.noanim .vst i,body.noanim .vemo,body.noanim .vsk,body.noanim .vp>*,body.noanim .vc,body.noanim .vplan,body.noanim .cl *{animation:none!important}
+@media(prefers-reduced-motion:reduce){.vsh>i,.vsh .core,.vorb,.vbtn:after,.vemo{animation:none}}
+/* экран «чат на технических работах» */
+.cl{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px 6px 20px;max-width:420px;width:100%;margin:0 auto}
+.cl-art{width:230px;max-width:70vw;margin-bottom:10px;animation:vfade .6s both}.cl-art svg{width:100%;height:auto;overflow:visible}
+.cl-g1,.cl-g2{transform-box:fill-box;transform-origin:center;animation:vspin 9s linear infinite}.cl-g2{animation-duration:6s;animation-direction:reverse}
+.cl-d{animation:vdots 1.3s ease-in-out infinite}.cl-d:nth-of-type(2){animation-delay:.18s}.cl-d:nth-of-type(3){animation-delay:.36s}
+.cl-s{transform-box:fill-box;transform-origin:center;animation:vtw 2.6s ease-in-out infinite}.cl-s:nth-of-type(2){animation-delay:.9s}.cl-s:nth-of-type(3){animation-delay:1.7s}
+.cl-gl{transform-box:fill-box;transform-origin:center;animation:vfloat 5s ease-in-out infinite}
+.cl-pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#FFB020;padding:6px 14px;border-radius:20px;background:color-mix(in srgb,#FFB020 14%,var(--card));border:1px solid color-mix(in srgb,#FFB020 38%,var(--line));animation:vfade .6s .1s both}.cl-pill i{width:8px;height:8px;border-radius:50%;background:currentColor;animation:vpulse 1.8s infinite}
+.cl-t{margin:14px 0 6px;font-size:calc(24px*var(--ts));animation:vfade .6s .16s both}.cl-m{color:var(--mute);line-height:1.45;animation:vfade .6s .22s both}
+.cl-bar{position:relative;width:100%;max-width:260px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:20px 0 8px}.cl-bar i{position:absolute;top:0;bottom:0;width:38%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green));animation:vslide 1.6s ease-in-out infinite}
+.cl-btns{width:100%;margin-top:18px;animation:vfade .6s .3s both}.cl-ft{margin-top:12px}
 </style></head><body>
 <div id="view"></div>
 <nav><button data-t="vpn"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M20 12v2.5"/></g></svg><span>VPN</span></button><button data-t="chat"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="8" r="3.4"/><path d="M1 21.5A7 7 0 0 1 15 21.5"/><circle cx="17" cy="8.5" r="2.7"/><path d="M13 18.5A4 4 0 0 1 21 18.5"/></g></svg><span>Чат</span></button><button data-t="me"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="8" r="4"/><path d="M4 23A8 8 0 0 1 20 23"/></g></svg><span>Профиль</span></button><button data-t="set"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></g></svg><span>Настройки</span></button></nav>
@@ -234,7 +339,10 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty}){
 // ---------- чат ----------
 async function chatTab(){
   window.RC=0;
-  view.innerHTML='<div class="mute">Загрузка…</div>';const g=gen;
+  view.innerHTML='<div class="vsk" style="height:70px"></div><div class="vsk"></div>';const g=gen;
+  cfgP=null;const sc=await sectionCfg('chat'); // чат можно закрыть на тех. работы: в настройках раздел chat → enabled:false
+  if(g!==gen)return;
+  if(sc&&sc.enabled===false)return chatClosed(sc);
   try{me=await api('/api/chat/me')}catch(x){view.innerHTML=`<div class="err">${esc(x.message)}</div><button class="b" onclick="go('chat')">Повторить</button>`;return}
   if(g!==gen)return;
   if(!me.registered)return register();
@@ -309,6 +417,16 @@ function achList(m){
     ['🔑','Подписчик',cl('ach_sub'),'Оформите подписку VPN. Засчитается, когда приложение увидит у вас активную подписку.'],
     ['📋','Ссылка',cl('ach_copy'),'Скопируйте ссылку подписки VPN кнопкой копирования в карточке подписки.'],
     ['📶','10 ГБ',cl('ach_gb'),'Израсходуйте 10 ГБ трафика VPN.'],
+    ['🚀','Запуск',cl('ach_client'),'Нажмите «Подключить» в карточке подписки и выберите приложение-клиент.'],
+    ['👨‍👩‍👧','Семейный',cl('ach_dev3'),'Оформите подписку минимум на 3 устройства. Засчитается, когда приложение увидит её.'],
+    ['📅','Надолго',cl('ach_long'),'Держите активной подписку, до конца которой осталось 90 дней и больше.'],
+    ['🔄','Продление',cl('ach_renew'),'Продлите подписку VPN кнопкой «Продлить» и дождитесь подтверждения оплаты.'],
+    ['📦','Запас трафика',cl('ach_traffic'),'Докупите пакет трафика кнопкой «Докупить трафик» и дождитесь оплаты.'],
+    ['⚡','Апгрейд',cl('ach_upg'),'Перейдите на тариф с большим числом устройств: «Больше устройств».'],
+    ['❄️','Заморозка',cl('ach_freeze'),'Заморозьте подписку на время, когда VPN не нужен.'],
+    ['🔗','Новая ссылка',cl('ach_rot'),'Обновите ссылку подписки: старая перестанет работать.'],
+    ['🧹','Порядок',cl('ach_dis'),'Отключите ненужное устройство в списке «Мои устройства».'],
+    ['🐋','100 ГБ',cl('ach_gb100'),'Израсходуйте 100 ГБ трафика VPN.'],
     ['🔐','Под замком',!!lockMode()&&cl('pinvpn'),'Включите вход по PIN или отпечатку и переключатель «PIN для выхода из VPN» в Настройки → Безопасность.'],
     ['🔒','Защита',cl('vmask')||cl('clip')||cl('cpay'),'Включите «Прятать ссылку подписки VPN», «Очищать буфер обмена» или «Подтверждать оплату».'],
     ['✍️','Общение',msgs>=10,'Отправьте 10 сообщений в чатах.',[msgs,10]],
@@ -606,18 +724,52 @@ function sectionCfg(k){
   return cfgP.then(c=>(c.sections&&c.sections[k])||null);
 }
 
+// ---------- иконки и общие элементы нового VPN ----------
+const IC={
+shield:'<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="M8.8 12l2.2 2.2 4.2-4.4"/>',
+shieldoff:'<path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.2-7.5 9.5-4.3-1.3-7.5-4.9-7.5-9.5V6z"/><path d="M9 9l6 6M15 9l-6 6"/>',
+send:'<path d="M21.5 3L2.5 10.800l6.700 2.400L11.600 20l3.100-4.600 5 3.600z"/><path d="M9.200 13.200L21.500 3"/>',
+mail:'<rect x="3" y="5" width="18" height="14" rx="3.500"/><path d="M3.500 8l8.500 6 8.500-6"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4.500 21a7.500 7.500 0 0115 0"/>',
+eye:'<path d="M2 12s3.800-7 10-7 10 7 10 7-3.800 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+eyeoff:'<path d="M3 3l18 18"/><path d="M10.600 5.100A10 10 0 0112 5c6.200 0 10 7 10 7a17 17 0 01-3.200 4M6.600 6.600A17 17 0 002 12s3.800 7 10 7a9.600 9.600 0 004.400-1.100"/>',
+copy:'<rect x="9" y="9" width="11" height="11" rx="3"/><path d="M5 15V6a2 2 0 012-2h9"/>',
+bolt:'<path d="M13 2.500L4.500 13.500H11L10 21.500l8.500-11H12z"/>',
+renew:'<path d="M20 12a8 8 0 11-2.700-6"/><path d="M20 4v5h-5"/>',
+phone:'<rect x="7" y="2.500" width="10" height="19" rx="3"/><path d="M11 18h2"/>',
+users:'<circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0113 0"/><path d="M19 8v6M16 11h6"/>',
+snow:'<path d="M12 2.500v19M3.800 7.200l16.400 9.600M20.200 7.200L3.800 16.800"/><path d="M9.500 4.500L12 6.500l2.500-2M9.500 19.500l2.500-2 2.500 2"/>',
+sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.500v2.500M12 19v2.500M2.500 12H5M19 12h2.500M5.300 5.300l1.800 1.800M16.900 16.900l1.800 1.800M5.300 18.700l1.800-1.800M16.900 7.100l1.800-1.800"/>',
+link:'<path d="M10 14a4.200 4.200 0 005.900 0l3-3a4.200 4.200 0 00-5.900-5.900l-1 1"/><path d="M14 10a4.200 4.200 0 00-5.900 0l-3 3a4.200 4.200 0 005.900 5.900l1-1"/>',
+chart:'<rect x="4.500" y="11" width="4" height="9" rx="1.200"/><rect x="10" y="4.500" width="4" height="15.500" rx="1.200"/><rect x="15.500" y="14" width="4" height="6" rx="1.200"/>',
+wallet:'<rect x="3" y="6" width="18" height="14" rx="3.500"/><path d="M3 10.500h18M16 15.500h2"/><path d="M6 6l9-3 1 3"/>',
+logout:'<path d="M9.500 4H6.500a2 2 0 00-2 2v12a2 2 0 002 2h3M15.500 8l4 4-4 4M19.500 12h-10"/>',
+check:'<path d="M5 12.500l4.500 4.500L19 7.500"/>',
+card:'<rect x="2.500" y="5" width="19" height="14" rx="3.500"/><path d="M2.500 10h19M6.500 15h4"/>',
+bag:'<path d="M5 8h14l-1 12.500H6z"/><path d="M9 8V6.500a3 3 0 016 0V8"/>',
+star:'<path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5.500l3.500 2"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.200 3.200 3.200 14.800 0 18M12 3c-3.200 3.200-3.200 14.800 0 18"/>',
+chat:'<path d="M4.500 5h15a1.500 1.500 0 011.500 1.500v9a1.500 1.500 0 01-1.500 1.500H12l-5 4v-4H4.500A1.500 1.500 0 013 15.500v-9A1.500 1.500 0 014.500 5z"/>'};
+const ic=(n,s)=>'<svg class="ic" viewBox="0 0 24 24" width="'+(s||20)+'" height="'+(s||20)+'" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">'+IC[n]+'</svg>';
+const vShield=(st,icn)=>'<div class="vsh '+(st||'')+'"><i></i><i></i><i></i><div class="core">'+ic(icn||'shield',36)+'</div></div>';
+function vAnim(root){requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  root.querySelectorAll('.fg[data-o]').forEach(e=>e.style.strokeDashoffset=e.dataset.o);
+  root.querySelectorAll('.vbar i[data-w]').forEach(e=>e.style.width=e.dataset.w+'%')}))}
+
 // ---------- экран ----------
 async function vpnScreen(){
   window.RC=0;
   const g=gen,sid=++vsid;vPollGen++;
   const alive=()=>g===gen&&sid===vsid;
-  view.innerHTML='<h2>VPN</h2><div id="vp" class="vp"></div>';
+  view.innerHTML='<div class="vtop"><h2>VPN</h2><span class="vtag">'+ic('shield',14)+'PharmShop</span></div><div id="vp" class="vp"><div class="vsk" style="height:190px"></div><div class="vsk"></div><div class="vsk" style="height:160px"></div></div>';
   const box=$('#vp');
   const sec=await sectionCfg('vpn');
   if(!alive())return;
-  if(sec&&sec.enabled===false){box.innerHTML='<div class="card mute">'+esc(sec.message||'Раздел временно недоступен')+'</div>';return}
+  if(sec&&sec.enabled===false){box.innerHTML='<div class="vhero vs off">'+vShield('off','shieldoff')+'<h3>Раздел недоступен</h3><div class="mute small">'+esc(sec.message||'Раздел временно недоступен')+'</div></div>';return}
   if(!vLoggedIn())return vLoginView(box,alive);
-  box.innerHTML='<div class="mute">Загружаем данные…</div>';
   try{
     const [subs,plans,prov]=await Promise.all([VP.subs(),VP.plans(),VP.providers()]);
     if(!alive())return;
@@ -625,58 +777,97 @@ async function vpnScreen(){
   }catch(x){
     if(!alive())return;
     if(x instanceof VpnAuth)return vpnScreen(); // сессия кончилась — откроется вход
-    box.innerHTML='<div class="mute">Не удалось загрузить данные: '+esc(x.message)+'</div><button class="b" id="rt">Повторить</button>';
+    box.innerHTML='<div class="vhero vs off">'+vShield('off','shieldoff')+'<h3>Не удалось загрузить</h3><div class="mute small" style="margin-bottom:14px">'+esc(x.message)+'</div><button class="vbtn" id="rt">'+ic('renew',19)+'<span>Повторить</span></button></div>';
     $('#rt').onclick=()=>vpnScreen();
   }
 }
 
+// ---------- экран «чат на технических работах» ----------
+const gearPath=(r,R,n)=>{let d='';for(let i=0;i<n*4;i++){const a=i/(n*4)*6.2832,k=(i%4===1||i%4===2)?R:r;d+=(i?'L':'M')+(Math.cos(a)*k).toFixed(1)+' '+(Math.sin(a)*k).toFixed(1)}return d+'Z'};
+const clArt=()=>`<svg viewBox="0 0 230 210"><defs><linearGradient id="clg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--blue)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--blue) 55%,#8B7CFF)"/></linearGradient></defs>
+<circle class="cl-gl" cx="115" cy="100" r="92" fill="var(--blue)" opacity=".1"/>
+<g class="cl-gl"><path d="M44 28h102a24 24 0 0124 24v52a24 24 0 01-24 24H92l-30 26v-26H44a24 24 0 01-24-24V52a24 24 0 0124-24z" fill="url(#clg)"/>
+<circle class="cl-d" cx="65" cy="78" r="7.500" fill="#fff"/><circle class="cl-d" cx="95" cy="78" r="7.500" fill="#fff"/><circle class="cl-d" cx="125" cy="78" r="7.500" fill="#fff"/></g>
+<g transform="translate(168 148)"><path class="cl-g1" fill-rule="evenodd" d="${gearPath(27,34,10)}M11 0A11 11 0 1 0 -11 0A11 11 0 1 0 11 0Z" fill="var(--card)" stroke="var(--blue)" stroke-width="3.500" stroke-linejoin="round"/></g>
+<g transform="translate(120 180)"><path class="cl-g2" fill-rule="evenodd" d="${gearPath(15,20,8)}M6.500 0A6.500 6.500 0 1 0 -6.500 0A6.500 6.500 0 1 0 6.500 0Z" fill="var(--card)" stroke="#FFB020" stroke-width="3" stroke-linejoin="round"/></g>
+<path class="cl-s" d="M200 40q0 8 8 8q-8 0-8 8q0-8-8-8q8 0 8-8z" fill="#FFB020"/><path class="cl-s" d="M16 14q0 6 6 6q-6 0-6 6q0-6-6-6q6 0 6-6z" fill="var(--blue)"/><path class="cl-s" d="M205 104q0 5 5 5q-5 0-5 5q0-5-5-5q5 0 5-5z" fill="var(--green)"/></svg>`;
+function chatClosed(sec){
+  const g=gen;let left=30,busy=false;
+  view.innerHTML='<div class="cl"><div class="cl-art">'+clArt()+'</div><div class="cl-pill"><i></i>Технические работы</div><h2 class="cl-t">'+esc(sec.title||'Чат скоро вернётся')+'</h2><div class="cl-m" id="clm">'+esc(sec.message||'Мы обновляем чат, чтобы он работал лучше. Это ненадолго.')+'</div>'+(sec.sub?'<div class="mute small" style="margin-top:6px">'+esc(sec.sub)+'</div>':'')+'<div class="cl-bar"><i></i></div><div class="mute small">Проверим снова через <b id="clc">30</b> с</div><div class="cl-btns"><button class="vbtn" id="clr">'+ic('renew',19)+'<span>Проверить сейчас</span></button><div class="vrow2"><button class="vbtn alt" id="cls">'+ic('chat',18)+'<span>Поддержка</span></button><button class="vbtn alt" id="clv">'+ic('shield',18)+'<span>VPN</span></button></div></div><div class="mute small cl-ft">VPN и профиль работают как обычно</div></div>';
+  const btn=$('#clr'),cd=$('#clc');
+  async function check(manual){
+    if(busy||g!==gen)return;busy=true;btn.classList.add('ld');
+    let c=null;try{c=await api('/api/app/config')}catch(e){}
+    if(g!==gen)return;busy=false;btn.classList.remove('ld');left=30;
+    if(!c){if(manual)toast('Нет связи с сервером');return}
+    cfgP=Promise.resolve(c);const s=c.sections&&c.sections.chat;
+    if(!s||s.enabled!==false){stop();toast('Чат снова открыт 🎉');chatTab();return}
+    $('#clm').textContent=s.message||'Мы обновляем чат, чтобы он работал лучше. Это ненадолго.';
+    if(manual)toast('Работы ещё идут — скоро закончим');
+  }
+  btn.onclick=()=>check(true);$('#cls').onclick=()=>go('help');$('#clv').onclick=()=>go('vpn');
+  (function tick(){if(g!==gen)return;if(!busy){cd.textContent=Math.max(left,0);if(--left<0)check(false)}timer=setTimeout(tick,1000)})();
+}
+
 // ---------- вход: Telegram и почта ----------
 function vLoginView(box,alive){
-  box.innerHTML='<div class="card"><b style="font-size:18px">Вход через Telegram</b><div class="mute small" style="margin:6px 0 10px">Откроется бот Pharm VPN. Нажмите в нём Start и вернитесь в приложение — вход подтвердится сам.</div><button class="b" id="tg">Войти через Telegram</button><div class="mute small" id="tgi" style="margin-top:8px"></div></div><div class="card" id="em"></div>';
-  const info=$('#tgi');
+  box.innerHTML='<div class="vhero">'+vShield('')+'<span class="vorb o1">'+ic('lock',16)+'</span><span class="vorb o2">'+ic('bolt',16)+'</span><span class="vorb o3">'+ic('globe',16)+'</span><h3>Защита в одно касание</h3><div class="mute small">Войдите, чтобы купить подписку или управлять своей</div></div>'
+  +'<button class="vbtn tg" id="tg">'+ic('send',20)+'<span>Войти через Telegram</span></button><div class="vinfo" id="tgi" hidden></div>'
+  +'<div class="vor"><span>или по почте</span></div><div class="vcard" id="em"></div>';
+  const info=$('#tgi'),tg=$('#tg');
+  const say=(h,spin)=>{info.hidden=false;info.innerHTML=(spin?'<span class="vspn"></span>':'')+'<div style="flex:1">'+h+'</div>'};
   function pollLogin(id,until){
     if(!alive())return;
-    if(Date.now()>until){info.textContent='Время ожидания вышло. Нажмите кнопку ещё раз.';return}
+    if(Date.now()>until){tg.classList.remove('ld');say('Время ожидания вышло. Нажмите кнопку ещё раз.');return}
     VP.pollLogin(id).catch(()=>'error').then((res)=>{
       if(!alive())return;
       if(res==='confirmed')return vpnScreen();
       if(res==='pending'||res==='error')setTimeout(()=>pollLogin(id,until),2000);
-      else info.textContent='Вход не подтверждён ('+res+'). Нажмите кнопку ещё раз.';
+      else{tg.classList.remove('ld');say('Вход не подтверждён ('+esc(res)+'). Нажмите кнопку ещё раз.')}
     });
   }
-  $('#tg').onclick=async()=>{
-    if(vBusy)return;vBusy=true;
+  tg.onclick=async()=>{
+    if(vBusy)return;vBusy=true;tg.classList.add('ld');
     const w=window.open('about:blank','_blank'); // открываем сразу, пока жив тап: иначе браузер заблокирует окно
-    info.textContent='Создаём вход…';
+    say('Создаём вход…',1);
     try{
       const r=await VP.startLogin(),url=String(r.bot_url||''),num=Number(r.number)||0;
       const until=Date.now()+(Number(r.expires_in)||300)*1000;
       if(!/^https:\/\//.test(url))throw new Error('Сайт не вернул ссылку на бота');
-      info.innerHTML=(num?'Ждём подтверждение в Telegram… Номер входа: '+num:'Ждём подтверждение в Telegram…')+' <a href="'+esc(url)+'" target="_blank" rel="noopener">Открыть бота</a>';
+      say('Нажмите Start в Telegram и вернитесь сюда'+(num?' · номер входа <b>'+num+'</b>':'')+'<br><a href="'+esc(url)+'" target="_blank" rel="noopener">Открыть бота ещё раз</a>',1);
       if(w)w.location.href=url;
       pollLogin(String(r.poll_id),until);
-    }catch(x){if(w)w.close();info.textContent='Ошибка: '+x.message}
+    }catch(x){if(w)w.close();tg.classList.remove('ld');say('Ошибка: '+esc(x.message))}
     finally{vBusy=false}
   };
   vEmailAuth($('#em'),alive);
 }
 function vEmailAuth(card,alive){
-  let working=false,savedEmail='';
+  let working=false,savedEmail='',prevP=0;
   const okMail=(s)=>/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(s);
-  const tabs=(m)=>'<div style="margin-bottom:12px"><button class="chip '+(m==='login'?'on':'')+'" data-m="login">Войти</button><button class="chip '+(m==='reg'?'on':'')+'" data-m="reg">Регистрация</button></div>';
-  function bind(){
+  const tabs=(m)=>'<div class="vseg" style="--p:'+prevP+'"><i></i><button data-m="login" class="'+(m==='login'?'on':'')+'">'+ic('lock',16)+'Войти</button><button data-m="reg" class="'+(m==='reg'?'on':'')+'">'+ic('user',16)+'Регистрация</button></div>';
+  const head=(t,s)=>'<div class="vh"><b>'+t+'</b>'+(s?'<div class="mute small">'+s+'</div>':'')+'</div>';
+  const fld=(icn,id,type,ph,ac,val,eye)=>'<div class="vin">'+ic(icn,18)+'<input id="'+id+'" '+(type==='code'?'type="text" inputmode="numeric"':'type="'+type+'"')+' autocomplete="'+ac+'" placeholder="'+ph+'" value="'+esc(val||'')+'">'+(eye?'<button type="button" class="eye" data-eye aria-label="Показать пароль">'+ic('eye',18)+'</button>':'')+'</div>';
+  const btn=(t,icn)=>'<button class="vbtn" id="go">'+ic(icn,19)+'<span>'+t+'</span></button><div class="vmsg" id="i"></div>';
+  const link=(id,t)=>'<div class="vlk" id="'+id+'">'+t+'</div>';
+  function bind(mode){
     card.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{if(!working)render(b.dataset.m)});
+    card.querySelectorAll('[data-eye]').forEach(b=>b.onclick=()=>{const i=b.previousElementSibling,sh=i.type==='password';i.type=sh?'text':'password';b.innerHTML=ic(sh?'eyeoff':'eye',18)});
+    const sg=card.querySelector('.vseg');
+    if(sg&&mode){const p=mode==='reg'?1:0;requestAnimationFrame(()=>requestAnimationFrame(()=>sg.style.setProperty('--p',p)));prevP=p}
   }
   function task(info,wait,work,ok){
-    if(working)return;working=true;info.style.color='var(--mute)';info.textContent=wait;
-    work().then(()=>{working=false;if(alive())ok()}).catch((e)=>{working=false;if(alive()){info.style.color='var(--red)';info.textContent=(e&&e.message)||'Не удалось выполнить запрос'}});
+    if(working)return;working=true;const gb=card.querySelector('#go');gb&&gb.classList.add('ld');info.className='vmsg';info.textContent=wait;
+    const done=()=>{working=false;gb&&gb.classList.remove('ld')};
+    work().then(()=>{done();if(alive())ok()}).catch((e)=>{done();if(alive()){info.className='vmsg bad';info.textContent=(e&&e.message)||'Не удалось выполнить запрос'}});
   }
-  const fail=(info,m)=>{info.style.color='var(--red)';info.textContent=m};
-  const link=(id,t)=>'<div class="lk" id="'+id+'">'+t+'</div>';
+  const fail=(info,m)=>{info.className='vmsg bad';info.textContent=m};
+  const sent=(info)=>{info.className='vmsg ok';info.textContent='Код отправлен ещё раз'};
+  const WAIT='Проверка и отправка кода… это займёт несколько секунд';
   function render(mode,step){
     if(mode==='login'){
-      card.innerHTML=tabs('login')+'<b style="font-size:18px">Вход по почте</b><div style="height:10px"></div><input id="e" type="email" autocomplete="email" placeholder="Почта" value="'+esc(savedEmail)+'"><div style="height:8px"></div><input id="p" type="password" autocomplete="current-password" placeholder="Пароль"><button class="b" id="go">Войти</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('fg','Забыли пароль?');
-      bind();const info=$('#i',card);
+      card.innerHTML=tabs('login')+fld('mail','e','email','Почта','email',savedEmail)+fld('lock','p','password','Пароль','current-password','',1)+btn('Войти','bolt')+link('fg','Забыли пароль?');
+      bind('login');const info=$('#i',card);
       $('#go',card).onclick=()=>{
         const e=$('#e',card).value.trim(),p=$('#p',card).value;savedEmail=e;
         if(!okMail(e))return fail(info,'Проверьте адрес почты');
@@ -685,36 +876,36 @@ function vEmailAuth(card,alive){
       };
       $('#fg',card).onclick=()=>{if(working)return;savedEmail=$('#e',card).value.trim();render('reset')};
     }else if(mode==='reg'&&!step){
-      card.innerHTML=tabs('reg')+'<b style="font-size:18px">Регистрация</b><div class="mute small" style="margin:6px 0 10px">Укажите почту и придумайте пароль — пришлём код подтверждения.</div><input id="e" type="email" autocomplete="email" placeholder="Почта" value="'+esc(savedEmail)+'"><div style="height:8px"></div><input id="p" type="password" autocomplete="new-password" placeholder="Пароль"><button class="b" id="go">Получить код</button><div class="small mute" id="i" style="margin-top:8px"></div>';
-      bind();const info=$('#i',card);
+      card.innerHTML=tabs('reg')+fld('mail','e','email','Почта','email',savedEmail)+fld('lock','p','password','Придумайте пароль','new-password','',1)+btn('Получить код','send')+'<div class="mute small" style="text-align:center;margin-top:8px">Пришлём код подтверждения на почту</div>';
+      bind('reg');const info=$('#i',card);
       $('#go',card).onclick=()=>{
         const e=$('#e',card).value.trim(),p=$('#p',card).value;savedEmail=e;
         if(!okMail(e))return fail(info,'Проверьте адрес почты');
         if(p.length<6)return fail(info,'Пароль слишком короткий');
-        task(info,'Проверка и отправка кода… это займёт несколько секунд',()=>VP.registerRequest(e,p),()=>render('reg',{pwd:p}));
+        task(info,WAIT,()=>VP.registerRequest(e,p),()=>render('reg',{pwd:p}));
       };
     }else if(mode==='reg'){
       const pwd=step.pwd;
-      card.innerHTML=tabs('reg')+'<b style="font-size:18px">Код из письма</b><div class="mute small" style="margin:6px 0 10px">Код отправлен на '+esc(savedEmail)+'</div><input id="c" inputmode="numeric" placeholder="Код из письма"><button class="b" id="go">Подтвердить</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('rs','Отправить код ещё раз')+link('ch','Изменить почту или пароль');
-      bind();const info=$('#i',card);
+      card.innerHTML=tabs('reg')+head('Код из письма','Отправили на '+esc(savedEmail))+fld('key','c','code','Код из письма','one-time-code')+btn('Подтвердить','check')+link('rs','Отправить код ещё раз')+link('ch','Изменить почту или пароль');
+      bind('reg');const info=$('#i',card);
       $('#go',card).onclick=()=>{
         const c=$('#c',card).value.trim();if(!c)return fail(info,'Введите код из письма');
         task(info,'Подтверждаем…',()=>VP.registerConfirm(savedEmail,c,pwd),()=>vpnScreen());
       };
-      $('#rs',card).onclick=()=>task(info,'Проверка и отправка кода… это займёт несколько секунд',()=>VP.registerRequest(savedEmail,pwd),()=>{info.style.color='var(--mute)';info.textContent='Код отправлен ещё раз'});
+      $('#rs',card).onclick=()=>task(info,WAIT,()=>VP.registerRequest(savedEmail,pwd),()=>sent(info));
       $('#ch',card).onclick=()=>{if(!working)render('reg')};
     }else if(mode==='reset'&&!step){
-      card.innerHTML='<b style="font-size:18px">Сброс пароля</b><div class="mute small" style="margin:6px 0 10px">Пришлём код на почту — по нему можно задать новый пароль.</div><input id="e" type="email" autocomplete="email" placeholder="Почта" value="'+esc(savedEmail)+'"><button class="b" id="go">Получить код</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('bk','Назад ко входу');
+      card.innerHTML=head('Сброс пароля','Пришлём код на почту — по нему можно задать новый пароль')+fld('mail','e','email','Почта','email',savedEmail)+btn('Получить код','send')+link('bk','← Назад ко входу');
       const info=$('#i',card);
       $('#go',card).onclick=()=>{
         const e=$('#e',card).value.trim();savedEmail=e;
         if(!okMail(e))return fail(info,'Проверьте адрес почты');
-        task(info,'Проверка и отправка кода… это займёт несколько секунд',()=>VP.resetRequest(e),()=>render('reset',{sent:1}));
+        task(info,WAIT,()=>VP.resetRequest(e),()=>render('reset',{sent:1}));
       };
       $('#bk',card).onclick=()=>{if(!working)render('login')};
     }else{
-      card.innerHTML='<b style="font-size:18px">Сброс пароля</b><div class="mute small" style="margin:6px 0 10px">Код отправлен на '+esc(savedEmail)+'</div><input id="c" inputmode="numeric" placeholder="Код из письма"><div style="height:8px"></div><input id="p" type="password" autocomplete="new-password" placeholder="Новый пароль"><button class="b" id="go">Сменить пароль</button><div class="small mute" id="i" style="margin-top:8px"></div>'+link('rs','Отправить код ещё раз')+link('bk','Назад ко входу');
-      const info=$('#i',card);
+      card.innerHTML=head('Новый пароль','Код отправлен на '+esc(savedEmail))+fld('key','c','code','Код из письма','one-time-code')+fld('lock','p','password','Новый пароль','new-password','',1)+btn('Сменить пароль','check')+link('rs','Отправить код ещё раз')+link('bk','← Назад ко входу');
+      bind();const info=$('#i',card);
       $('#go',card).onclick=()=>{
         const c=$('#c',card).value.trim(),p=$('#p',card).value;
         if(!c)return fail(info,'Введите код из письма');
@@ -724,7 +915,7 @@ function vEmailAuth(card,alive){
           if(signed)vpnScreen();else{toast('Пароль изменён — войдите с новым');render('login')}
         });
       };
-      $('#rs',card).onclick=()=>task(info,'Проверка и отправка кода…',()=>VP.resetRequest(savedEmail),()=>{info.style.color='var(--mute)';info.textContent='Код отправлен ещё раз'});
+      $('#rs',card).onclick=()=>task(info,'Проверка и отправка кода…',()=>VP.resetRequest(savedEmail),()=>sent(info));
       $('#bk',card).onclick=()=>{if(!working)render('login')};
     }
   }
@@ -739,15 +930,17 @@ function vForm(box,alive,subs,plansAll,prov){
   const canBuy=list.length>0&&methods.length>0;
   const S={tab:(vTabSel===0||vTabSel===1)?vTabSel:(subs.length>0?0:1),
     plan:list.find(p=>p.is_popular)||list[0]||{},method:methods.length?methods[0][0]:'',quote:null,qTok:0};
-  box.innerHTML='<div id="pb"></div><div class="seg"><button data-tab="0">Моя подписка</button><button data-tab="1">Купить подписку</button></div><div id="vc"></div>';
+  const best=subs.find(s=>s.is_active&&!s.is_frozen)||null,frz=!best&&subs.find(s=>s.is_frozen);
+  const hs=best?'ok':frz?'fr':'off';
+  box.innerHTML='<div class="vhero vs '+hs+'">'+vShield(hs,best?'shield':frz?'snow':'shieldoff')+'<h3>'+(best?'Защита включена':frz?'Подписка заморожена':'Нет активной подписки')+'</h3><div class="mute small">'+(best?'Осталось '+vDays(best.days_left)+' · до '+vDate(best.end_date):frz?'Разморозьте её, чтобы снова пользоваться VPN':'Выберите тариф — ключ появится здесь сразу после оплаты')+'</div></div><div id="pb"></div><div class="vseg" id="sg" style="--p:'+S.tab+'"><i></i><button data-tab="0">'+ic('shield',17)+'Моя подписка</button><button data-tab="1">'+ic('bag',17)+'Купить</button></div><div id="vc"></div>';
   const vc=$('#vc',box);
 
   // платёж создан, но ещё не подтверждён
   function paintPending(){
     const id=LS.get('vpn_pay'),pb=$('#pb',box);
     if(!id){pb.innerHTML='';return}
-    pb.innerHTML='<div class="card" style="border-color:var(--blue)"><div id="pw">⏳ Ждём подтверждение оплаты…</div><div class="g2" style="margin-top:10px"><button class="gb pr" id="pn">Проверить сейчас</button><button class="gb" id="px">Не жду</button></div></div>';
-    $('#pn',box).onclick=()=>{$('#pw',box).textContent='⏳ Проверяем оплату…';pollPay(id,0,++vPollGen)};
+    pb.innerHTML='<div class="vpend"><span class="vspn"></span><div style="flex:1"><b>Ждём оплату</b><div class="small mute" id="pw">Подтверждение придёт автоматически</div></div></div><div class="vrow2"><button class="vbtn alt" id="pn">'+ic('renew',18)+'<span>Проверить</span></button><button class="vbtn gh" id="px"><span>Не жду</span></button></div>';
+    $('#pn',box).onclick=()=>{$('#pw',box).textContent='Проверяем оплату…';pollPay(id,0,++vPollGen)};
     $('#px',box).onclick=()=>{LS.set('vpn_pay','');vPollGen++;paintPending()};
   }
   function pollPay(id,tries,gp){
@@ -758,11 +951,11 @@ function vForm(box,alive,subs,plansAll,prov){
     }).catch((e)=>e instanceof VpnAuth?'auth':'wait').then((res)=>{
       if(!alive()||gp!==vPollGen)return;
       const pw=$('#pw',box);
-      if(res==='done'){LS.set('vpn_pay','');toast('Оплата прошла — подписка готова');vpnScreen()}
+      if(res==='done'){const pk=LS.get('vpn_pk');if(pk)LS.set('ach_'+pk,'1');LS.set('vpn_pk','');LS.set('vpn_pay','');toast('Оплата прошла — подписка готова');vpnScreen()}
       else if(res==='failed'){LS.set('vpn_pay','');toast('Платёж отменён или истёк');vpnScreen()}
       else if(res==='auth')vpnScreen();
       else if(tries>=60){if(pw)pw.textContent='Оплата пока не подтвердилась. Нажмите «Проверить сейчас» после оплаты.'}
-      else{if(pw)pw.textContent='⏳ Ждём подтверждение оплаты…';setTimeout(()=>pollPay(id,tries+1,gp),4000)}
+      else{if(pw)pw.textContent='Ждём подтверждение оплаты…';setTimeout(()=>pollPay(id,tries+1,gp),4000)}
     });
   }
   // вернулись во вкладку после оплаты — проверяем сразу
@@ -770,13 +963,13 @@ function vForm(box,alive,subs,plansAll,prov){
   document.addEventListener('visibilitychange',onVis);
 
   // создаёт платёж (покупка, продление, трафик, пополнение) и открывает страницу оплаты
-  async function payWith(note,create){
+  async function payWith(note,create,kind){
     if(vBusy)return;if(LS.get('cpay')&&!confirm('Перейти к оплате?'))return;vBusy=true;
     const w=window.open('about:blank','_blank'); // пока жив тап, иначе окно оплаты заблокируют
     note.hidden=false;note.textContent='Создаём платёж…';
     try{
       const r=await create(),id=r.payment_id||'',url=String(r.invoice_url||'');
-      if(id)LS.set('vpn_pay',id);
+      if(id){LS.set('vpn_pay',id);LS.set('vpn_pk',kind||'')}
       if(!/^https:\/\//.test(url)){if(w)w.close();note.textContent='Сайт не вернул ссылку на оплату';return}
       note.innerHTML='Платёж создан. Если страница оплаты не открылась — <a href="'+esc(url)+'" target="_blank" rel="noopener">откройте её здесь</a>.';
       if(w)w.location.href=url;
@@ -790,47 +983,44 @@ function vForm(box,alive,subs,plansAll,prov){
   const guard=(fn)=>async(...a)=>{try{await fn(...a)}catch(x){if(x instanceof VpnAuth)vpnScreen();else toast('Ошибка: '+x.message)}};
 
   // ---------- вкладка «Моя подписка» ----------
+  const CIRC=2*Math.PI*30;
   function subCard(s,i){
-    const active=!!s.is_active,url=String(s.subscription_url||''),lim=Number(s.traffic_limit_bytes)||0;
-    const name=vPlanName(s.plan_name||'Подписка'),end=vDate(s.end_date);
-    const line=s.is_frozen?'Заморожена · до '+end:active?'Активна · осталось '+vDays(s.days_left)+' · до '+end:'Не активна · до '+end;
-    const sid=VP.subId(s);
-    let h='<div class="card" data-i="'+i+'" style="'+(active?'border-color:var(--blue)':'')+'"><b style="font-size:16px">'+esc(name)+' · '+vDevs(s.devices)+'</b>';
-    h+='<div class="small" style="margin:4px 0 8px;color:'+(active?'var(--green)':'var(--mute)')+'">'+esc(line)+'</div>';
-    if(lim>0)h+='<div class="small mute" style="margin-bottom:8px">Трафик: '+vGb(s.used_traffic_bytes)+' из '+vGb(lim)+'</div>';
-    const acts=[];
+    const active=!!s.is_active,frozen=!!s.is_frozen,url=String(s.subscription_url||''),lim=Number(s.traffic_limit_bytes)||0,used=Number(s.used_traffic_bytes)||0;
+    const name=vPlanName(s.plan_name||'Подписка'),end=vDate(s.end_date),sid=VP.subId(s);
+    const col=frozen?'#22C1DC':active?'var(--green)':'var(--mute)',st=frozen?'Заморожена':active?'Активна':'Не активна';
+    const dl=Math.max(0,Number(s.days_left)||0),tot=Number(s.days)||Math.max(dl,30),pc=Math.min(1,dl/tot);
+    let h='<div class="vc'+(active&&!frozen?' on':'')+'" data-i="'+i+'" style="--d:'+(i*.08)+'s"><div class="vc-h"><div class="vring"><svg viewBox="0 0 74 74" width="74" height="74"><circle class="bg" cx="37" cy="37" r="30"/><circle class="fg" cx="37" cy="37" r="30" style="stroke:'+col+';stroke-dasharray:'+CIRC.toFixed(1)+';stroke-dashoffset:'+CIRC.toFixed(1)+'" data-o="'+(CIRC*(1-pc)).toFixed(1)+'"/></svg><b>'+dl+'<small>'+vDays(dl).split(' ')[1]+'</small></b></div>'
+      +'<div class="vc-t"><b>'+esc(name)+'</b><span class="vpill">'+ic('phone',13)+vDevs(s.devices)+'</span><span class="vst" style="--c:'+col+'"><i></i>'+st+' · до '+end+'</span></div></div>';
+    if(lim>0){const p2=Math.min(100,Math.round(used/lim*100));h+='<div class="vtr"><div class="vtrh"><span>'+ic('chart',15)+'Трафик</span><b>'+vGb(used)+' из '+vGb(lim)+'</b></div><div class="vbar'+(p2>=90?' hi':'')+'"><i data-w="'+p2+'"></i></div></div>'}
     if(/^https:\/\//.test(url)){
-      h+=LS.get('vmask')?'<div class="lnk" data-u="'+esc(url)+'" onclick="this.textContent=this.dataset.u">••••••••••• нажмите, чтобы показать</div>':'<div class="lnk">'+esc(url)+'</div>';
-      acts.push(['copy','Скопировать ссылку',1],['client','Открыть в клиенте']);
+      h+='<div class="vlink">'+(LS.get('vmask')?'<span data-u="'+esc(url)+'" onclick="this.textContent=this.dataset.u">••••••••••• нажмите, чтобы показать</span>':'<span>'+esc(url)+'</span>')+'<button class="vib" data-act="copy" aria-label="Скопировать ссылку">'+ic('copy',19)+'</button></div><button class="vbtn" data-act="client">'+ic('bolt',20)+'<span>Подключить</span></button>';
     }
+    const T=(a,icn,t,c)=>'<button class="vt'+(c==='dg'?' dg':'')+'" data-act="'+a+'"'+(c&&c!=='dg'?' style="--c:'+c+'"':'')+'><span class="vti">'+ic(icn,20)+'</span>'+t+'</button>';
+    const tl=[];
     if(sid){
-      acts.push(['renew','Продлить',1]);
-      if(!s.is_trial&&!s.is_lifetime)acts.push(['upg','Больше устройств']);
-      acts.push([s.is_frozen?'unfreeze':'freeze',s.is_frozen?'Разморозить':'Заморозить']);
-      acts.push(['rot','Обновить ссылку']);
-      if(lim>0)acts.push(['traf','Докупить трафик']);
-      acts.push(['devs','Устройства']);
+      tl.push(T('renew','renew','Продлить','var(--green)'));
+      if(!s.is_trial&&!s.is_lifetime)tl.push(T('upg','users','Больше устройств','#8B7CFF'));
+      if(lim>0)tl.push(T('traf','chart','Докупить трафик','#FF9A3D'));
+      tl.push(T('devs','phone','Мои устройства'));
+      tl.push(frozen?T('unfreeze','sun','Разморозить','#FFC233'):T('freeze','snow','Заморозить','#22C1DC'));
+      tl.push(T('rot','link','Новая ссылка','#F472B6'));
     }
-    h+='<div class="g2">'+acts.map(a=>'<button class="gb'+(a[2]?' pr':'')+'" data-act="'+a[0]+'">'+a[1]+'</button>').join('')+'</div>';
-    h+='<div class="small mute" data-note hidden style="margin-top:8px"></div><div data-devs hidden style="margin-top:8px"></div></div>';
-    return h;
+    if(tl.length)h+='<div class="vgrid">'+tl.join('')+'</div>';
+    return h+'<div class="small mute vnote" data-note hidden></div><div data-devs hidden></div></div>';
   }
   function fillMine(){
     let h='';
-    if(!subs.length)h='<div class="card"><b style="font-size:16px">Подписки пока нет</b><div class="mute small" style="margin:4px 0 12px">Выберите тариф на вкладке «Купить подписку» — ключ появится здесь сразу после оплаты.</div><button class="b" data-act="tobuy">Купить подписку</button></div>';
+    if(!subs.length)h='<div class="vc vempty"><div class="vemo">'+ic('shield',38)+'</div><b style="font-size:18px">Подписки пока нет</b><div class="mute small">Выберите тариф — ключ появится здесь сразу после оплаты</div><button class="vbtn" data-act="tobuy">'+ic('bag',19)+'<span>Выбрать тариф</span></button></div>';
     else h=subs.map(subCard).join('');
-    const ex=[];
-    if(methods.length)ex.push('<button class="gb" data-act="topup">Пополнить баланс</button>');
-    ex.push('<button class="gb" data-act="out">Выйти из аккаунта VPN</button>');
-    h+='<div class="g2">'+ex.join('')+'</div><div class="small mute" id="tn" hidden style="margin-top:8px"></div>';
-    vc.innerHTML=h;
+    h+='<div class="vrow2">'+(methods.length?'<button class="vbtn alt" data-act="topup">'+ic('wallet',18)+'<span>Пополнить</span></button>':'')+'<button class="vbtn alt dgt" data-act="out">'+ic('logout',18)+'<span>Выйти</span></button></div><div class="small mute vnote" id="tn" hidden></div>';
+    vc.innerHTML=h;vAnim(vc);
   }
 
   // ---------- вкладка «Купить подписку» ----------
   function paintTotal(){
     const q=S.quote;let minor=-1;
     if(q){const bp=q.provider_totals&&q.provider_totals[S.method];minor=(bp!=null&&bp>=0)?bp:(q.total_display_minor!=null?q.total_display_minor:-1)}
-    const t=$('#tot',box);if(t)t.textContent=minor>=0?vRub(minor):'—';
+    const t=$('#tot',box);if(t){t.textContent=minor>=0?vRub(minor):'—';t.classList.remove('bump');void t.offsetWidth;if(minor>=0)t.classList.add('bump')}
   }
   function requestQuote(){
     const my=++S.qTok,uuid=S.plan.uuid;S.quote=null;
@@ -838,30 +1028,38 @@ function vForm(box,alive,subs,plansAll,prov){
     const t=$('#tot',box);if(t)t.textContent='…';
     VP.quote(uuid).then((r)=>{if(my===S.qTok&&alive()){S.quote=r;paintTotal()}}).catch(()=>{if(my===S.qTok&&alive()){const t2=$('#tot',box);if(t2)t2.textContent='—'}});
   }
-  function fillBuy(){
-    if(!canBuy){vc.innerHTML='<div class="mute">Покупка VPN сейчас недоступна</div>';return}
+  function paintPlans(){
     const dayVals=[...new Set(list.map(p=>p.days))];
-    const opt=(v,t,sel)=>'<option value="'+esc(v)+'"'+(sel?' selected':'')+'>'+esc(t)+'</option>';
-    const levels=()=>list.filter(p=>p.days===S.plan.days).map(p=>opt(p.uuid,vPlanLabel(p),p.uuid===S.plan.uuid)).join('');
-    vc.innerHTML='<label class="mute small">Срок</label><select id="sd">'+dayVals.map(d=>opt(d,vDays(d),d===S.plan.days)).join('')+'</select>'
-      +'<label class="mute small">Уровень подписки</label><select id="sl">'+levels()+'</select>'
-      +'<label class="mute small">Способ оплаты</label><select id="sm">'+methods.map(m=>opt(m[0],m[1],m[0]===S.method)).join('')+'</select>'
-      +'<div class="paybar"><div style="flex:1"><div class="mute small" id="cap">К оплате</div><div id="tot" style="font-size:20px;font-weight:700">—</div></div><button class="b" id="pay" style="width:auto;margin:0;padding:12px 26px">Оплатить</button></div><div class="small mute" id="pi" hidden style="margin-top:8px"></div>';
-    $('#sd',vc).onchange=(e)=>{
-      const d=Number(e.target.value),inDays=list.filter(p=>p.days===d);
-      S.plan=inDays.find(p=>p.name===S.plan.name)||inDays.find(p=>p.is_popular)||inDays[0];
-      $('#sl',vc).innerHTML=levels();requestQuote();
+    $('#dp',vc).innerHTML=dayVals.map(d=>'<button data-d="'+d+'" class="'+(d===S.plan.days?'on':'')+'">'+vDays(d)+'</button>').join('');
+    $('#pl',vc).innerHTML=list.filter(p=>p.days===S.plan.days).map((p,k)=>{
+      const bd=p.is_special?'Особый':p.is_popular?'Популярный':'';
+      return '<button class="vplan'+(p.uuid===S.plan.uuid?' on':'')+'" data-u="'+esc(p.uuid)+'" style="animation-delay:'+(k*.06)+'s">'+(bd?'<span class="vbd">'+bd+'</span>':'')+'<span class="vn">'+(p.devices|0)+'</span><span class="vm"><b>'+esc(vPlanName(p.name))+'</b><span>'+vDevs(p.devices)+'</span></span><span class="vpr">'+vRub(p.total_price_display)+'</span><span class="vck">'+ic('check',13)+'</span></button>'}).join('');
+  }
+  function fillBuy(){
+    if(!canBuy){vc.innerHTML='<div class="vc vempty"><div class="vemo">'+ic('bag',38)+'</div><b style="font-size:18px">Покупка сейчас недоступна</b><div class="mute small">Загляните позже</div></div>';return}
+    vc.innerHTML='<div class="vlab" style="margin-top:2px">'+ic('clock',15)+'На какой срок</div><div class="vpills" id="dp"></div><div class="vlab">'+ic('star',15)+'Тариф</div><div id="pl"></div><div class="vlab" style="margin-top:6px">'+ic('wallet',15)+'Способ оплаты</div><div class="vmeths" id="mt">'+methods.map(m=>'<button data-m="'+esc(m[0])+'" class="'+(m[0]===S.method?'on':'')+'">'+ic('card',16)+esc(m[1])+'</button>').join('')+'</div><div class="vpay"><div style="flex:1;min-width:0"><div class="mute small" id="cap">К оплате</div><div id="tot" class="vtot">—</div></div><button class="vbtn" id="pay">'+ic('card',19)+'<span>Оплатить</span></button></div><div class="small mute vnote" id="pi" hidden></div>';
+    paintPlans();
+    $('#dp',vc).onclick=(e)=>{
+      const b=e.target.closest('[data-d]');if(!b)return;const d=Number(b.dataset.d),inDays=list.filter(p=>p.days===d);
+      S.plan=inDays.find(p=>p.name===S.plan.name)||inDays.find(p=>p.is_popular)||inDays[0];paintPlans();requestQuote();
     };
-    $('#sl',vc).onchange=(e)=>{S.plan=list.find(p=>p.uuid===e.target.value)||S.plan;requestQuote()};
-    $('#sm',vc).onchange=(e)=>{S.method=e.target.value;paintTotal()};
-    $('#pay',vc).onclick=()=>payWith($('#pi',vc),()=>VP.intent(S.plan.uuid,S.method));
+    $('#pl',vc).onclick=(e)=>{
+      const b=e.target.closest('[data-u]');if(!b)return;S.plan=list.find(p=>p.uuid===b.dataset.u)||S.plan;
+      vc.querySelectorAll('.vplan').forEach(x=>x.classList.toggle('on',x===b));requestQuote();
+    };
+    $('#mt',vc).onclick=(e)=>{
+      const b=e.target.closest('[data-m]');if(!b)return;S.method=b.dataset.m;
+      vc.querySelectorAll('#mt button').forEach(x=>x.classList.toggle('on',x===b));paintTotal();
+    };
+    $('#pay',vc).onclick=()=>payWith($('#pi',vc),()=>VP.intent(S.plan.uuid,S.method),'buy');
     requestQuote();
   }
   function showTab(){
-    box.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',Number(b.dataset.tab)===S.tab));
+    const sg=$('#sg',box);sg.style.setProperty('--p',S.tab);
+    sg.querySelectorAll('button').forEach(b=>b.classList.toggle('on',Number(b.dataset.tab)===S.tab));
     S.tab===0?fillMine():fillBuy();
   }
-  box.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{const t=Number(b.dataset.tab);if(S.tab!==t){S.tab=t;vTabSel=t;showTab()}});
+  box.querySelectorAll('#sg button').forEach(b=>b.onclick=()=>{const t=Number(b.dataset.tab);if(S.tab!==t){S.tab=t;vTabSel=t;showTab()}});
 
   // ---------- действия ----------
   const pickMethod=(title,cb)=>listSheet(title,methods.map(m=>m[1]),(i)=>cb(methods[i][0]));
@@ -870,7 +1068,7 @@ function vForm(box,alive,subs,plansAll,prov){
     inputSheet('Пополнить баланс','сумма, ₽',prefill,(text)=>{
       const rub=parseInt(text,10);
       if(!(rub>=1)){toast('Введите сумму в рублях');return false}
-      pickMethod('Способ оплаты',(prov2)=>payWith(note,()=>VP.topup(rub*100,prov2)));
+      pickMethod('Способ оплаты',(prov2)=>payWith(note,()=>VP.topup(rub*100,prov2),'topup'));
     });
   }
   function pickRenewDays(sid,note){
@@ -893,7 +1091,7 @@ function vForm(box,alive,subs,plansAll,prov){
     const items=methods.map(([id,name])=>{const m=totals&&totals[id];return m!=null&&m>=0?name+' — '+vRub(m):name});
     const end=String((q&&q.new_end_date)||'');
     const title=end.length>=10?'Продлить до '+vDate(end):'Продлить подписку';
-    listSheet(title,items,(i)=>payWith(note,()=>VP.renew(sid,methods[i][0],days)));
+    listSheet(title,items,(i)=>payWith(note,()=>VP.renew(sid,methods[i][0],days),'renew'));
   }
   async function startUpgrade(s,sid,note){
     note.hidden=false;note.textContent='Считаем доплату…';
@@ -919,7 +1117,7 @@ function vForm(box,alive,subs,plansAll,prov){
           });
         }else confirmSheet('Перейти на «'+name+'»?','С баланса спишется '+vRub(charge)+'. Срок подписки не изменится.','Перейти',guard(async()=>{
           if(vBusy)return;vBusy=true;
-          try{await VP.upgrade(sid,p.uuid);toast('Тариф изменён');vpnScreen()}finally{vBusy=false}
+          try{await VP.upgrade(sid,p.uuid);LS.set('ach_upg','1');toast('Тариф изменён');vpnScreen()}finally{vBusy=false}
         }));
       });
     }catch(e){
@@ -928,26 +1126,23 @@ function vForm(box,alive,subs,plansAll,prov){
     }
   }
   async function loadDevices(card,sid){
-    const dv=$('[data-devs]',card);dv.innerHTML='<div class="small mute">Загружаем устройства…</div>';
+    const dv=$('[data-devs]',card);dv.innerHTML='<div class="vdevs"><div class="vsk" style="height:56px;margin:0"></div></div>';
     try{
       const devs=await VP.devices(sid);
       let blocks=[];try{blocks=await VP.deviceBlocks(sid)}catch(e){if(e instanceof VpnAuth)throw e}
-      let h='<b>Устройства: '+devs.length+'</b>';
-      if(!devs.length)h+='<div class="small mute">Пока ни одно устройство не подключено</div>';
+      const row=(nm,sub,b)=>'<div class="vdev"><span class="vdi">'+ic('phone',18)+'</span><div style="flex:1;min-width:0"><div class="vdn">'+esc(nm)+'</div><div class="small mute">'+esc(sub)+'</div></div>'+b+'</div>';
+      let h='<div class="vdevs"><div class="vlab" style="margin:0 0 4px">'+ic('phone',15)+'Устройства · '+devs.length+'</div>';
+      if(!devs.length)h+='<div class="small mute" style="padding:6px 0">Пока ни одно устройство не подключено</div>';
       devs.forEach((d,k)=>{
-        const nm=d.name||d.model||'Устройство';
         const sub=[d.os,d.ip,'был '+vDateTime(d.last_seen)].filter(x=>x&&x!=='null').join(' · ');
-        h+='<div class="dm"><div><div>'+esc(nm)+'</div><div class="small mute">'+esc(sub)+'</div></div><button class="chip" data-dd="'+k+'" style="margin:0">Отключить</button></div>';
+        h+=row(d.name||d.model||'Устройство',sub,'<button class="vchip dg" data-dd="'+k+'">Отключить</button>');
       });
-      if(blocks.length){
-        h+='<div class="small mute" style="margin-top:8px">Отключённые</div>';
-        blocks.forEach((b,k)=>{h+='<div class="dm"><div><div>'+esc(b.name||'Устройство')+'</div><div class="small mute">отключено '+esc(vDateTime(b.blocked_at))+'</div></div><button class="chip" data-du="'+k+'" style="margin:0">Вернуть</button></div>'});
-      }
-      dv.innerHTML=h;
+      if(blocks.length){h+='<div class="vlab" style="margin:14px 0 4px">'+ic('lock',15)+'Отключённые</div>';blocks.forEach((b,k)=>{h+=row(b.name||'Устройство','отключено '+vDateTime(b.blocked_at),'<button class="vchip" data-du="'+k+'">Вернуть</button>')})}
+      dv.innerHTML=h+'</div>';
       dv.querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{
         const d=devs[Number(b.dataset.dd)],nm=d.name||d.model||'Устройство';
         confirmSheet('Отключить «'+nm+'»?','Устройство потеряет доступ. Вернуть его можно в списке отключённых.','Отключить',guard(async()=>{
-          await VP.disconnectDevice(sid,d.id);toast('Устройство отключено');loadDevices(card,sid);
+          await VP.disconnectDevice(sid,d.id);LS.set('ach_dis','1');toast('Устройство отключено');loadDevices(card,sid);
         }),true);
       });
       dv.querySelectorAll('[data-du]').forEach(b=>b.onclick=guard(async()=>{
@@ -955,7 +1150,7 @@ function vForm(box,alive,subs,plansAll,prov){
       }));
     }catch(e){
       if(e instanceof VpnAuth)return vpnScreen();
-      dv.innerHTML='<div class="small mute">Не удалось загрузить: '+esc(e.message)+'</div>';
+      dv.innerHTML='<div class="vdevs small mute">Не удалось загрузить: '+esc(e.message)+'</div>';
     }
   }
   async function copyText(t){
@@ -974,7 +1169,7 @@ function vForm(box,alive,subs,plansAll,prov){
     else if(act==='copy'){copyText(s.subscription_url).then(ok=>{if(ok)LS.set('ach_copy','1');if(ok&&LS.get('clip'))setTimeout(()=>{try{navigator.clipboard.writeText(' ')}catch(e){}},60000);toast(ok?'Ссылка подписки скопирована':'Не удалось скопировать — выделите ссылку вручную')})}
     else if(act==='client'){
       const url=s.subscription_url,apps=[['Happ','happ://add/'+url],['v2rayTun','v2raytun://import/'+url],['Hiddify','hiddify://import/'+url]];
-      listSheet('Открыть в приложении',apps.map(a=>a[0]),(i)=>{toast('Если '+apps[i][0]+' не открылся — скопируйте ссылку и добавьте подписку вручную');location.href=apps[i][1]});
+      listSheet('Открыть в приложении',apps.map(a=>a[0]),(i)=>{LS.set('ach_client','1');toast('Если '+apps[i][0]+' не открылся — скопируйте ссылку и добавьте подписку вручную');location.href=apps[i][1]});
     }
     else if(act==='renew'){if(!vBusy)pickRenewDays(sid,note)}
     else if(act==='upg'){if(!vBusy)startUpgrade(s,sid,note)}
@@ -982,7 +1177,7 @@ function vForm(box,alive,subs,plansAll,prov){
       const frozen=act==='unfreeze';
       const go=guard(async()=>{
         if(vBusy)return;vBusy=true;
-        try{await(frozen?VP.unfreeze(sid):VP.freeze(sid));toast(frozen?'Подписка разморожена':'Подписка заморожена');vpnScreen()}finally{vBusy=false}
+        try{await(frozen?VP.unfreeze(sid):VP.freeze(sid));if(!frozen)LS.set('ach_freeze','1');toast(frozen?'Подписка разморожена':'Подписка заморожена');vpnScreen()}finally{vBusy=false}
       });
       if(frozen)go();else confirmSheet('Заморозить подписку?','Подписка будет приостановлена. Разморозить её можно в любой момент.','Заморозить',go);
     }
@@ -991,7 +1186,7 @@ function vForm(box,alive,subs,plansAll,prov){
       if(avail.length>=19&&avail!=='null'&&avail.slice(0,19)>now)return toast('Ссылку можно обновить с '+vDateTime(avail));
       confirmSheet('Обновить ссылку?','Старая ссылка перестанет работать, и по ней больше никто не подключится. Кто уже подключился по ней, останется до конца срока подписки.','Обновить',guard(async()=>{
         if(vBusy)return;vBusy=true;
-        try{await VP.rotateLink(sid);toast('Ссылка обновлена');vpnScreen()}finally{vBusy=false}
+        try{await VP.rotateLink(sid);LS.set('ach_rot','1');toast('Ссылка обновлена');vpnScreen()}finally{vBusy=false}
       }));
     }
     else if(act==='traf'){
@@ -1000,7 +1195,7 @@ function vForm(box,alive,subs,plansAll,prov){
         note.hidden=true;
         if(!packs.length)return toast('Пакетов трафика сейчас нет');
         const items=packs.map(p=>p.gb+' ГБ — '+vRub(p.total_display));
-        listSheet('Докупить трафик',items,(i)=>pickMethod('Способ оплаты',(prov2)=>payWith(note,()=>VP.trafficIntent(sid,packs[i].gb,prov2))));
+        listSheet('Докупить трафик',items,(i)=>pickMethod('Способ оплаты',(prov2)=>payWith(note,()=>VP.trafficIntent(sid,packs[i].gb,prov2),'traffic')));
       }).catch((x)=>{if(x instanceof VpnAuth)vpnScreen();else note.textContent='Не удалось загрузить пакеты: '+x.message});
     }
     else if(act==='devs'){
@@ -1054,12 +1249,12 @@ function msgMenu(b){
   if(it.length)listSheet(nick||'Сообщение',it.map(x=>x[0]),(i)=>it[i][1]());
 }
 function whatsNew(){
-  const it=[['🏆','Уровни по времени','10 уровней от Новичка до Легенды: чем дольше вы с нами, тем выше уровень. Плитки сообщений и дней убраны.'],['🔑','Достижения VPN','Подписчик, Ссылка, 10 ГБ и Под замком. Нажмите на любое достижение, чтобы увидеть, как его получить.']];
+  const it=[['🛡️','Новый раздел VPN','Красивый вход, карточка подписки с кольцом дней и трафиком, покупка в пару касаний.'],['🚀','10 новых достижений VPN','Запуск, Семейный, Надолго, Продление, Запас трафика, Апгрейд, Заморозка, Новая ссылка, Порядок и 100 ГБ.'],['🛠️','Экран техработ','Если чат закрыт на обслуживание, вы увидите понятный экран и сможете сразу проверить, открылся ли он.']];
   sheetOpen('Что нового',it.map(x=>'<div style="display:flex;gap:10px;margin:12px 0"><span style="font-size:20px">'+x[0]+'</span><div><b>'+x[1]+'</b><div class="mute small">'+x[2]+'</div></div></div>').join(''));
 }
 document.addEventListener('click',(e)=>{if(LS.get('hap')&&e.target.closest('button,.card')&&navigator.vibrate)navigator.vibrate(8)});
 // ---------- вкладка «Настройки» (как в Android) ----------
-const VER='1.2.0',BUILD=6,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
+const VER='1.3.0',BUILD=7,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
 const isLight=()=>{const m=TH('mode',1);return m===2||(m===0&&matchMedia('(prefers-color-scheme:light)').matches)};
 const HID=()=>LS.get('hidt').split(',').filter(Boolean);
 const lockMode=()=>LS.get('lock');
@@ -1195,7 +1390,7 @@ function vpnNotes(subs){
   try{
     const a=Array.isArray(subs)?subs:(subs&&(subs.subscriptions||subs.items||subs.data))||[];
     a.forEach((s)=>{
-      if(s.is_active)LS.set('ach_sub','1');if((Number(s.used_traffic_bytes)||0)>=10*1073741824)LS.set('ach_gb','1');
+      if(s.is_active){LS.set('ach_sub','1');if((Number(s.devices)||0)>=3)LS.set('ach_dev3','1');if((Number(s.days_left)||0)>=90)LS.set('ach_long','1')}const ub=Number(s.used_traffic_bytes)||0;if(ub>=10*1073741824)LS.set('ach_gb','1');if(ub>=100*1073741824)LS.set('ach_gb100','1');
       const id=VP.subId(s),end=String(s.end_date||'');
       if(TH('nv',1)&&s.is_active){const d=Number(s.days_left);
         for(const n of [1,3]){if(d>=0&&d<=n){const k='nvn_'+id+'_'+n+'_'+end;if(!LS.get(k)){LS.set(k,'1');notify('PharmShop VPN','Подписка заканчивается: осталось '+vDays(d),k)}break}}}
@@ -1384,7 +1579,7 @@ applyUI();applyIcon();
 if(HID().includes(tab))tab='set';
 if(lockMode())lockScreen();
 
-{const WV='pwa-6',ret=LS.get('nick')||LS.get('tab');if(LS.get('seen')!==WV){LS.set('seen',WV);if(ret)setTimeout(whatsNew,900)}}
+{const WV='pwa-7',ret=LS.get('nick')||LS.get('tab');if(LS.get('seen')!==WV){LS.set('seen',WV);if(ret)setTimeout(whatsNew,900)}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 go(tab);
 </script>
