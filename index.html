@@ -75,9 +75,36 @@ button.b.ghost{background:none;color:var(--mute)}button.b.dg{background:var(--re
 .pf-c{flex:none;width:112px;scroll-snap-align:start;border-radius:calc(22px*var(--k));padding:14px 6px 12px;text-align:center;border:1px solid var(--line);background:var(--card);opacity:.55}
 .pf-c.on{opacity:1;background:color-mix(in srgb,var(--green) 12%,var(--card));border-color:color-mix(in srgb,var(--green) 50%,var(--line))}
 .pf-c i{font-style:normal;font-size:34px;display:block;margin-bottom:6px}.pf-c b{font-size:14px;display:block}.pf-c span{font-size:12px;color:var(--mute)}.pf-c.on span{color:var(--green)}
+
+#bgc{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
+.fi{animation:fi .28s ease both}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sec{font-size:calc(20px*var(--ts));font-weight:700;margin:18px 2px 10px}
+.sw-r{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}.sw-r.dis{opacity:.5}.sw-r>div{flex:1;min-width:0}
+.sw{flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;background:var(--line);padding:0;transition:background .2s}
+.sw:before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--mute);transition:transform .2s,background .2s}
+.sw.on{background:color-mix(in srgb,var(--blue) 45%,var(--line))}.sw.on:before{transform:translateX(18px);background:var(--blue)}
+.skins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sk{position:relative;text-align:left;border:1px solid var(--line);border-radius:calc(18px*var(--k));padding:12px;font:inherit;display:flex;flex-direction:column;gap:6px}
+.sk i{font-style:normal;font-size:28px}.sk b{font-size:16px}.sk .dts{display:flex;gap:6px}.sk .dts span{width:20px;height:20px;border-radius:50%;border:1px solid rgba(128,128,128,.3)}
+.sk.on{border:2px solid var(--blue);padding:11px}.sk em{position:absolute;right:12px;top:10px;font-style:normal;color:var(--blue);font-size:20px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cat{background:var(--bg);border:1px solid var(--line);border-radius:calc(16px*var(--k));padding:10px 4px;color:var(--mute);font:inherit;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.cat.on{color:var(--text);font-weight:700;border-color:var(--blue)}.cat svg{width:64px;height:64px;border-radius:50%}
+.ob{display:flex;margin-top:12px}.ob>div{flex:1;text-align:center;font-size:13px}
+.obr{display:flex;align-items:center;margin-bottom:6px}.obr i{flex:1;height:3px;background:var(--line)}.obr i.g{background:var(--green)}.obr i.x{background:transparent}
+.od{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex:none}
+.od.g{background:var(--green)}.od.a{background:color-mix(in srgb,var(--blue) 40%,var(--bg));border:2px solid var(--blue)}
+.lko{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.lkb{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:320px;text-align:center}
+.lkd{display:flex;gap:14px;margin:6px 0}.lkd i{width:14px;height:14px;border-radius:50%;border:2px solid var(--mute)}.lkd i.f{background:var(--blue);border-color:var(--blue)}
+.lkp{display:grid;grid-template-columns:repeat(3,72px);gap:12px;justify-content:center}.lkp button,.lkp span{height:60px}
+.lkp button{border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:22px;font-weight:600}
+.sw:disabled{opacity:.6}
+body.cc .card{padding:8px 12px;margin-bottom:8px}body.cc .sw-r{padding:6px 0}
+body.nb .pf-ban{display:none}body.nb .pf-avw{margin-top:18px}
 </style></head><body>
 <div id="view"></div>
-<nav><button data-t="vpn"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M20 12v2.5"/></g></svg><span>VPN</span></button><button data-t="chat"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="8" r="3.4"/><path d="M1 21.5A7 7 0 0 1 15 21.5"/><circle cx="17" cy="8.5" r="2.7"/><path d="M13 18.5A4 4 0 0 1 21 18.5"/></g></svg><span>Чат</span></button><button data-t="help"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><path d="M5 4.5H19Q21 4.5 21 6.5V14.5Q21 16.5 19 16.5H11L6.5 20.5V16.5H5Q3 16.5 3 14.5V6.5Q3 4.5 5 4.5Z"/></g></svg><span>Поддержка</span></button><button data-t="me"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="8" r="4"/><path d="M4 23A8 8 0 0 1 20 23"/></g></svg><span>Профиль</span></button></nav>
+<nav><button data-t="vpn"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M20 12v2.5"/></g></svg><span>VPN</span></button><button data-t="chat"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="8" r="3.4"/><path d="M1 21.5A7 7 0 0 1 15 21.5"/><circle cx="17" cy="8.5" r="2.7"/><path d="M13 18.5A4 4 0 0 1 21 18.5"/></g></svg><span>Чат</span></button><button data-t="help"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><path d="M5 4.5H19Q21 4.5 21 6.5V14.5Q21 16.5 19 16.5H11L6.5 20.5V16.5H5Q3 16.5 3 14.5V6.5Q3 4.5 5 4.5Z"/></g></svg><span>Поддержка</span></button><button data-t="me"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="8" r="4"/><path d="M4 23A8 8 0 0 1 20 23"/></g></svg><span>Профиль</span></button><button data-t="set"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></g></svg><span>Настройки</span></button></nav>
 <script>
 const API='https://flat-violet-e617pharmshop-chat.soulszlord.workers.dev';
 const SITEKEY='3d88c4d4-c8f4-4e0a-8db6-21e62e840604';
@@ -103,19 +130,6 @@ function applyTheme(){
   const tc=document.getElementById('tc');if(tc)tc.content=p[0];
 }
 applyTheme();matchMedia('(prefers-color-scheme:light)').addEventListener&&matchMedia('(prefers-color-scheme:light)').addEventListener('change',applyTheme);
-function thmRender(){
-  const ch=(k,v,t)=>`<button class="chip${TH(k,k==='mode'?1:k==='skin'||k==='acc'?0:1)===v?' on':''}" data-k="${k}" data-v="${v}">${t}</button>`;
-  const box=$('#thm');if(!box)return;
-  box.innerHTML=`<div class="card"><b>Оформление</b>
-  <div class="mute small" style="margin:10px 0 0">Тема</div><div class="wr">${[[1,'Тёмная'],[2,'Светлая'],[0,'Как в системе']].map(x=>ch('mode',x[0],x[1])).join('')}</div>
-  <div class="mute small">Оформление</div><div class="wr">${SKINS.map(s=>ch('skin',s[0],s[1]+' '+s[2])).join('')}</div>
-  <div class="mute small">Цвет акцента</div><div class="wr">${ch('acc',0,'Как в теме')}${ACCS.map(a=>`<button class="dot${TH('acc',0)===a[0]?' on':''}" style="background:${a[2]}" title="${a[1]}" data-k="acc" data-v="${a[0]}"></button>`).join('')}</div>
-  <div class="mute small">Размер текста</div><div class="wr">${[[0,'Мелкий'],[1,'Обычный'],[2,'Крупный']].map(x=>ch('ts',x[0],x[1])).join('')}</div>
-  <div class="mute small">Скругление карточек</div><div class="wr">${[[0,'Малое'],[1,'Обычное'],[2,'Большое']].map(x=>ch('cs',x[0],x[1])).join('')}</div></div>`;
-  box.onclick=(e)=>{const b=e.target.closest('[data-k]');if(!b)return;LS.set('th_'+b.dataset.k,b.dataset.v);applyTheme();thmRender()};
-}
-const meTab0=meTab;
-meTab=async function(){await meTab0();if(tab!=='me')return;const d=document.createElement('div');d.id='thm';view.appendChild(d);thmRender()};
 async function api(path,extra={}){
   const r=await fetch(API+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({device,secret,...extra})});
   let j={};try{j=await r.json()}catch(e){}
@@ -125,11 +139,11 @@ async function api(path,extra={}){
 const CROWN='<svg class="crown" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18L3 7l5.5 5L12 5l3.5 7L21 7l-.5 11z"/><path d="M4 21h16"/></svg>';
 const nameHtml=(m)=>`<span class="n" data-uid="${m.uid||''}" data-nick="${esc(m.nick)}" style="color:${nickCol(m.nick)}">${esc(m.nick)}${m.crown?CROWN:''}${m.badge?' <span style="color:var(--blue)">✓</span>':''}</span>`;
 const clock=(ts)=>new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-let tab=(LS.get('tab')||'vpn').replace(/^home$/,'vpn'),sub=0,timer=null,me=null,nextAt=Number(LS.get('nextAt','0'));
+let tab=LS.get('stt','vpn'),sub=0,timer=null,me=null,nextAt=Number(LS.get('nextAt','0'));
 const view=$('#view');
 function stop(){clearTimeout(timer);timer=null;gen++}
 let gen=0;
-function go(t){tab=t;LS.set('tab',t);stop();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({chat:chatTab,help:helpTab,vpn:vpnScreen,me:meTab})[t]()}
+function go(t){tab=t;LS.set('tab',t);stop();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({chat:chatTab,help:helpTab,vpn:vpnScreen,me:meTab,set:setTab})[t]()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 
 // ---------- общая лента ----------
@@ -910,7 +924,7 @@ function vForm(box,alive,subs,plansAll,prov){
     const note=card?$('[data-note]',card):$('#tn',box);
     if(act==='tobuy'){S.tab=1;vTabSel=1;showTab()}
     else if(act==='topup')askTopup(note);
-    else if(act==='out')confirmSheet('Выйти из аккаунта VPN?','Ключ входа будет удалён с этого устройства. Войти снова можно через Telegram или почту.','Выйти',()=>{vLogout();vTabSel=-1;vPollGen++;vpnScreen()});
+    else if(act==='out'){const go2=()=>confirmSheet('Выйти из аккаунта VPN?','Ключ входа будет удалён с этого устройства. Войти снова можно через Telegram или почту.','Выйти',()=>{vLogout();vTabSel=-1;vPollGen++;vpnScreen()});if(LS.get('pinvpn')&&lockMode())verifyLock().then(ok=>ok&&go2());else go2()}
     else if(act==='copy'){copyText(s.subscription_url).then(ok=>{if(ok&&LS.get('clip'))setTimeout(()=>{try{navigator.clipboard.writeText(' ')}catch(e){}},60000);toast(ok?'Ссылка подписки скопирована':'Не удалось скопировать — выделите ссылку вручную')})}
     else if(act==='client'){
       const url=s.subscription_url,apps=[['Happ','happ://add/'+url],['v2rayTun','v2raytun://import/'+url],['Hiddify','hiddify://import/'+url]];
@@ -966,7 +980,7 @@ function vForm(box,alive,subs,plansAll,prov){
     if(standalone()||Date.now()<Number(LS.get('a2hs_until','0'))||document.getElementById('a2hs'))return;
     const share='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-4px"><path d="M12 15V3M8 7l4-4 4 4M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
     const o=document.createElement('div');o.id='a2hs';o.className='ov';
-    o.innerHTML=`<div class="sh"><div style="display:flex;gap:12px;align-items:center;margin-bottom:10px"><img src="apple-touch-icon.png" width="48" height="48" style="border-radius:calc(12px*var(--k))"><div><b style="font-size:17px">Добавьте PharmShop на главный экран</b><div class="mute small">Откроется как обычное приложение, без адресной строки</div></div></div>
+    o.innerHTML=`<div class="sh"><div style="display:flex;gap:12px;align-items:center;margin-bottom:10px"><img src="${document.querySelector('link[rel=apple-touch-icon]').href}" width="48" height="48" style="border-radius:calc(12px*var(--k))"><div><b style="font-size:17px">Добавьте PharmShop на главный экран</b><div class="mute small">Откроется как обычное приложение, без адресной строки</div></div></div>
     ${ios?`<div class="card" style="margin:10px 0 0;line-height:1.7">1. Нажмите «Поделиться» ${share} внизу Safari<br>2. Выберите «На экран „Домой“»<br>3. Нажмите «Добавить»</div>`:''}
     ${ios?'':'<button class="b" id="a2i">Установить</button>'}
     <button class="b ghost" id="a2n">Не сейчас</button></div>`;
@@ -993,26 +1007,322 @@ function msgMenu(b){
   if(mod&&!own&&!b.dataset.badge){[['на час',60],['на сутки',1440],['на неделю',10080]].forEach(([t,m])=>it.push(['🔇 Заглушить '+t,()=>msgRun('Готово','/api/room/mute',{uid,minutes:m})]));it.push(['🔊 Снять ограничение',()=>msgRun('Ограничение снято','/api/room/mute',{uid,minutes:0})])}
   if(it.length)listSheet(nick||'Сообщение',it.map(x=>x[0]),(i)=>it[i][1]());
 }
-const FLAGS=[['vmask','Прятать ссылку подписки VPN','Показывается только после нажатия'],['clip','Очищать буфер обмена','Через минуту после копирования ссылки'],['cpay','Подтверждать оплату','Окно перед переходом к оплате'],['hap','Вибрация при нажатии','Лёгкий отклик на кнопки']];
-function setRender(){
-  const box=$('#set');if(!box)return;const tg=(k,t,s)=>'<div class="dm" data-f="'+k+'"><div><div>'+t+'</div><div class="mute small">'+s+'</div></div><button class="chip'+(LS.get(k)?' on':'')+'" style="margin:0">'+(LS.get(k)?'Вкл':'Выкл')+'</button></div>';
-  box.innerHTML='<div class="card"><b>Настройки</b>'+FLAGS.map(f=>tg(...f)).join('')
-   +'<div class="g2"><button class="gb" id="wn">Что нового</button><button class="gb" id="di">Какие данные собираем</button><button class="gb" id="rs">Сбросить настройки</button></div></div>';
-  box.onclick=(e)=>{
-    const f=e.target.closest('[data-f]');
-    if(f){LS.set(f.dataset.f,LS.get(f.dataset.f)?'':'1');setRender()}
-    else if(e.target.id==='wn')whatsNew();
-    else if(e.target.id==='di')sheetOpen('Какие данные собираем','<div class="mute small" style="margin:8px 0">В PWA на сервер уходят только: ник и сообщения чатов, обращения в поддержку (с названием браузера), запросы VPN-кабинета через сервер. Заказы, контакты, геолокация и список приложений не собираются. Настройки оформления хранятся только в этом браузере.</div>');
-    else if(e.target.id==='rs')confirmSheet('Сбросить настройки?','Тема и переключатели вернутся к исходным. Ник, чаты и вход в VPN не затрагиваются.','Сбросить',()=>{['vmask','clip','cpay','hap','hsoon','hid'].forEach(k=>LS.set(k,''));Object.keys(localStorage).filter(k=>k.startsWith('th_')).forEach(k=>localStorage.removeItem(k));applyTheme();setRender()},true);
-  };
-}
-const meTab1=meTab;meTab=async function(){await meTab1();if(tab!=='me')return;const d=document.createElement('div');d.id='set';view.appendChild(d);setRender()};
 function whatsNew(){
-  const it=[['💬','Чат как в приложении','Цвета ников, даты, переход в личку по нику, меню сообщения (удалить, заглушить), ✓/✓✓ в личных и в поддержке.'],['🔒','Защита','Прятать ссылку VPN, очищать буфер, подтверждать оплату.'],['⚙️','Настройки','Скрытие разделов, вибрация, сброс. Профиль → Настройки.']];
+  const it=[['⚙️','Вкладка «Настройки»','Тема и акцентный цвет, размер текста, скругление, анимированный фон, скрытие разделов меню, вкладка запуска.'],['🐱','Иконка-кот','Выберите значок приложения: Классика, Рыжик, Снежок, Дымка, Сиам, Пятнашка. Выбирайте до установки PWA.'],['🔒','Вход по PIN и отпечатку','PIN для выхода из VPN, скрытие экрана в «Недавних», скрытие сумм и ников, журнал неудачных попыток.'],['🔔','Уведомления','Ответы поддержки, личные сообщения, конец подписки и трафика VPN, редкие напоминания о покупке. Работают, пока приложение открыто или свёрнуто.']];
   sheetOpen('Что нового',it.map(x=>'<div style="display:flex;gap:10px;margin:12px 0"><span style="font-size:20px">'+x[0]+'</span><div><b>'+x[1]+'</b><div class="mute small">'+x[2]+'</div></div></div>').join(''));
 }
 document.addEventListener('click',(e)=>{if(LS.get('hap')&&e.target.closest('button,.card')&&navigator.vibrate)navigator.vibrate(8)});
-{const WV='pwa-3',ret=LS.get('nick')||LS.get('tab');if(LS.get('seen')!==WV){LS.set('seen',WV);if(ret)setTimeout(whatsNew,900)}}
+// ---------- вкладка «Настройки» (как в Android) ----------
+const VER='1.2.0',BUILD=6,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
+const isLight=()=>{const m=TH('mode',1);return m===2||(m===0&&matchMedia('(prefers-color-scheme:light)').matches)};
+const HID=()=>LS.get('hidt').split(',').filter(Boolean);
+const lockMode=()=>LS.get('lock');
+const ERRS=[];
+addEventListener('error',(e)=>{ERRS.push(new Date().toTimeString().slice(0,8)+' '+String(e.message).slice(0,120));if(ERRS.length>8)ERRS.shift()});
+addEventListener('unhandledrejection',(e)=>{ERRS.push(new Date().toTimeString().slice(0,8)+' '+String((e.reason&&e.reason.message)||e.reason).slice(0,120));if(ERRS.length>8)ERRS.shift()});
+
+// ----- анимированный фон -----
+const BG={1:{c:'🍂',vy:.7,vx:.4,s:[14,22]},2:{cols:['#fff','#dfe9ff'],vy:.55,vx:.25,s:[2,5]},3:{cols:['#FFC233','#FFE08A'],vy:-.25,vx:.2,s:[2,4],tw:1},4:{c:'🌸',vy:.55,vx:.45,s:[12,18]},5:{cols:['#8B7CFF','#fff','#9aa0ff'],vy:.06,vx:.1,s:[1.5,4],tw:1},6:{cols:['#D4FF00','#fff'],vy:-.4,vx:.05,s:[2,4]}};
+const cv=document.createElement('canvas');cv.id='bgc';document.body.prepend(cv);
+const cx=cv.getContext('2d');let P=[],raf=0,W=0,H=0;
+const rnd=(a,b)=>a+Math.random()*(b-a);
+function bgSize(){const d=devicePixelRatio||1;W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
+function mk(c,init){return{x:rnd(0,W),y:init?rnd(0,H):(c.vy>=0?-24:H+24),s:rnd(c.s[0],c.s[1]),vx:rnd(-1,1)*c.vx+c.vx*.3,vy:c.vy*rnd(.6,1.4),r:rnd(0,6.28),vr:rnd(-.02,.02),a:rnd(.35,.9),ph:rnd(0,6.28),col:c.cols?c.cols[Math.floor(Math.random()*c.cols.length)]:''}}
+function bgInit(){
+  cancelAnimationFrame(raf);bgSize();cx.clearRect(0,0,W,H);
+  const c=BG[TH('skin',0)];if(!c||!TH('anim',ANIM_D))return;
+  P=Array.from({length:Math.round(36*[.5,1,1.7][TH('pc',1)])},()=>mk(c,true));loop();
+}
+function loop(){
+  const c=BG[TH('skin',0)];if(!c)return;cx.clearRect(0,0,W,H);cx.textAlign='center';
+  for(const p of P){
+    p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.ph+=.03;
+    if(p.y>H+30||p.y<-30||p.x<-30||p.x>W+30)Object.assign(p,mk(c,false));
+    cx.save();cx.globalAlpha=c.tw?.25+.6*Math.abs(Math.sin(p.ph)):p.a;
+    if(c.c){cx.translate(p.x,p.y);cx.rotate(p.r);cx.font=p.s+'px serif';cx.fillText(c.c,0,0)}
+    else{cx.fillStyle=p.col;cx.beginPath();cx.arc(p.x,p.y,p.s/2,0,6.283);cx.fill()}
+    cx.restore();
+  }
+  raf=requestAnimationFrame(loop);
+}
+addEventListener('resize',bgInit);
+
+function applyUI(){
+  document.body.classList.toggle('cc',!!TH('cc',0));document.body.classList.toggle('nb',!!TH('nb',0));
+  const h=HID();document.querySelectorAll('nav button').forEach(b=>b.hidden=h.includes(b.dataset.t));
+  bgInit();
+}
+const goBase=go;
+go=function(t){goBase(t);view.classList.remove('fi');if(TH('tr',1)){void view.offsetWidth;view.classList.add('fi')}};
+
+// ----- блокировка: PIN и отпечаток (WebAuthn) -----
+let locked=false,hidAt=0;
+const b64e=(b)=>btoa(String.fromCharCode(...new Uint8Array(b)));
+const b64d=(s)=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function pinHash(p){let s=LS.get('lks');if(!s){s=b64e(crypto.getRandomValues(new Uint8Array(12)));LS.set('lks',s)}return bytesToHex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+':'+p)))}
+const pinOk=async(p)=>(await pinHash(p))===LS.get('lkh');
+async function bioReg(){
+  const c=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:'PharmShop'},user:{id:crypto.getRandomValues(new Uint8Array(16)),name:'pharmshop',displayName:'PharmShop'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},timeout:60000}});
+  LS.set('lkc',b64e(c.rawId));
+}
+async function bioGet(){
+  try{return !!await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b64d(LS.get('lkc')),transports:['internal']}],userVerification:'required',timeout:60000}})}
+  catch(e){return false}
+}
+function askPin(title,sub,o={}){return new Promise((res)=>{
+  const el=document.createElement('div');el.className='lko';let v='';
+  el.innerHTML=`<div class="lkb"><div style="font-size:40px">🔒</div><b style="font-size:20px">${esc(title)}</b><div class="mute small" style="min-height:18px">${esc(sub||'')}</div>${o.nopad?'':`<div class="lkd"><i></i><i></i><i></i><i></i></div><div class="lkp">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-k="${k}">${k}</button>`).join('')}</div>`}${o.bio?'<button class="b" data-x="bio">👆 Разблокировать</button>':''}${o.cancel?'<button class="chip" data-x="no" style="margin:0">Отмена</button>':''}${o.forgot?'<div class="lk" data-x="fg" style="font-size:13px">Забыли доступ?</div>':''}</div>`;
+  const done=(r)=>{el.remove();res(r)};
+  el.onclick=(e)=>{
+    const b=e.target.closest('[data-k],[data-x]');if(!b)return;
+    if(b.dataset.x){done(b.dataset.x==='no'?null:b.dataset.x);return}
+    const k=b.dataset.k;if(k==='⌫')v=v.slice(0,-1);else if(v.length<4)v+=k;
+    el.querySelectorAll('.lkd i').forEach((d,i)=>d.classList.toggle('f',i<v.length));
+    if(v.length===4)setTimeout(()=>done(v),120);
+  };
+  document.body.appendChild(el);
+})}
+function lkFail(){try{const a=JSON.parse(LS.get('lkf','[]'));a.push(Date.now());LS.set('lkf',JSON.stringify(a.slice(-20)))}catch(e){}}
+function lkForgot(){confirmSheet('Сбросить доступ?','Будут стёрты все данные приложения на этом устройстве: ник, вход в чат и в VPN. Отменить нельзя.','Стереть и сбросить',()=>{try{localStorage.clear()}catch(e){}location.reload()},true)}
+async function lockScreen(){
+  if(locked||!lockMode())return;locked=true;let sub='',first=true;
+  for(;;){
+    let ok=false;
+    if(lockMode()==='bio'){
+      if(first){first=false;ok=await bioGet()}
+      if(!ok){
+        const r=await askPin('PharmShop заблокирован',sub,{nopad:1,bio:1,forgot:1});
+        if(r==='fg'){lkForgot();continue}
+        ok=await bioGet();if(!ok){sub='Не удалось подтвердить';lkFail()}
+      }
+    }else{
+      const r=await askPin('Введите PIN',sub,{forgot:1});
+      if(r==='fg'){lkForgot();continue}
+      ok=await pinOk(r);if(!ok){sub='Неверный PIN';lkFail()}
+    }
+    if(ok)break;
+  }
+  locked=false;
+  try{const f=JSON.parse(LS.get('lkf','[]'));LS.set('lkf','[]');
+    if(f.length&&TH('sf',0))sheetOpen('Неудачные попытки входа','<div class="mute small" style="margin:8px 0">С прошлого входа: '+f.length+'</div>'+f.slice(-5).reverse().map(t=>'<div class="dm"><span>'+new Date(t).toLocaleString([],{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</span></div>').join(''))}catch(e){}
+}
+async function verifyLock(){
+  const m=lockMode();if(!m)return true;if(m==='bio')return bioGet();
+  const r=await askPin('Введите PIN','',{cancel:1});if(r==null)return false;
+  if(await pinOk(r))return true;toast('Неверный PIN');return false;
+}
+async function setLock(m){
+  const cur=lockMode();if(m===cur)return;
+  if(cur&&!await verifyLock())return;
+  if(m==='pin'){
+    const a=await askPin('Придумайте PIN','4 цифры',{cancel:1});if(a==null)return;
+    const b=await askPin('Повторите PIN','',{cancel:1});if(b==null)return;
+    if(a!==b){toast('PIN не совпал');return}LS.set('lkh',await pinHash(a));
+  }else if(m==='bio'){
+    const ok=window.PublicKeyCredential&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().catch(()=>false);
+    if(!ok){toast('На этом устройстве отпечаток недоступен');return}
+    try{await bioReg()}catch(e){toast('Не удалось настроить отпечаток');return}
+  }
+  LS.set('lock',m);if(!m)LS.set('pinvpn','');sbRender();
+}
+document.addEventListener('visibilitychange',()=>{
+  const pv=document.getElementById('priv');
+  if(document.hidden){
+    hidAt=Date.now();
+    if(TH('rec',0)&&!pv){const o=document.createElement('div');o.id='priv';o.className='lko';o.style.zIndex=200;o.innerHTML='<div class="lkb"><div style="font-size:52px">💊</div><b style="font-size:20px">PharmShop</b></div>';document.body.appendChild(o)}
+  }else{
+    if(pv)pv.remove();
+    if(lockMode()&&Date.now()-hidAt>15000)lockScreen();
+    if(TH('au',0))checkUpd(false);
+  }
+});
+
+// ----- уведомления (локальные, пока приложение открыто или свёрнуто в фоне) -----
+function notify(title,body,tag){
+  if(!TH('np',0)||typeof Notification==='undefined'||Notification.permission!=='granted')return;
+  navigator.serviceWorker.getRegistration().then(r=>r?r.showNotification(title,{body,tag,icon:'icon-192.png'}):new Notification(title,{body,tag})).catch(()=>{});
+}
+function vpnNotes(subs){
+  try{
+    const a=Array.isArray(subs)?subs:(subs&&(subs.subscriptions||subs.items||subs.data))||[];
+    a.forEach((s)=>{
+      const id=VP.subId(s),end=String(s.end_date||'');
+      if(TH('nv',1)&&s.is_active){const d=Number(s.days_left);
+        for(const n of [1,3]){if(d>=0&&d<=n){const k='nvn_'+id+'_'+n+'_'+end;if(!LS.get(k)){LS.set(k,'1');notify('PharmShop VPN','Подписка заканчивается: осталось '+vDays(d),k)}break}}}
+      const lim=Number(s.traffic_limit_bytes)||0,u=Number(s.used_traffic_bytes)||0;
+      if(TH('nt',1)&&lim>0&&u>=lim*.9){const k='ntn_'+id+'_'+(u>=lim?100:90)+'_'+end;if(!LS.get(k)){LS.set(k,'1');notify('PharmShop VPN',u>=lim?'Трафик закончился':'Использовано 90% трафика',k)}}
+    });
+    if(Array.isArray(subs)&&TH('nr',1)){const h=new Date().getHours(),now=Date.now();
+      if(h>=10&&h<22&&!a.some(s=>s.is_active)&&now-Number(LS.get('nrl','0'))>3*864e5){LS.set('nrl',String(now));notify('PharmShop VPN','Нет активной подписки. Оформите или продлите её во вкладке VPN','nr')}}
+  }catch(e){}
+}
+const vForm0=vForm;vForm=function(box,alive,subs){vpnNotes(subs);return vForm0.apply(this,arguments)};
+{const vn=()=>{if(TH('np',0)&&vLoggedIn())VP.subs().then(vpnNotes).catch(()=>{})};setTimeout(vn,4000);setInterval(vn,30*60000)}
+
+// фоновые уведомления: ответы поддержки и личные сообщения (лёгкий опрос, ничего не помечает прочитанным)
+async function bgPoll(){
+  if(!TH('np',0)||typeof Notification==='undefined'||Notification.permission!=='granted')return;
+  const here=!document.hidden;
+  try{
+    const r=await api('/api/chat/poll',{}),last=Number(LS.get('nsup','-1'));
+    if(last<0)LS.set('nsup',String(r.last_id||0));
+    else if(r.unread>0&&r.last_id>last){LS.set('nsup',String(r.last_id));if(!(here&&tab==='help'))notify('Поддержка PharmShop',r.text||'Новый ответ','sup')}
+  }catch(e){}
+  if(!LS.get('nick'))return;
+  try{
+    const r=await api('/api/dm/list',{}),c=(r.chats||[]).find(x=>x.unread>0);
+    if(c){const k=c.uid+'_'+c.ts;if(LS.get('ndm')!==k){LS.set('ndm',k);if(!(here&&tab==='chat'))notify(c.nick,String(c.text||'').slice(0,100),'dm'+c.uid)}}
+  }catch(e){}
+}
+setTimeout(bgPoll,5000);setInterval(bgPoll,60000);
+
+// ----- обновления -----
+let curH='';
+const pageHash=async()=>bytesToHex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(await (await fetch('index.html',{cache:'no-store'})).text())));
+pageHash().then(h=>curH=h).catch(()=>{});
+async function checkUpd(manual){
+  try{
+    const r=await navigator.serviceWorker.getRegistration();if(r)r.update().catch(()=>{});
+    const h=await pageHash();
+    if(curH&&h!==curH){
+      if(TH('au',0)&&!manual){location.reload();return}
+      confirmSheet('Доступна новая версия','Перезапустите приложение, чтобы обновиться.','Обновить',()=>location.reload());
+    }else if(manual)toast('У вас последняя версия');
+  }catch(e){if(manual)toast('Не удалось проверить обновления')}
+}
+
+// ----- экран -----
+let sTab=0;
+const sec=(t)=>`<div class="sec">${t}</div>`;
+const seg=(k,o,d,raw)=>`<div class="seg">${o.map(([v,t])=>`<button data-k="${k}" data-v="${v}"${raw?' data-r="1"':''} class="${(raw?LS.get(k,d):TH(k,d))==v?'on':''}">${t}</button>`).join('')}</div>`;
+const tgl=(k,t,s,o={})=>{const v=o.f?!!LS.get(k):!!TH(k,o.d??0);
+  return `<div class="sw-r${o.dis?' dis':''}"><div><b>${t}</b>${s?`<div class="mute small">${s}</div>`:''}</div><button class="sw${v?' on':''}" data-tg="${k}"${o.f?' data-f="1"':''} data-d="${o.d??0}"${o.dis?' disabled':''} aria-label="${t}"></button></div>`};
+const ordPrev=()=>{
+  const S=['Создан','Оплачен','Выполнен'],L=['x','g',''],R=['g','','x'];
+  if(!TH('os',1))return `<div class="wr">${S.map((t,i)=>`<span class="pf-chip">${i<2?'✅':'⏳'} ${t}</span>`).join('')}</div>`;
+  return `<div class="ob">${S.map((t,i)=>`<div><div class="obr"><i class="${L[i]}"></i><b class="od ${i<2?'g':'a'}">${i<2?'✓':''}</b><i class="${R[i]}"></i></div><span>${t}</span></div>`).join('')}</div>`;
+};
+// ----- иконки-коты (как в «Иконка приложения») -----
+const CATS=[[0,'Классика'],[1,'Рыжик'],[2,'Снежок'],[3,'Дымка'],[4,'Сиам'],[5,'Пятнашка']];
+function catSvg(i){
+  const H='M27 57.6V26.1l16.2 12.6Q54 35.1 64.8 38.7L81 26.1v31.5Q81 81.9 54 81.9T27 57.6Z';
+  const ears=(c)=>`<path fill="${c}" d="M31 33v10l7.5-5zM77 33v10l-7.5-5z"/>`;
+  const eye=(x,c,p)=>`<circle cx="${x}" cy="54" r="3.6" fill="${c}"/>${p}<circle cx="${x+1.2}" cy="52.8" r="1" fill="#fff"/>`;
+  const face=(nose,mouth,wh)=>`<path fill="${nose}" d="M51.5 60h5l-2.5 3z"/><path fill="none" stroke="${mouth}" stroke-width="1.4" stroke-linecap="round" d="M54 63v2.5M49.5 67q4.5 3 4.5-1.5M54 66q0 4.5 4.5 1.5"/><path fill="none" stroke="${wh}" stroke-width="1.2" stroke-linecap="round" opacity=".85" d="M36 62l-10-2M36 65l-10 2M72 62l10-2M72 65l10 2"/>`;
+  const S=(bg,body)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108"><defs><clipPath id="cp${i}"><path d="${H}"/></clipPath></defs><rect width="108" height="108" fill="${bg}"/>${body}</svg>`;
+  if(i===1)return S('#12877B',`<path fill="#F28A2E" d="${H}"/>${ears('#F7B77C')}<path fill="none" stroke="#B85E14" stroke-width="2" stroke-linecap="round" d="M54 41v6M48.5 42l1.5 5M59.5 42l-1.5 5"/><ellipse cx="54" cy="65" rx="9" ry="6" fill="#FBD7AE"/>${eye(42,'#1B1B1B','')}${eye(66,'#1B1B1B','')}${face('#D9627A','#7a3b1c','#fff')}`);
+  if(i===2)return S('#7B5CFA',`<path fill="#fff" d="${H}"/>${ears('#F8B9D0')}<circle cx="36" cy="62" r="3.5" fill="#F9C1D3"/><circle cx="72" cy="62" r="3.5" fill="#F9C1D3"/>${eye(42,'#3B8EF3','<circle cx="42" cy="54" r="1.8" fill="#14141a"/>')}${eye(66,'#3B8EF3','<circle cx="66" cy="54" r="1.8" fill="#14141a"/>')}${face('#F28BAE','#666','#bbb')}`);
+  if(i===3)return S('#F4B729',`<path fill="#8D929B" d="${H}"/>${ears('#C9B3BC')}<path fill="none" stroke="#5E636C" stroke-width="2" stroke-linecap="round" d="M54 41v6M48.5 42l1.5 5M59.5 42l-1.5 5"/><ellipse cx="54" cy="65" rx="9" ry="6" fill="#D5D8DD"/>${eye(42,'#5FD068','<ellipse cx="42" cy="54" rx="1.2" ry="3" fill="#111"/>')}${eye(66,'#5FD068','<ellipse cx="66" cy="54" rx="1.2" ry="3" fill="#111"/>')}${face('#E58AA0','#444','#e8e8e8')}`);
+  if(i===4)return S('#E5649B',`<path fill="#EFE0C9" d="${H}"/><g clip-path="url(#cp4)"><path fill="#5B4038" d="M20 20l20 18-4 8-18-6zM88 20L68 38l4 8 18-6z"/><ellipse cx="54" cy="66" rx="13" ry="10" fill="#5B4038"/></g>${eye(42,'#4FA8F0','<circle cx="42" cy="54" r="1.8" fill="#14141a"/>')}${eye(66,'#4FA8F0','<circle cx="66" cy="54" r="1.8" fill="#14141a"/>')}<path fill="#2c1d1a" d="M51.5 60h5l-2.5 3z"/><path fill="none" stroke="#EFE0C9" stroke-width="1.3" stroke-linecap="round" d="M54 63v2.5M49.5 67q4.5 3 4.5-1.5M54 66q0 4.5 4.5 1.5"/>`);
+  if(i===5)return S('#2BB785',`<path fill="#fff" d="${H}"/><g clip-path="url(#cp5)"><ellipse cx="38" cy="46" rx="13" ry="11" fill="#F2923A"/><path fill="#1b1b1b" d="M81 20v26L66 38z"/></g>${eye(42,'#1B1B1B','')}${eye(66,'#1B1B1B','')}${face('#F28BAE','#555','#aaa')}`);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108"><rect width="108" height="108" fill="#3B8EF3"/><path fill="#0B0B0D" d="${H}"/><path fill="none" stroke="#fff" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round" d="M36 60.3l5.4-7.2 5.4 7.2M61.2 60.3l5.4-7.2 5.4 7.2"/></svg>`;
+}
+const svgUrl=(i)=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(catSvg(i));
+const svgPng=(i,n)=>new Promise((ok,no)=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=n;c.getContext('2d').drawImage(im,0,0,n,n);ok(c.toDataURL('image/png'))};im.onerror=no;im.src=svgUrl(i)});
+let icoGen=0,mfUrl='';
+async function applyIcon(){
+  const i=Number(LS.get('icon','0')),g=++icoGen;
+  const ap=document.querySelector('link[rel=apple-touch-icon]'),mf=document.querySelector('link[rel=manifest]');
+  let fv=document.querySelector('link[rel=icon]');if(!fv){fv=document.createElement('link');fv.rel='icon';fv.type='image/svg+xml';document.head.appendChild(fv)}
+  if(!i){ap.href='apple-touch-icon.png';mf.href='manifest.webmanifest';fv.href='icon.svg';return}
+  try{
+    const [a,b,c]=await Promise.all([svgPng(i,180),svgPng(i,192),svgPng(i,512)]);if(g!==icoGen)return;
+    ap.href=a;fv.href=svgUrl(i);
+    const base=new URL('./',location.href).href;
+    const m={name:'PharmShop',short_name:'PharmShop',start_url:base,scope:base,display:'standalone',background_color:'#121214',theme_color:'#121214',lang:'ru',icons:[{src:b,sizes:'192x192',type:'image/png',purpose:'any maskable'},{src:c,sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+    if(mfUrl)URL.revokeObjectURL(mfUrl);
+    mfUrl=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));mf.href=mfUrl;
+  }catch(e){}
+}
+
+function sbLook(){
+  const Lt=isLight(),ic=Number(LS.get('icon','0'));
+  return sec('Тема')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Режим</div>${seg('mode',[[1,'🌙 Тёмная'],[2,'☀️ Светлая'],[0,'🌓 Система']],1)}<div class="mute small" style="margin-bottom:8px">Тема</div><div class="skins">${SKINS.map(s=>{const p=Lt?s[4]:s[3],on=TH('skin',0)===s[0];return `<button class="sk${on?' on':''}" data-k="skin" data-v="${s[0]}" style="background:${p[0]};color:${Lt?'#17171A':'#fff'}"><i>${s[1]}</i><b>${s[2]}</b><div class="dts">${[p[0],p[2],p[3]].map(x=>`<span style="background:${x}"></span>`).join('')}</div>${on?'<em>✓</em>':''}</button>`}).join('')}</div></div>`
+  +sec('Акцентный цвет')+`<div class="card"><div class="wr" style="margin:0"><button class="chip${TH('acc',0)===0?' on':''}" data-k="acc" data-v="0">Как в теме</button>${ACCS.map(a=>`<button class="dot${TH('acc',0)===a[0]?' on':''}" style="background:${a[2]}" aria-label="${a[1]}" data-k="acc" data-v="${a[0]}"></button>`).join('')}</div></div>`
+  +sec('Интерфейс')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Размер текста</div>${seg('ts',[[0,'Мелкий'],[1,'Обычный'],[2,'Крупный']],1)}<div class="mute small" style="margin-bottom:6px">Скругление карточек</div>${seg('cs',[[0,'Меньше'],[1,'Обычное'],[2,'Больше']],1)}<div class="mute small" style="margin-bottom:6px">Карточки</div>${seg('cc',[[0,'Обычные'],[1,'Компактные']],0)}<div class="mute small" style="margin-bottom:6px">Какая вкладка открывается при запуске</div>${seg('stt',[['vpn','VPN'],['chat','Чат'],['me','Профиль'],['set','Настройки']],'vpn',1)}${tgl('nb','Скрывать цветную плашку','Убрать баннер над аватаркой в профиле')}</div>`
+  +sec('Разделы в меню')+`<div class="card"><div class="mute small">Скройте то, чем не пользуетесь. Раздел снова появится, как только вы его включите.</div>${[['vpn','VPN'],['chat','Чат'],['help','Поддержка'],['me','Профиль']].map(([k,t])=>`<div class="sw-r"><div><b>${t}</b></div><button class="sw${HID().includes(k)?'':' on'}" data-hs="${k}" aria-label="${t}"></button></div>`).join('')}</div>`
+  +sec('Иконка приложения')+`<div class="card"><div class="mute small" style="margin-bottom:10px">Выберите кота для значка на рабочем столе</div><div class="cats">${CATS.map(([i,n])=>`<button class="cat${ic===i?' on':''}" data-ic="${i}">${catSvg(i)}<span>${n}${ic===i?' ✓':''}</span></button>`).join('')}</div><div class="mute small" style="margin-top:10px">Значок берётся при установке PWA, так что выбирайте кота до установки. Если приложение уже на рабочем столе и значок не поменялся, удалите его и установите заново.</div></div>`
+  +sec('Анимации и отклик')+`<div class="card">${tgl('anim','Анимированный фон','Снег, листья, звёзды и другие эффекты выбранной темы',{d:ANIM_D})}<div class="mute small" style="margin:4px 0 6px">Сколько частиц на фоне</div>${seg('pc',[[0,'Меньше'],[1,'Обычно'],[2,'Больше']],1)}${tgl('tr','Плавные переходы','Экраны и карточки появляются с анимацией',{d:1})}${tgl('hap','Вибрация при нажатии','Лёгкий отклик на касание кнопок и карточек (не работает на iPhone)',{f:1})}</div>`
+  +sec('Заказы')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Как показывать шаги заказа</div>${seg('os',[[0,'Значок'],[1,'Полоса']],1)}<div class="mute small">Так будет выглядеть заказ, который оплачен и выдаётся:</div>${ordPrev()}</div>`;
+}
+function sbSec(){
+  const m=lockMode(),dis=!m,hint='Сначала включите вход по PIN или отпечатку';
+  return sec('Вход в приложение')+`<div class="card"><b>PIN-код и отпечаток</b><div class="mute small">Защитите чат, поддержку и VPN от посторонних</div><div class="seg" style="margin:10px 0 0">${[['','Выкл'],['pin','PIN'],['bio','Отпечаток']].map(([v,t])=>`<button data-lk="${v}" class="${m===v?'on':''}">${t}</button>`).join('')}</div></div>`
+  +sec('Защита данных')+`<div class="card">${tgl('rec','Скрывать экран в «Недавних»','Закрывает содержимое, когда приложение уходит в фон. Скриншоты браузер заблокировать не позволяет')}${tgl('pm','Скрывать суммы и ники','В профиле вместо них точки, пока не нажмёте на карточку')}${tgl('cpay','Подтверждать оплату','Окно перед переходом к оплате',{f:1})}${tgl('vmask','Прятать ссылку подписки VPN','Ссылка показывается только после нажатия на неё',{f:1})}${tgl('clip','Очищать буфер обмена','Через минуту после копирования ссылки подписки',{f:1})}${tgl('pinvpn','PIN для выхода из VPN',dis?hint:'Спросим PIN или отпечаток перед выходом из аккаунта VPN',{f:1,dis})}${tgl('sf','Показывать неудачные попытки входа',dis?hint:'После разблокировки покажем, кто пытался войти',{dis})}</div>`;
+}
+function sbMisc(){
+  const perm=typeof Notification==='undefined'?'не поддерживаются':({granted:'разрешены',denied:'запрещены',default:'не запрошены'}[Notification.permission]);
+  return sec('Уведомления')+`<div class="card">${tgl('np','Push-уведомления','Ответы поддержки и личные сообщения, пока приложение открыто или свёрнуто')}${tgl('nv','VPN: подписка заканчивается','За 3 дня и за 1 день до конца. Нужны уведомления и вход в VPN',{d:1})}${tgl('nt','VPN: трафик заканчивается','Когда использовано 90% и когда трафик закончился',{d:1})}${tgl('nr','Напоминания о покупке','Редкие напоминания про VPN, не ночью',{d:1})}<button class="gb" data-a="nsys" style="margin-top:6px">Системные настройки уведомлений</button></div>`
+  +`<div class="mute small" style="margin:-4px 2px 0">Push при закрытом приложении в PWA недоступен: уведомления приходят, пока оно открыто или в фоне.</div>`
+  +sec('Обновления')+`<div class="card">${tgl('au','Обновлять автоматически','Когда вы возвращаетесь в приложение, новая версия ставится сама')}<button class="gb" data-a="upd">Проверить обновления</button></div>`
+  +sec('Помощь')+`<div class="card"><div class="mute small">Что-то работает не так? Отправьте отчёт: версия, устройство и последние ошибки уйдут в поддержку.</div><div class="g2"><button class="gb pr" data-a="rep">Сообщить об ошибке</button><button class="gb" data-a="new">Что нового</button></div></div>`
+  +sec('Сброс')+`<div class="card"><div class="mute small">Вернёт тему, размер текста и переключатели оформления и безопасности к исходным. PIN, чаты, вход в VPN, уведомления и обновления не затрагиваются.</div><button class="gb" data-a="rst" style="margin-top:10px;color:var(--red);border-color:var(--red)">Сбросить настройки</button></div>`
+  +sec('Данные приложения')+`<div class="card"><div class="mute small">Что приложение собирает, когда это уходит администратору и что не собирается никогда.</div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="gb" data-a="dat">Какие данные собирает приложение</button><button class="gb" data-a="cht">Приватность чатов</button></div></div>`
+  +`<div class="mute small" style="text-align:center;margin:20px 0 8px">Уведомления в браузере: ${perm}<br>Приложение в активной разработке<br>Версия PWA ${VER} (сборка ${BUILD})</div><div style="text-align:center;padding-bottom:10px"><button class="chip" data-a="upd" style="margin:0">Проверить обновления</button></div>`;
+}
+function sbRender(){
+  const sb=$('#sb');if(!sb)return;const top=sb.scrollTop;
+  sb.innerHTML=[sbLook,sbSec,sbMisc][sTab]();sb.scrollTop=top;
+  document.querySelectorAll('#stb button').forEach(b=>b.classList.toggle('on',Number(b.dataset.i)===sTab));
+}
+function reportSheet(){
+  const txt=('Отчёт об ошибке (PWA '+VER+', сборка '+BUILD+')\nУстройство: '+navigator.userAgent.slice(0,150)+'\nЭкран: '+innerWidth+'×'+innerHeight+'\nПоследние ошибки:\n'+(ERRS.length?ERRS.join('\n'):'нет')).slice(0,900);
+  const o=sheetOpen('Сообщить об ошибке','<div class="mute small" style="margin:8px 0">В поддержку уйдёт:</div><div class="card small" style="white-space:pre-wrap;word-break:break-word">'+esc(txt)+'</div><button class="b" id="sk">Отправить</button><button class="b ghost" id="sc">Отмена</button>');
+  $('#sc',o).onclick=()=>o.remove();
+  $('#sk',o).onclick=async()=>{try{await api('/api/chat/send',{nick:LS.get('nick'),order:'',version:'pwa '+VER,text:txt,info:navigator.userAgent.slice(0,200)});o.remove();toast('Отчёт отправлен')}catch(x){toast(x.message)}};
+}
+const info=(t,s)=>sheetOpen(t,'<div class="mute small" style="margin:8px 0">'+s+'</div>');
+async function sbClick(e){
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.k!==undefined){LS.set(d.r?d.k:'th_'+d.k,d.v);applyTheme();applyUI();sbRender()}
+  else if(d.tg){
+    const k=d.tg;
+    if(d.f)LS.set(k,LS.get(k)?'':'1');
+    else{
+      const nv=TH(k,Number(d.d))?0:1;
+      if(k==='np'&&nv){
+        if(typeof Notification==='undefined'){toast('Браузер не поддерживает уведомления');return}
+        if(await Notification.requestPermission()!=='granted'){toast('Разрешите уведомления в настройках браузера');return}
+      }
+      LS.set('th_'+k,nv);
+    }
+    applyUI();sbRender();
+  }
+  else if(d.ic!==undefined){LS.set('icon',d.ic);applyIcon();sbRender()}
+  else if(d.hs){const h=HID(),i=h.indexOf(d.hs);if(i>=0)h.splice(i,1);else h.push(d.hs);LS.set('hidt',h.join(','));applyUI();sbRender()}
+  else if(d.lk!==undefined)setLock(d.lk);
+  else if(d.a==='rep')reportSheet();
+  else if(d.a==='new')whatsNew();
+  else if(d.a==='upd')checkUpd(true);
+  else if(d.a==='nsys')info('Системные настройки уведомлений','Откройте настройки браузера или установленного приложения (Настройки телефона → Приложения → PharmShop → Уведомления) и разрешите уведомления для этого сайта.');
+  else if(d.a==='dat')info('Какие данные собирает приложение','На сервер уходят только ник и сообщения чатов, обращения в поддержку (с названием браузера и отчётами об ошибках, если вы их отправили) и запросы VPN-кабинета через сервер. Контакты, геолокация и список приложений не собираются никогда. Тема, PIN (в виде хэша) и остальные настройки хранятся только в этом браузере.');
+  else if(d.a==='cht')info('Приватность чатов','Сообщения общего чата видят все его участники. Личные переписки предназначены вам и собеседнику. Обращения в поддержку читает администратор. Не отправляйте в чаты пароли, ключи и ссылки подписки.');
+  else if(d.a==='rst')confirmSheet('Сбросить настройки?','Тема, размер текста и переключатели вернутся к исходным. PIN, чаты, вход в VPN, уведомления и обновления не затрагиваются.','Сбросить',()=>{
+    Object.keys(localStorage).filter(k=>k.startsWith('th_')&&!/^th_(np|nv|nt|au)$/.test(k)).forEach(k=>localStorage.removeItem(k));
+    ['vmask','clip','cpay','hap','pinvpn','hidt','stt'].forEach(k=>LS.set(k,''));applyTheme();applyUI();sbRender();toast('Настройки сброшены');
+  },true);
+}
+function setTab(){
+  window.RC=0;
+  view.innerHTML='<div class="pf-top"><h2>Настройки</h2><button class="chip" data-s="sup" style="margin:0">💬 Поддержка</button></div><div class="seg" id="stb" style="flex:none">'+['Оформление','Безопасность','Прочее'].map((t,i)=>`<button data-i="${i}">${t}</button>`).join('')+'</div><div class="vp" id="sb"></div>';
+  $('#stb').onclick=(e)=>{const b=e.target.closest('button');if(!b)return;sTab=Number(b.dataset.i);sbRender();$('#sb').scrollTop=0};
+  $('.pf-top .chip').onclick=()=>go('help');
+  $('#sb').onclick=sbClick;sbRender();
+}
+
+// ----- профиль: «скрывать суммы и ники» -----
+const meTabX=meTab;
+meTab=async function(){
+  await meTabX();if(tab!=='me'||!TH('pm',0))return;
+  document.querySelectorAll('.pf-nick b,.pf-chip,.pf-t b').forEach(e=>{e.dataset.o=e.textContent;e.textContent='••••••'});
+  document.querySelectorAll('.pf-hero,.pf-t').forEach(c=>c.addEventListener('click',()=>c.querySelectorAll('[data-o]').forEach(e=>{e.textContent=e.textContent.startsWith('•')?e.dataset.o:'••••••'})));
+};
+
+applyUI();applyIcon();
+if(HID().includes(tab))tab='set';
+if(lockMode())lockScreen();
+
+{const WV='pwa-4',ret=LS.get('nick')||LS.get('tab');if(LS.get('seen')!==WV){LS.set('seen',WV);if(ret)setTimeout(whatsNew,900)}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 go(tab);
 </script>
