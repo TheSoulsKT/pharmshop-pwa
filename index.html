@@ -22,14 +22,59 @@ input,textarea{width:100%;background:var(--card);color:var(--text);border:1px so
 button.b{background:var(--blue);color:var(--on);border:0;border-radius:calc(14px*var(--k));padding:11px 16px;font:inherit;font-weight:600;width:100%;margin-top:8px}
 button.chip{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:calc(18px*var(--k));padding:7px 14px;font:inherit;margin-right:6px}
 button.chip.on{border-color:var(--blue);color:var(--blue)}
-#list{flex:1;overflow-y:auto;padding:4px 0 8px}
-.m{max-width:82%;margin:6px 0;padding:7px 11px;border-radius:calc(16px*var(--k));background:var(--card);border:1px solid var(--line);word-wrap:break-word;white-space:pre-wrap}
-.m.me{margin-left:auto;background:var(--blue);color:var(--on);border-color:transparent}
-.m .n{font-size:12px;font-weight:700;display:block}.m .t{font-size:10px;opacity:.65;display:block;text-align:right}
+.lw{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+#list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:6px 2px 12px;display:flex;flex-direction:column}
+#list>*{flex:none}
+#list>.mute:only-child{margin:auto;text-align:center;padding:0 24px;line-height:1.5}
+#list>.mute:only-child::before{content:"💬";display:block;font-size:38px;margin-bottom:8px}
+.dsep{align-self:center;margin:14px 0 6px;padding:3px 12px;font-size:12px;color:var(--mute);background:var(--card);border:1px solid var(--line);border-radius:999px}
+.mr{display:flex;align-items:flex-start;gap:8px;margin-top:9px;max-width:100%}
+.mr.cont{margin-top:2px}.mr.me{justify-content:flex-end}
+.mr.new{animation:mpop .24s cubic-bezier(.2,.9,.3,1.15) both;transform-origin:bottom left}.mr.me.new{transform-origin:bottom right}
+@keyframes mpop{from{opacity:0;transform:translateY(10px) scale(.94)}}
+@media (prefers-reduced-motion:reduce){.mr.new{animation:none}}
+.av{width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;background-size:cover;background-position:center;cursor:pointer;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.avs{width:32px;flex:none}
+.m{--r:calc(18px*var(--k));--r2:6px;position:relative;width:fit-content;max-width:min(84%,560px);min-width:0;margin:0;padding:8px 12px 7px;border-radius:var(--r) var(--r) var(--r) var(--r2);background:var(--card);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.14);word-wrap:break-word;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.38;-webkit-touch-callout:none}
+.m.ct{border-top-left-radius:var(--r2)}
+.m.me{border-radius:var(--r) var(--r) var(--r2) var(--r);background:var(--blue);background:linear-gradient(160deg,var(--blue),color-mix(in srgb,var(--blue) 80%,#fff));color:var(--on);border-color:transparent;box-shadow:0 2px 8px color-mix(in srgb,var(--blue) 28%,transparent)}
+.m.me.ct{border-top-left-radius:var(--r);border-top-right-radius:var(--r2)}
+.m .n{font-size:12.5px;font-weight:700;display:block;margin-bottom:1px;cursor:pointer}
+.m .t{float:right;margin:7px -2px -3px 10px;font-size:10.5px;line-height:1;opacity:.6;white-space:nowrap;user-select:none}
+.m .tk{font-weight:700;letter-spacing:-2px;margin-left:2px}
+.m a{color:var(--blue);text-decoration:underline;text-underline-offset:2px;word-break:break-all}.m.me a{color:inherit}
 .crown{width:14px;height:14px;vertical-align:-2px;margin-left:4px}
-.row{display:flex;gap:8px;align-items:flex-end;padding:8px 0 10px}.row textarea{flex:1;resize:none;max-height:100px}
-#send{width:46px;height:46px;border-radius:50%;border:0;background:var(--blue);color:var(--on);font-size:18px;font-weight:700;flex:none}
-#send.cd{background:var(--card);color:var(--text);border:1px solid var(--line)}
+.row{display:flex;gap:8px;align-items:flex-end;padding:8px 0 10px}
+.row textarea{flex:1;resize:none;min-height:44px;max-height:120px;border-radius:22px;padding:11px 16px;font-size:16px;line-height:1.35;overflow-y:auto;transition:border-color .15s,box-shadow .15s}
+.row textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 22%,transparent)}
+#send{width:44px;height:44px;border-radius:50%;border:0;background:var(--blue);color:var(--on);display:flex;align-items:center;justify-content:center;padding:0;flex:none;box-shadow:0 3px 10px color-mix(in srgb,var(--blue) 35%,transparent);transition:transform .15s,opacity .15s}
+#send svg{width:21px;height:21px;margin-left:2px}
+#send:active{transform:scale(.9)}#send.empty{opacity:.5;box-shadow:none}
+#send.cd{background:var(--card);color:var(--text);border:1px solid var(--line);font-size:15px;font-weight:700;box-shadow:none}
+#tobot{position:absolute;right:6px;bottom:10px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.28);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s,transform .2s}
+#tobot.on{opacity:1;pointer-events:auto;transform:none}
+#tobot b{position:absolute;top:-7px;right:-3px;min-width:19px;height:19px;border-radius:10px;background:var(--blue);color:var(--on);font-size:11px;display:none;align-items:center;justify-content:center;padding:0 5px}
+#tobot b.on{display:flex}
+[hidden]{display:none!important}
+#att{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--mute);display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+#att:active{transform:scale(.92)}
+#prev{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-top:6px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+#prev img{width:54px;height:54px;object-fit:cover;border-radius:10px}#prev span{flex:1;font-size:13px;color:var(--mute)}
+#prev button{width:32px;height:32px;border-radius:50%;border:0;background:var(--line);color:var(--text);padding:0;font-size:15px}
+.ph{margin:-1px 0 5px;border-radius:12px;overflow:hidden;line-height:0}
+.ph:not(.ok){width:min(230px,58vw);height:150px;background:linear-gradient(100deg,var(--line) 30%,color-mix(in srgb,var(--line) 55%,var(--card)) 50%,var(--line) 70%);background-size:200% 100%;animation:shim 1.3s linear infinite;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px;line-height:1.3}
+@keyframes shim{to{background-position:-200% 0}}
+.ph img{display:block;max-width:min(260px,64vw);max-height:320px;width:auto;height:auto;cursor:zoom-in}
+.lb{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:12px;animation:vfade .2s both}
+.lb img{max-width:100%;max-height:100%;border-radius:10px;object-fit:contain}
+.vf{color:var(--blue);font-size:11px}
+.stp{display:flex;align-items:center;gap:8px;padding:7px 12px;margin-bottom:6px;border:1px solid var(--line);background:var(--card);border-radius:12px;font-size:13px}
+.stp i{width:8px;height:8px;border-radius:50%;background:var(--mute);flex:none}.stp i.y{background:#FFC233}.stp i.g{background:var(--green)}
+.stc{padding:12px 14px;margin-bottom:8px;border:1px solid color-mix(in srgb,var(--green) 45%,var(--line));background:linear-gradient(160deg,color-mix(in srgb,var(--green) 12%,var(--card)),var(--card));border-radius:16px;animation:vfade .3s both}
+.stc .stt{font-weight:700;margin-bottom:2px}
+.stars{display:flex;gap:0;margin:4px 0 2px}.sb{background:none;border:0;font-size:32px;line-height:1;padding:2px 4px 2px 0;color:color-mix(in srgb,var(--mute) 45%,transparent);transition:transform .12s,color .12s}.sb.on{color:#FFC233}.sb:active{transform:scale(1.2)}
+.stc textarea{margin-top:6px;min-height:64px;border-radius:12px;font-size:16px}
+.stc .lnk{background:none;border:0;color:var(--blue);padding:0;font:inherit;font-size:13px}
 .dm{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
 [hidden]{display:none!important}
 .vp{flex:1;min-height:0;overflow-y:auto;padding-bottom:12px}
@@ -275,7 +320,10 @@ applyTheme();matchMedia('(prefers-color-scheme:light)').addEventListener&&matchM
 async function api(path,extra={}){
   const r=await fetch(API+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({device,secret,...extra})});
   let j={};try{j=await r.json()}catch(e){}
-  if(!r.ok){const e=new Error(j.error||('Ошибка '+r.status));e.retry=j.retry_ms||0;throw e}
+  if(!r.ok){const e=new Error(j.error||('Ошибка '+r.status));e.retry=j.retry_ms||0;
+    // чат на технических работах (503 от сервера): сразу показываем экран техработ
+    if(j.maintenance){e.maint=1;if(tab==='chat'&&!window._mt){window._mt=1;stop();chatClosed({message:j.reason||''})}}
+    throw e}
   return j;
 }
 const CROWN='<svg class="crown" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18L3 7l5.5 5L12 5l3.5 7L21 7l-.5 11z"/><path d="M4 21h16"/></svg>';
@@ -289,56 +337,163 @@ function go(t){tab=t;LS.set('tab',t);stop();document.querySelectorAll('nav butto
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 
 // ---------- общая лента ----------
-function pane({fetchFn,sendFn,mine,showNames,cool,empty}){
-  const g=gen,rc=window.RC;let last=0,rev=-1,lastDay='';
-  view.insertAdjacentHTML('beforeend',`<div id="list"><div class="mute">${empty}</div></div><div class="err" id="e"></div><div class="row"><textarea id="f" rows="1" placeholder="Сообщение" maxlength="1000"></textarea><button id="send">➤</button></div>`);
-  const list=$('#list'),f=$('#f'),send=$('#send'),e=$('#e');
+const SEND_SVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.993.993 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg>';
+const DOWN_SVG='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+const ATT_SVG='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.1l-9.2 9.2a5.5 5.5 0 01-7.8-7.8l9.2-9.2a3.7 3.7 0 015.2 5.2l-9.2 9.2a1.8 1.8 0 01-2.6-2.6l8.5-8.5"/></svg>';
+const linkify=(h)=>h.replace(/\bhttps?:\/\/[^\s<]+[^\s<.,;:!?)\]'"]/g,(u)=>`<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`);
+const imgCache={};
+// Фото в поддержку: уменьшаем до 1280 px и сжимаем в JPEG так, чтобы base64 уместился в лимит сервера (~1,4 млн символов)
+async function shrinkImg(file){
+  const url=URL.createObjectURL(file);
+  try{
+    const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+    let side=1280,q=.82;
+    for(let n=0;n<8;n++){
+      const k=Math.min(1,side/Math.max(im.naturalWidth,im.naturalHeight));
+      const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*k));c.height=Math.max(1,Math.round(im.naturalHeight*k));
+      const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+      const d=c.toDataURL('image/jpeg',q).split(',')[1];
+      if(d&&d.length<1300000)return d;
+      side=Math.round(side*.8);q=Math.max(.5,q-.08);
+    }
+    throw new Error('big');
+  }finally{URL.revokeObjectURL(url)}
+}
+function lightbox(src){const o=document.createElement('div');o.className='lb';o.innerHTML='<img alt="" src="'+src+'">';o.onclick=()=>o.remove();document.body.appendChild(o)}
+function pane({fetchFn,sendFn,mine,showNames,cool,empty,support}){
+  const g=gen,rc=window.RC;let last=0,rev=-1,lastDay='',prevKey=null,prevTs=0,loaded=false,stick=false,unseen=0,added=0,pending='',sending=false,idle=0,paused=false,stKey='',lastR={};const avReq={};
+  view.insertAdjacentHTML('beforeend',`${support?'<div id="st"></div>':''}<div class="lw"><div id="list"><div class="mute">${empty}</div></div><button id="tobot" aria-label="Вниз">${DOWN_SVG}<b></b></button></div><div class="err" id="e"></div>${support?'<div id="prev" hidden></div>':''}<div class="row">${support?`<button id="att" type="button" aria-label="Прикрепить фото">${ATT_SVG}</button><input type="file" id="fi" accept="image/*" hidden>`:''}<textarea id="f" rows="1" placeholder="Сообщение" maxlength="1000" enterkeyhint="send"></textarea><button id="send" class="empty" aria-label="Отправить">${SEND_SVG}</button></div>`);
+  const list=$('#list'),f=$('#f'),send=$('#send'),e=$('#e'),tobot=$('#tobot'),badge=$('#tobot b');
+  const dist=()=>list.scrollHeight-list.scrollTop-list.clientHeight;
+  const toEnd=(smooth)=>{list.scrollTo({top:list.scrollHeight,behavior:smooth?'smooth':'auto'});unseen=0;sync()};
+  function sync(){badge.textContent=unseen>99?'99+':unseen;badge.classList.toggle('on',unseen>0);tobot.classList.toggle('on',dist()>200)}
+  list.addEventListener('scroll',()=>{if(dist()<80)unseen=0;sync()},{passive:true});
+  tobot.onclick=()=>toEnd(true);
+  function grow(){const end=dist()<40;f.style.height='auto';f.style.height=Math.min(f.scrollHeight+2,120)+'px';if(end)list.scrollTop=list.scrollHeight;btn()}
+  function btn(){if(!send.classList.contains('cd'))send.className=(f.value.trim()||pending)?'':'empty'}
+  f.addEventListener('input',grow);
+  // ----- фото (только поддержка) -----
+  function showPrev(){const p=$('#prev');if(!p)return;p.hidden=!pending;p.innerHTML=pending?`<img alt="" src="data:image/jpeg;base64,${pending}"><span>Фото будет отправлено вместе с сообщением</span><button type="button" aria-label="Убрать фото">✕</button>`:'';const x=p.querySelector('button');if(x)x.onclick=()=>{pending='';showPrev();btn()};btn()}
+  if(support){
+    const fi=$('#fi');$('#att').onclick=()=>fi.click();
+    fi.onchange=async()=>{const file=fi.files[0];fi.value='';if(!file)return;e.textContent='';
+      try{pending=await shrinkImg(file);showPrev()}catch(x){toast('Не удалось открыть это фото')}};
+  }
+  function loadPh(el){
+    const id=Number(el.dataset.id);
+    const put=(b)=>{const end=dist()<140;el.innerHTML=`<img alt="Фото" src="data:image/jpeg;base64,${b}">`;el.classList.add('ok');el.firstChild.onload=()=>{if(end)list.scrollTop=list.scrollHeight}};
+    if(imgCache[id])return put(imgCache[id]);
+    api('/api/chat/image',{id}).then((r)=>{if(r.image){imgCache[id]=r.image;put(r.image)}}).catch(()=>{el.textContent='Фото недоступно'});
+  }
+  // ----- статус обращения и оценка (только поддержка) -----
+  const starsHtml=(n)=>[1,2,3,4,5].map((i)=>`<button type="button" class="sb ${i<=n?'on':''}" data-s="${i}" aria-label="${i}">★</button>`).join('');
+  function renderSt(r,force){
+    const box=$('#st');if(!box)return;lastR=r;
+    const has=!!list.querySelector('.mr'),s=r.status,rating=Number(r.rating)||0;
+    const key=(has?1:0)+s+':'+(r.solved||0)+':'+rating;
+    if(key===stKey&&!force)return;stKey=key;
+    if(!has){box.innerHTML='';return}
+    if(s==='done'){
+      const rated=rating>0;
+      box.innerHTML=`<div class="stc"><div class="stt">✅ Обращение решено</div>`+(rated
+        ?`<div class="mute small">Ваша оценка — спасибо!</div><div class="stars" style="pointer-events:none">${starsHtml(rating)}</div><button class="lnk" id="rr" type="button">Изменить оценку</button>`
+        :`<div class="mute small">Оцените помощь поддержки</div><div class="stars" id="stars">${starsHtml(0)}</div><div id="rc" hidden><textarea id="rcm" rows="2" maxlength="300" placeholder="Комментарий (необязательно)"></textarea><button class="b" id="rs" type="button">Отправить оценку</button></div>`)+`</div>`;
+      const form=()=>{
+        let sel=0;const st=$('#stars',box),rcb=$('#rc',box);
+        st.onclick=(ev)=>{const b=ev.target.closest('.sb');if(!b)return;sel=Number(b.dataset.s);st.querySelectorAll('.sb').forEach((x)=>x.classList.toggle('on',Number(x.dataset.s)<=sel));const end=dist()<60;rcb.hidden=false;if(end)list.scrollTop=list.scrollHeight};
+        $('#rs',box).onclick=async()=>{if(!sel)return;const bt=$('#rs',box);bt.disabled=true;
+          try{await api('/api/chat/rate',{stars:sel,comment:$('#rcm',box).value.trim()});toast('Спасибо за оценку! 💙');renderSt({...lastR,rating:sel});list.scrollTop=list.scrollHeight}
+          catch(x){bt.disabled=false;toast(x.message)}};
+      };
+      if(rated){$('#rr',box).onclick=()=>{box.querySelector('.stc').innerHTML='<div class="stt">✅ Обращение решено</div><div class="mute small">Оцените помощь поддержки</div><div class="stars" id="stars">'+starsHtml(0)+'</div><div id="rc" hidden><textarea id="rcm" rows="2" maxlength="300" placeholder="Комментарий (необязательно)"></textarea><button class="b" id="rs" type="button">Отправить оценку</button></div>';form()}}
+      else form();
+    }else if(s==='work')box.innerHTML='<div class="stp"><i class="y"></i>В работе — мы уже занимаемся вашим вопросом</div>';
+    else box.innerHTML='<div class="stp"><i></i>Отправлено — ответим в ближайшее время</div>';
+  }
+  // ----- аватарки и сообщения -----
+  const setAv=(x,b64)=>{x.style.backgroundImage=`url(data:image/jpeg;base64,${b64})`;x.textContent=''};
+  function avLoad(uid,av){
+    if(avReq[av])return;avReq[av]=1;
+    api('/api/chat/avatar_get',{uid}).then((r)=>{if(r.image){avCache[av]=r.image;list.querySelectorAll('.av[data-av="'+av+'"]').forEach((x)=>setAv(x,r.image))}}).catch(()=>{avReq[av]=0});
+  }
+  function avHtml(m){
+    const nick=String(m.nick||'?'),ph=m.av&&avCache[m.av];
+    if(m.av&&!ph)setTimeout(()=>avLoad(m.uid,m.av),0);
+    return `<span class="av n" data-uid="${m.uid||''}" data-nick="${esc(nick)}" data-av="${m.av||''}" style="background-color:${nickCol(nick)}${ph?`;background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':esc([...nick][0].toUpperCase())}</span>`;
+  }
   function add(m){
     if(m.id<=last)return;last=m.id;if(last&&list.firstChild&&list.firstChild.classList.contains('mute'))list.innerHTML='';
-    const own=mine(m);
+    const own=mine(m);if(!own)added++;
     const dk=new Date(m.ts).toDateString();
-    if(dk!==lastDay){lastDay=dk;list.insertAdjacentHTML('beforeend','<div class="mute small" style="text-align:center;margin:8px 0">'+new Date(m.ts).toLocaleDateString([],{day:'numeric',month:'long'})+'</div>')}
+    if(dk!==lastDay){lastDay=dk;prevKey=null;list.insertAdjacentHTML('beforeend','<div class="dsep">'+new Date(m.ts).toLocaleDateString([],{day:'numeric',month:'long'})+'</div>')}
     if(!list._h){list._h=1;let tm;
       list.addEventListener('contextmenu',(e)=>{const b=e.target.closest('.m');if(b&&showNames){e.preventDefault();msgMenu(b)}});
       list.addEventListener('touchstart',(e)=>{const b=e.target.closest('.m');if(b&&showNames)tm=setTimeout(()=>msgMenu(b),550)},{passive:true});
       ['touchend','touchmove','touchcancel'].forEach(t=>list.addEventListener(t,()=>clearTimeout(tm),{passive:true}));
-      list.addEventListener('click',(e)=>{const n=e.target.closest('.n[data-uid]');if(n&&n.dataset.uid&&me&&Number(n.dataset.uid)!==me.uid)dmOpen(Number(n.dataset.uid),n.dataset.nick)})}
-    list.insertAdjacentHTML('beforeend',`<div class="m ${own?'me':''}" data-id="${m.id}" data-ts="${m.ts}" data-uid="${m.uid||''}" data-badge="${m.badge?1:''}">${showNames&&!own?nameHtml(m):''}${esc(m.text)}<span class="t">${clock(m.ts)}${rc&&own?' <b class="tk">✓</b>':''}</span></div>`);
+      list.addEventListener('click',(e)=>{const im=e.target.closest('.ph img');if(im){lightbox(im.src);return}
+        const n=e.target.closest('.n[data-uid]');if(n&&n.dataset.uid&&me&&Number(n.dataset.uid)!==me.uid)dmOpen(Number(n.dataset.uid),n.dataset.nick)})}
+    const key=own?'me':String(m.uid||m.from||'o'),cont=prevKey===key&&m.ts-prevTs<300000;
+    prevKey=key;prevTs=m.ts;
+    const sup=support&&!own;
+    const av=showNames&&!own?(cont?'<span class="avs"></span>':avHtml(m)):sup?(cont?'<span class="avs"></span>':'<span class="av" style="background:var(--blue);color:var(--on);cursor:default">💊</span>'):'';
+    const nm=showNames&&!own&&!cont?nameHtml(m):sup&&!cont?'<span class="n" style="color:var(--blue);cursor:default">Поддержка <span class="vf">✓</span></span>':'';
+    const ph=m.has_image?`<div class="ph" data-id="${m.id}"></div>`:'';
+    list.insertAdjacentHTML('beforeend',`<div class="mr ${own?'me':''} ${cont?'cont':''} ${loaded?'new':''}">${av}<div class="m ${own?'me':''} ${cont?'ct':''}" data-id="${m.id}" data-ts="${m.ts}" data-uid="${m.uid||''}" data-badge="${m.badge?1:''}" data-nick="${esc(m.nick||'')}">${nm}${ph}${m.text?linkify(esc(m.text)):''}<span class="t">${clock(m.ts)}${rc&&own?' <b class="tk">✓</b>':''}</span></div></div>`);
+    if(m.has_image)loadPh(list.lastElementChild.querySelector('.ph'));
   }
+  // ----- опрос: пауза, пока вкладка скрыта; реже, если давно ничего нового -----
   async function poll(){
     if(g!==gen)return;
     try{
       const r=await fetchFn(last,rev);
       if(g!==gen)return;
-      if(r.reset){list.innerHTML='<div class="mute">'+empty+'</div>';last=0}
+      if(r.reset){list.innerHTML='<div class="mute">'+empty+'</div>';last=0;lastDay='';prevKey=null;loaded=false}
       rev=r.rev??rev;tickMarks(list,r);
-      const atEnd=list.scrollHeight-list.scrollTop-list.clientHeight<80,before=last;
+      const atEnd=dist()<80,before=last;added=0;
       (r.messages||[]).forEach(add);
       if(r.me)me=r.me;
-      if(last!==before&&(atEnd||before===0))list.scrollTop=list.scrollHeight;
+      if(last!==before){
+        idle=0;
+        if(atEnd||before===0||stick)toEnd(before!==0);
+        else{unseen+=added;sync()}
+      }else idle++;
+      stick=false;loaded=true;
+      if(support&&r.status){const keep=atEnd||before===0||stick;renderSt(r);if(keep)list.scrollTop=list.scrollHeight}
       e.textContent='';
-    }catch(x){e.textContent=x.message}
-    timer=setTimeout(poll,4000);
+    }catch(x){
+      if(x.maint)return;   // api() уже открыл экран техработ
+      e.textContent=x.message;
+    }
+    if(g!==gen)return;
+    if(document.hidden){paused=true;return}
+    timer=setTimeout(poll,idle>15?10000:4000);
   }
+  const vis=()=>{
+    if(g!==gen){document.removeEventListener('visibilitychange',vis);return}
+    if(!document.hidden&&paused){paused=false;idle=0;clearTimeout(timer);poll()}
+  };
+  document.addEventListener('visibilitychange',vis);
   function tick(){
     if(g!==gen)return;const left=nextAt-Date.now();
-    if(left>0&&cool()){send.className='cd';send.textContent=Math.ceil(left/1000);setTimeout(tick,250)}else{send.className='';send.textContent='➤'}
+    if(left>0&&cool()){send.className='cd';send.textContent=Math.ceil(left/1000);setTimeout(tick,250)}else{send.innerHTML=SEND_SVG;send.className='';btn()}
   }
   async function doSend(){
+    if(sending)return;
     const left=nextAt-Date.now();
     if(left>0&&cool()){e.textContent='Следующее сообщение через '+Math.ceil(left/1000)+' с';return}
-    const text=f.value.trim();if(!text)return;f.value='';
+    const text=f.value.trim();if(!text&&!pending)return;
+    const img=pending;f.value='';pending='';showPrev();grow();f.focus();stick=true;idle=0;sending=true;send.style.opacity='.6';
     if(cool()){nextAt=Date.now()+COOLDOWN;LS.set('nextAt',nextAt);tick()}
-    try{await sendFn(text);clearTimeout(timer);poll()}
-    catch(x){f.value=text;e.textContent=x.message;if(x.retry){nextAt=Date.now()+x.retry;LS.set('nextAt',nextAt)}else if(cool()){nextAt=0}tick()}
+    try{await sendFn(text,img);clearTimeout(timer);sending=false;send.style.opacity='';poll()}
+    catch(x){sending=false;send.style.opacity='';stick=false;f.value=text;pending=img;showPrev();grow();if(!x.maint)e.textContent=x.message;if(x.retry){nextAt=Date.now()+x.retry;LS.set('nextAt',nextAt)}else if(cool()){nextAt=0}tick()}
   }
-  send.onclick=doSend;f.onkeydown=(k)=>{if(k.key==='Enter'&&!k.shiftKey){k.preventDefault();doSend()}};
+  send.onclick=doSend;f.onkeydown=(k)=>{if(k.key==='Enter'&&!k.shiftKey&&!k.isComposing){k.preventDefault();doSend()}};
   tick();poll();
 }
 
 // ---------- чат ----------
 async function chatTab(){
-  window.RC=0;
+  window.RC=0;window._mt=0;
   view.innerHTML='<div class="vsk" style="height:70px"></div><div class="vsk"></div>';const g=gen;
   cfgP=null;const sc=await sectionCfg('chat'); // чат можно закрыть на тех. работы: в настройках раздел chat → enabled:false
   if(g!==gen)return;
@@ -348,8 +503,9 @@ async function chatTab(){
   if(!me.registered)return register();
   view.innerHTML=`<div style="margin-bottom:10px"><button class="chip ${sub?'':'on'}" id="t0">Общий чат</button><button class="chip ${sub?'on':''}" id="t1">Личные</button></div>`;
   $('#t0').onclick=()=>{sub=0;go('chat')};$('#t1').onclick=()=>{sub=1;go('chat')};
+  let rx;   // версия реакций: пока ничего не менялось, сервер отвечает из кэша без обращения к базе
   if(!sub)pane({empty:'Здесь пока тихо. Напишите первым!',showNames:true,mine:(m)=>m.uid===me.uid,cool:()=>!(me&&me.badge),
-    fetchFn:(a,r)=>api('/api/room/messages',{after:a,rev:r}),sendFn:(t)=>api('/api/room/send',{text:t})});
+    fetchFn:async(a,r)=>{const j=await api('/api/room/messages',{after:a,rev:r,rx});rx=j.rx;return j},sendFn:(t)=>api('/api/room/send',{text:t})});
   else dmList();
 }
 function register(){
@@ -396,9 +552,9 @@ function helpTab(){
   window.RC=1;
   view.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><button class="chip" id="hb" style="margin:0" aria-label="Назад">←</button><h2 style="margin:0">Поддержка</h2></div><div class="mute small" style="margin-bottom:6px">Опишите проблему — ответ придёт сюда.</div>';
   $('#hb').onclick=()=>go(hFrom&&hFrom!=='help'?hFrom:'set');
-  pane({empty:'Напишите, чем помочь.',showNames:false,mine:(m)=>m.from==='user',cool:()=>false,
+  pane({empty:'Напишите, чем помочь. Можно прикрепить фото 📎',showNames:false,support:true,mine:(m)=>m.from==='user',cool:()=>false,
     fetchFn:async(a)=>{const r=await api('/api/chat/messages',{after:a});return r},
-    sendFn:(t)=>api('/api/chat/send',{nick:LS.get('nick'),order:'',version:'pwa',text:t,info:navigator.userAgent.slice(0,200)})});
+    sendFn:(t,img)=>api('/api/chat/send',{nick:LS.get('nick'),order:'',version:'pwa',text:t,...(img?{image:img}:{}),info:navigator.userAgent.slice(0,200)})});
 }
 
 // ---------- профиль ----------
@@ -1242,7 +1398,7 @@ function tickMarks(list,r){const pr=r.peer_read,rt=r.read_ts;if(pr==null&&rt==nu
   list.querySelectorAll('.m.me').forEach(el=>{const t=el.querySelector('.tk');if(t)t.textContent=(pr!=null?Number(el.dataset.id)<=pr:Number(el.dataset.ts)<=rt)?'✓✓':'✓'})}
 const msgRun=(ok,p,b)=>api(p,b).then(()=>toast(ok)).catch(x=>toast(x.message));
 function msgMenu(b){
-  const uid=Number(b.dataset.uid),id=Number(b.dataset.id),own=me&&uid===me.uid,nn=b.querySelector('.n'),nick=nn?nn.dataset.nick:'',mod=me&&me.badge,it=[];
+  const uid=Number(b.dataset.uid),id=Number(b.dataset.id),own=me&&uid===me.uid,nn=b.querySelector('.n'),nick=nn?nn.dataset.nick:(b.dataset.nick||''),mod=me&&me.badge,it=[];
   if(!own&&uid)it.push(['✉ Написать в личку',()=>dmOpen(uid,nick)]);
   if(own||mod)it.push(['🗑 Удалить сообщение',()=>msgRun('Сообщение удалено','/api/room/delete',{id})]);
   if(mod&&!own&&!b.dataset.badge){[['на час',60],['на сутки',1440],['на неделю',10080]].forEach(([t,m])=>it.push(['🔇 Заглушить '+t,()=>msgRun('Готово','/api/room/mute',{uid,minutes:m})]));it.push(['🔊 Снять ограничение',()=>msgRun('Ограничение снято','/api/room/mute',{uid,minutes:0})])}
@@ -1405,6 +1561,7 @@ const vForm0=vForm;vForm=function(box,alive,subs){vpnNotes(subs);return vForm0.a
 {const vn=()=>{if(TH('np',0)&&vLoggedIn())VP.subs().then(vpnNotes).catch(()=>{})};setTimeout(vn,4000);setInterval(vn,30*60000)}
 
 // фоновые уведомления: ответы поддержки и личные сообщения (лёгкий опрос, ничего не помечает прочитанным)
+let dmMid=0;
 async function bgPoll(){
   if(!TH('np',0)||typeof Notification==='undefined'||Notification.permission!=='granted')return;
   const here=!document.hidden;
@@ -1415,6 +1572,8 @@ async function bgPoll(){
   }catch(e){}
   if(!LS.get('nick'))return;
   try{
+    const u=await api('/api/dm/unread',dmMid?{mid:dmMid}:{});if(u.mid)dmMid=u.mid;
+    if(u.same||!(u.unread>0))return;
     const r=await api('/api/dm/list',{}),c=(r.chats||[]).find(x=>x.unread>0);
     if(c){const k=c.uid+'_'+c.ts;if(LS.get('ndm')!==k){LS.set('ndm',k);if(!(here&&tab==='chat'))notify(c.nick,String(c.text||'').slice(0,100),'dm'+c.uid)}}
   }catch(e){}
