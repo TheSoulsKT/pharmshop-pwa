@@ -406,7 +406,7 @@ body.kb nav{display:none}
   -webkit-mask-image:linear-gradient(#000 52%,transparent);mask-image:linear-gradient(#000 52%,transparent);animation:pfg 14s ease-in-out infinite alternate}
 .pf-glow.cv{background-size:cover;background-position:center;height:340px;opacity:.9;animation:none;-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
 @keyframes pfg{from{transform:translateX(-1.5%) scale(1)}to{transform:translateX(1.5%) scale(1.06)}}
-body[data-lt="1"] .pf-glow{opacity:.5}body.nb .pf-glow:not(.cv){display:none}body.noanim .pf-glow{animation:none}
+body[data-lt="1"] .pf-glow{opacity:.5}body.nb .pf-glow{display:none}body.noanim .pf-glow{animation:none}
 .pf-page>*{position:relative;z-index:1}.pf-page>.pf-glow{position:absolute}
 .pf-page .pf-top{margin-bottom:6px}
 .pf-page .pf-top h2{font-size:calc(34px*var(--ts));font-weight:800;letter-spacing:-.5px;margin:0}
@@ -478,6 +478,126 @@ body.noanim .ai,body.noanim .ai *,body.noanim .pf-c:after,body.noanim .pf-pill s
 .ach-ic.on{background:color-mix(in srgb,var(--green) 10%,var(--bg))}
 .ach-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}.ach-hd b{font-size:19px}
 @media(max-width:340px){.pf-ach .pf-c b{font-size:11.5px}.pf-page .pf-t b{font-size:30px}}
+
+/* ===== настройки v2: список разделов + поиск ===== */
+.st-srch{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:calc(14px*var(--k));padding:0 12px;margin-bottom:12px}
+.st-srch span{color:var(--mute)}.st-srch input{border:0;background:none;padding:11px 0;border-radius:0;outline:0;min-width:0}
+.st-grp{display:block;width:100%;background:var(--card);border:1px solid var(--line);border-radius:calc(16px*var(--k));padding:0 14px;margin-bottom:12px;color:var(--text);font:inherit;text-align:left}
+.st-row{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 0;color:var(--text);font:inherit;text-align:left}
+.st-grp>.st-row:last-child{border-bottom:0}
+.st-ic{flex:none;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.st-tx{flex:1;min-width:0;display:flex;flex-direction:column}.st-tx b{font-weight:600}
+.st-tx small{color:var(--mute);font-size:calc(13px*var(--ts));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-ch{flex:none;color:var(--mute);font-size:22px;line-height:1}
+.st-me{display:flex;align-items:center;gap:14px;padding:14px}
+.st-av{flex:none;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff}
+#sb.sr>*{animation:none}
+.sec.fl+.card{animation:stfl 1.6s}
+@keyframes stfl{0%,55%{box-shadow:0 0 0 2px var(--blue)}100%{box-shadow:0 0 0 2px transparent}}
+
+/* ===== нижняя панель v2 + анимации ===== */
+nav{position:relative;overflow:hidden;border-top:0}
+nav:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,#34C759,#22C1DC,#3B8EF3,#8B7CFF,#F472B6,#FF9A3D,#34C759);background-size:200% 100%;animation:nvflow 8s linear infinite;opacity:.9}
+@keyframes nvflow{to{background-position:-200% 0}}
+nav button{position:relative;z-index:1;overflow:hidden;border-radius:16px;font-size:11px;transition:color .25s,transform .15s}
+nav button[data-t=vpn]{--c:#34C759}nav button[data-t=chat]{--c:#22C1DC}nav button[data-t=me]{--c:#F472B6}nav button[data-t=set]{--c:#FF9A3D}
+nav button svg{transition:filter .3s}
+nav button:not(.on) svg{color:color-mix(in srgb,var(--c) 55%,var(--mute))}
+nav button.on{color:var(--c)}
+nav button.on svg{animation:nvpop .5s cubic-bezier(.3,1.6,.5,1);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--c) 70%,transparent))}
+nav button:active{transform:scale(.9)}
+@keyframes nvpop{0%{transform:scale(.7) translateY(2px)}60%{transform:scale(1.22) translateY(-3px)}100%{transform:none}}
+.nv-pill{position:absolute;z-index:0;top:5px;bottom:calc(4px + env(safe-area-inset-bottom));left:0;border-radius:16px;pointer-events:none;background:color-mix(in srgb,var(--pc,var(--blue)) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pc,var(--blue)) 38%,transparent),0 4px 16px color-mix(in srgb,var(--pc,var(--blue)) 28%,transparent);transition:transform .4s cubic-bezier(.3,1.3,.4,1),width .4s,background .3s,box-shadow .3s,opacity .2s}
+.rip{position:absolute;border-radius:50%;background:currentColor;opacity:.18;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+.st-row,.st-me,.gb{position:relative;overflow:hidden;transition:transform .12s ease}
+.st-row:active,.st-me:active,.gb:active,button.chip:active,button.b:active{transform:scale(.97)}
+.st-grp .st-row{animation:vfade .4s both}.st-grp .st-row:nth-child(2){animation-delay:.05s}.st-grp .st-row:nth-child(3){animation-delay:.1s}.st-grp .st-row:nth-child(4){animation-delay:.15s}
+.vp>*:nth-child(6){animation-delay:.35s}.vp>*:nth-child(7){animation-delay:.42s}.vp>*:nth-child(8){animation-delay:.49s}
+.st-av{animation:stav 3.6s ease-in-out infinite}
+@keyframes stav{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--blue) 45%,transparent)}50%{box-shadow:0 0 0 7px transparent}}
+#sb.go{animation:stgo .28s ease both}#sb.bk{animation:stbk .28s ease both}
+@keyframes stgo{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes stbk{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+.ov{animation:ovf .2s ease both}.sh{animation:shup .34s cubic-bezier(.2,.9,.3,1) both}
+@keyframes ovf{from{opacity:0}to{opacity:1}}@keyframes shup{from{transform:translateY(100%)}to{transform:none}}
+.toast{animation:tsin .32s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes tsin{from{opacity:0;transform:translate(-50%,14px) scale(.94)}to{opacity:1;transform:translate(-50%,0)}}
+body.noanim nav:before,body.noanim .st-av{animation:none}
+body.notr nav button.on svg,body.notr .st-grp .st-row,body.notr #sb,body.notr .toast,body.notr .sh,body.notr .ov{animation:none!important}
+body.notr .nv-pill{transition:none}
+@media(prefers-reduced-motion:reduce){nav:before,.st-av,nav button.on svg,.st-grp .st-row,#sb.go,#sb.bk,.toast,.sh,.ov{animation:none!important}.nv-pill{transition:none}.rip{display:none}}
+
+/* ===== v1.6: шрифт, панель, плотность, чат ===== */
+body,button,input,textarea,select{font-family:var(--ff,-apple-system,system-ui,"Segoe UI",Roboto,sans-serif)}
+.fnts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fn{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:calc(14px*var(--k));padding:10px 12px;color:var(--text);font-size:14px;text-align:left}
+.fn b{font-size:22px;color:var(--blue)}.fn.on{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 12%,var(--card))}
+.dot.cu{position:relative;overflow:hidden;display:inline-block;background:conic-gradient(#ff5a5f,#ffc233,#34c759,#22c1dc,#3b8ef3,#f472b6,#ff5a5f);flex:none}
+.dot.cu input{position:absolute;inset:0;width:100%;height:100%;opacity:0;padding:0;border:0;cursor:pointer}
+.dot.cu.on:after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--cc);pointer-events:none}
+.stp{flex:none!important;display:flex;align-items:center;gap:8px}.stp span{min-width:48px;text-align:center;font-variant-numeric:tabular-nums}
+.stp button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:18px;padding:0}
+.st-rec{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:-4px 0 10px;flex:none}.st-rec::-webkit-scrollbar{display:none}
+.st-rec .chip{flex:none;margin:0;white-space:nowrap;padding:5px 12px;font-size:13px}
+nav button span{transition:opacity .25s,transform .25s}
+body[data-nbs="1"] nav button,body[data-nbs="2"] nav button{--c:var(--blue)}
+body[data-nbs="1"] nav button:not(.on) svg,body[data-nbs="2"] nav button:not(.on) svg{color:inherit}
+body[data-nbs="2"] .nv-pill{display:none}body[data-nbs="2"] nav button.on svg{filter:none}
+body[data-nbl="1"] nav button:not(.on) span{opacity:0;transform:translateY(-4px)}
+body[data-nbl="2"] nav button span{display:none}
+body.nbr0 nav:before{display:none}
+body[data-ld="0"] .st-row{padding:7px 0}body[data-ld="0"] .sw-r{padding:5px 0}body[data-ld="0"] #sb .card{padding:6px 12px}body[data-ld="0"] #sb .sec{margin:12px 2px 6px}
+body[data-ld="2"] .st-row{padding:17px 0}body[data-ld="2"] .sw-r{padding:15px 0}body[data-ld="2"] #sb .card{padding:14px 16px}body[data-ld="2"] #sb .sec{margin:24px 2px 12px}
+body[data-cw="1"] #list{background-image:radial-gradient(color-mix(in srgb,var(--text) 10%,transparent) 1.2px,transparent 1.5px);background-size:18px 18px}
+body[data-cw="2"] #list{background-image:linear-gradient(color-mix(in srgb,var(--text) 6%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--text) 6%,transparent) 1px,transparent 1px);background-size:24px 24px}
+body[data-cw="3"] #list{background:radial-gradient(120% 60% at 50% 0,color-mix(in srgb,var(--blue) 18%,transparent),transparent 70%),radial-gradient(90% 50% at 100% 100%,color-mix(in srgb,var(--blue) 12%,transparent),transparent 70%)}
+body[data-cd="0"] .mr{margin-top:5px}body[data-cd="0"] .mr.cont{margin-top:1px}body[data-cd="0"] .m{padding:5px 10px 4px}
+body[data-cd="2"] .mr{margin-top:14px}body[data-cd="2"] .mr.cont{margin-top:4px}body[data-cd="2"] .m{padding:11px 14px 9px}
+body[data-cts="0"] .m{font-size:calc(13.5px*var(--ts))}body[data-cts="2"] .m{font-size:calc(17px*var(--ts))}
+body.cav0 .mr>.av,body.cav0 .mr>.avs{display:none}body.ct0 .m .t{display:none}body.ck0 .m .tk{display:none}
+
+/* ===== профиль v3: обложка-баннер, ровная аватарка, узоры по бокам, редактор кадра ===== */
+.pf-page .pf-cvr{position:relative;display:block;width:100%;aspect-ratio:2.4/1;margin:4px 0 0;border-radius:calc(26px*var(--k));overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  background:radial-gradient(70% 110% at 92% 0,rgba(191,90,242,.75),transparent 70%),radial-gradient(80% 120% at 6% 100%,color-mix(in srgb,var(--blue) 90%,transparent),transparent 72%),linear-gradient(135deg,color-mix(in srgb,var(--blue) 50%,#0a0a10),#2b1553);
+  box-shadow:0 14px 34px -16px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.12)}
+.pf-page .pf-cvr.has{background-size:cover;background-position:center;background-repeat:no-repeat}
+.pf-page .pf-cvr:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,0) 30%,rgba(0,0,0,.35));pointer-events:none}
+.pf-page .pf-avrow{position:relative;z-index:2;margin-top:-61px;align-items:end}
+.pf-page .pf-sb{width:48px;height:48px;margin-bottom:8px}
+.pf-page .pf-av{display:block;aspect-ratio:1/1;object-fit:cover;object-position:center;border-radius:50%;flex:none}
+.pf-page div.pf-av{display:flex}
+.pf-page .pf-glow.cv{height:420px;opacity:.55;filter:blur(34px) saturate(1.35);transform:scale(1.12);-webkit-mask-image:linear-gradient(#000 25%,transparent);mask-image:linear-gradient(#000 25%,transparent)}
+body[data-lt="1"] .pf-page .pf-glow.cv{opacity:.3}
+body.nb .pf-cvr{display:none}body.nb .pf-page .pf-avrow{margin-top:10px}
+.pf-page .pf-act .chip{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:8px 16px;font-size:14px;font-weight:600;border-radius:999px;margin:0}
+.pf-page>.pf-pat{position:absolute;z-index:0;left:50%;width:100vw;margin-left:-50vw;top:-12px;bottom:0;overflow:hidden;pointer-events:none;
+  -webkit-mask-image:linear-gradient(90deg,#000 0,rgba(0,0,0,.9) 16%,transparent 40%,transparent 60%,rgba(0,0,0,.9) 84%,#000 100%);mask-image:linear-gradient(90deg,#000 0,rgba(0,0,0,.9) 16%,transparent 40%,transparent 60%,rgba(0,0,0,.9) 84%,#000 100%)}
+.pf-pat i{position:absolute;display:block;left:calc(-1*var(--dx,0px));top:calc(-1*var(--dy,0px));right:0;bottom:0;background-repeat:repeat;will-change:transform;animation:pfpd 40s linear infinite}
+@keyframes pfpd{to{transform:translate(var(--dx,0px),var(--dy,0px))}}
+body.noanim .pf-pat i{animation:none}
+@media(prefers-reduced-motion:reduce){.pf-pat i{animation:none}}
+@media(min-width:700px){.pf-page>.pf-pat{left:-90px;right:-90px;width:auto;margin-left:0}}
+.ptg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.ptc{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 6px 8px;font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:calc(16px*var(--k))}
+.ptc b{font-size:12px;font-weight:600}.ptc.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.ptp{display:flex;align-items:center;justify-content:center;width:100%;height:40px;border-radius:11px;background-color:color-mix(in srgb,var(--bg) 80%,#000);background-repeat:repeat;color:var(--mute);font-size:20px}
+.ptl{margin:14px 0 2px;font-size:13px;color:var(--mute)}
+.ptr{padding:0;border:0;background:none;accent-color:var(--blue);height:30px;margin-top:6px}
+.dot.ac{background:var(--blue)}
+.crp{position:relative;overflow:hidden;width:100%;margin:0 auto;border-radius:18px;background:#000;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.crp.rd{width:min(100%,300px);border-radius:50%}
+.crp img{position:absolute;max-width:none;pointer-events:none;-webkit-user-drag:none}
+.crp:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6);pointer-events:none}
+
+/* ===== рамки с узорами: рисунок вокруг фото (136% от размера аватарки) ===== */
+[data-fr]{position:relative}
+[data-fr]::after{content:"";position:absolute;left:50%;top:50%;width:136%;height:136%;transform:translate(-50%,-50%);background:var(--fri) center/100% 100% no-repeat;pointer-events:none;z-index:0}
+.av[data-fr].fr{box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.pf-page .pf-avw[data-fr]{margin-bottom:14px}
+.pf-page .pf-avw[data-fr] .pf-av{box-shadow:none}
+.frc .av{margin:6px 0}
+.mr>.av[data-fr]{margin-left:4px;margin-right:4px}
 </style></head><body>
 <div id="view"></div>
 <nav><button data-t="vpn"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M20 12v2.5"/></g></svg><span>VPN</span></button><button data-t="chat"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="8" r="3.4"/><path d="M1 21.5A7 7 0 0 1 15 21.5"/><circle cx="17" cy="8.5" r="2.7"/><path d="M13 18.5A4 4 0 0 1 21 18.5"/></g></svg><span>Чат</span></button><button data-t="me"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="8" r="4"/><path d="M4 23A8 8 0 0 1 20 23"/></g></svg><span>Профиль</span></button><button data-t="set"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></g></svg><span>Настройки</span></button></nav>
@@ -495,17 +615,29 @@ if(!device){device=crypto.randomUUID();secret=[...crypto.getRandomValues(new Uin
 const SKINS=[[0,'💊','Стандарт',['#121214','#1D1C21','#2B2A31','#3B8EF3'],['#F4F4F7','#FFFFFF','#E1E1E8','#3B8EF3']],[1,'🍂','Осень',['#17120E','#231A13','#3A2B1F','#FF9A3D'],['#FBF3EA','#FFFFFF','#EBD9C6','#F28A2E']],[2,'🎄','Новый год',['#0E1613','#16231D','#27392F','#FF5A5F'],['#F1F8F3','#FFFFFF','#D3E5D9','#EF4B52']],[3,'☀️','Лето',['#0C1A1E','#132A30','#1F4048','#FFC233'],['#FFF8E6','#FFFFFF','#F5E3B3','#FFB300']],[4,'🌸','Весна',['#1A1218','#271A24','#3E2A39','#F472B6'],['#FFF4F8','#FFFFFF','#F4D3E2','#F06AA8']],[5,'🚀','Космос',['#06071A','#0F1130','#222550','#8B7CFF'],['#EEF0FF','#FFFFFF','#D6D9F5','#7C6CF5']],[6,'🎤','Rap',['#0A0A0A','#161616','#2C2C2C','#D4FF00'],['#F0F0F0','#FFFFFF','#DADADA','#FF2E93']],[7,'💎','Стекло',['#0A0F1E','rgba(255,255,255,.08)','rgba(255,255,255,.16)','#0A84FF'],['#E8EEF9','rgba(255,255,255,.62)','rgba(0,0,0,.08)','#007AFF']],[8,'🌌','Аврора',['#03110F','rgba(14,50,46,.5)','rgba(140,255,225,.18)','#34D399'],['#E6F8F2','rgba(255,255,255,.6)','rgba(0,0,0,.08)','#0FA37F']],[9,'🌇','Закат',['#170A1C','rgba(70,24,60,.5)','rgba(255,170,140,.2)','#FF7A59'],['#FFF0E8','rgba(255,255,255,.6)','rgba(0,0,0,.08)','#F0603E']]];
 const ACCS=[[1,'Синий','#3B8EF3','#2F7DE0'],[2,'Бирюзовый','#22C1DC','#0C93AB'],[3,'Зелёный','#34C759','#1E9E45'],[4,'Жёлтый','#FFC233','#E0A000'],[5,'Оранжевый','#FF9A3D','#E0700C'],[6,'Красный','#FF5A5F','#E0352C'],[7,'Розовый','#F472B6','#E0489A'],[8,'Фиолетовый','#8B7CFF','#7C6CF5']];
 const TH=(k,d)=>Number(LS.get('th_'+k,String(d)));
+const FONTS=[['Системный','-apple-system,system-ui,"Segoe UI",Roboto,sans-serif'],['Округлый','ui-rounded,"SF Pro Rounded","Hiragino Maru Gothic ProN",Quicksand,Nunito,"Arial Rounded MT Bold",system-ui,sans-serif'],['С засечками','ui-serif,"New York",Georgia,"Times New Roman",serif'],['Моноширинный','ui-monospace,"SF Mono",Menlo,Consolas,monospace'],['Читаемый','Verdana,Tahoma,"DejaVu Sans",sans-serif'],['Рукописный','"Segoe Print","Bradley Hand","Chalkboard SE","Comic Sans MS",cursive']];
+const shade=(h,f)=>'#'+[1,3,5].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(h.slice(i,i+2),16)*(1+f)))).toString(16).padStart(2,'0')).join('');
+const lum=(h)=>(.299*parseInt(h.slice(1,3),16)+.587*parseInt(h.slice(3,5),16)+.114*parseInt(h.slice(5,7),16))/255;
+// светлая ли тема сейчас: по расписанию, по выбору или по системе
+function lightNow(){
+  if(TH('sch',0)){const h=new Date().getHours(),a=TH('sf',21),b=TH('st',7),dark=a>b?(h>=a||h<b):(h>=a&&h<b);return !dark}
+  const m=TH('mode',1);return m===2||(m===0&&matchMedia('(prefers-color-scheme:light)').matches);
+}
 function applyTheme(){
-  const m=TH('mode',1),light=m===2||(m===0&&matchMedia('(prefers-color-scheme:light)').matches);
-  const sk=SKINS.find(s=>s[0]===TH('skin',0))||SKINS[0],p=light?sk[4]:sk[3],a=ACCS.find(x=>x[0]===TH('acc',0));
+  const light=lightNow();
+  const cc=TH('acc',0)===9&&/^#[0-9a-f]{6}$/i.test(LS.get('accc','#3B8EF3'))?LS.get('accc','#3B8EF3'):null;
+  const sk=SKINS.find(s=>s[0]===TH('skin',0))||SKINS[0],p=light?sk[4]:sk[3],a=cc?[9,'Свой',cc,shade(cc,-.18)]:ACCS.find(x=>x[0]===TH('acc',0));
   const r=document.documentElement.style,set=(k,v)=>r.setProperty(k,v);
-  set('--bg',p[0]);set('--card',p[1]);set('--line',p[2]);set('--blue',a?(light?a[3]:a[2]):p[3]);
+  set('--bg',p[0]);set('--card',p[1]);set('--line',p[2]);set('--blue',a?(light?a[3]:a[2]):p[3]);set('--on',cc&&lum(light?a[3]:a[2])<.55?'#fff':'#000');set('--ff',(FONTS[TH('font',0)]||FONTS[0])[1]);
   set('--text',light?'#17171A':'#F2F2F4');set('--mute',light?'#6B6F76':'#9A9DA3');
   set('--green',light?'#1E9E45':'#34C759');set('--red',light?'#E0352C':'#FF5A5F');
   set('--ts',[0.9,1,1.15][TH('ts',1)]);set('--k',[0.5,1,1.5][TH('cs',1)]);
   const tc=document.getElementById('tc');if(tc)tc.content=p[0];
 }
 applyTheme();matchMedia('(prefers-color-scheme:light)').addEventListener&&matchMedia('(prefers-color-scheme:light)').addEventListener('change',applyTheme);
+let _lt=lightNow();
+setInterval(()=>{if(TH('sch',0)){const l=lightNow();if(l!==_lt){_lt=l;applyTheme();applyUI()}}},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&TH('sch',0)){_lt=lightNow();applyTheme();applyUI()}});
 async function api(path,extra={}){
   const r=await fetch(API+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({device,secret,...extra})});
   let j={};try{j=await r.json()}catch(e){}
@@ -555,25 +687,159 @@ const LVD=[0,1,3,7,14,30,60,100,180,365],LVN=['Новичок','Знакомый
 const lvIdx=()=>{const t0=Number(me&&me.created)||Number(LS.get('since'))||Date.now(),d=Math.max(0,Math.floor((Date.now()-t0)/864e5));let i=0;LVD.forEach((x,n)=>{if(d>=x)i=n});return i};
 const FR=[null,['#7BC96F','🌱'],['#4FC3F7','👋'],['#FFD54F','🙂'],['#FF8A65','🏠'],['#FFB300','⚡'],['#FF5252','🔥'],['#BA68C8','🧠'],['#5C6BC0','🛡️'],['#26C6DA','💎'],['#FFD700','🏆']];
 const frS=(n)=>FR[n]?'--fc:'+FR[n][0]+';--fg:'+FR[n][0]+'66;':'';
+// ---------- рамки с узорами (как в приложении для Android): 10 рисунков, каждый в векторе ----------
+const hx=(h)=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+const mixc=(a,b,t)=>{const x=hx(a),y=hx(b);return '#'+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,'0')).join('')};
+function frameSvg(n){
+  const base=FR[n][0],light=mixc(base,'#FFFFFF',.55),dark=mixc(base,'#000000',.35),W='#FFFFFF';
+  const b=100*.18/1.36,a=50-b,cx=50,cy=50,f=(v)=>Math.round(v*100)/100;
+  const oa=(k,o)=>o==null?'':` ${k}-opacity='${o}'`;
+  const ring=(r,w,c,o)=>`<circle cx='50' cy='50' r='${f(r)}' fill='none' stroke='${c}' stroke-width='${f(w)}'${oa('stroke',o)}/>`;
+  const dot=(x,y,r,c,o)=>`<circle cx='${f(x)}' cy='${f(y)}' r='${f(r)}' fill='${c}'${oa('fill',o)}/>`;
+  const pth=(d,c,o,st,sw)=>`<path d='${d}' fill='${c}'${oa('fill',o)}${st?` stroke='${st}' stroke-width='${f(sw)}' stroke-linejoin='round'`:''}/>`;
+  const ln=(x1,y1,x2,y2,w,c,o)=>`<path d='M${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}' stroke='${c}' stroke-width='${f(w)}' stroke-linecap='round'${oa('stroke',o)}/>`;
+  const spin=(k,off,fn)=>{let o='';for(let i=0;i<k;i++)o+=`<g transform='rotate(${f(off+360*i/k)} 50 50)'>${fn(i)}</g>`;return o};
+  const rot=(deg,x,y,inner)=>`<g transform='rotate(${f(deg)} ${f(x)} ${f(y)})'>${inner}</g>`;
+  const leaf=(x,y0,len,wd)=>`M${f(x)} ${f(y0)}Q${f(x+wd)} ${f(y0-len*.55)} ${f(x)} ${f(y0-len)}Q${f(x-wd)} ${f(y0-len*.55)} ${f(x)} ${f(y0)}Z`;
+  const spk=(x,y,r)=>{const k=r*.16;return `M${f(x)} ${f(y-r)}Q${f(x+k)} ${f(y-k)} ${f(x+r)} ${f(y)}Q${f(x+k)} ${f(y+k)} ${f(x)} ${f(y+r)}Q${f(x-k)} ${f(y+k)} ${f(x-r)} ${f(y)}Q${f(x-k)} ${f(y-k)} ${f(x)} ${f(y-r)}Z`};
+  // переливающееся кольцо (в Android это SweepGradient, в SVG собираем из коротких дуг)
+  const sweep=(r,w,cols)=>{const N=72,m=cols.length-1;let o='';for(let i=0;i<N;i++){const pos=(i+.5)/N*m,k=Math.min(m-1,Math.floor(pos)),c=mixc(cols[k],cols[k+1],pos-k),t0=2*Math.PI*i/N,t1=2*Math.PI*(i+1.25)/N;
+    o+=`<path d='M${f(50+r*Math.cos(t0))} ${f(50+r*Math.sin(t0))}A${f(r)} ${f(r)} 0 0 1 ${f(50+r*Math.cos(t1))} ${f(50+r*Math.sin(t1))}' fill='none' stroke='${c}' stroke-width='${f(w)}'/>`}return o};
+  let g=ring(a+b*.55,b*.9,base,.149),r0,rm,yb;
+  if(n===1){r0=a+b*.2;g+=ring(r0,b*.14,dark)
+    +spin(8,22.5,()=>pth(leaf(cx,cy-r0,b*.5,b*.14),light))
+    +spin(8,0,()=>rot(16,cx,cy-r0,pth(leaf(cx,cy-r0,b*.74,b*.27),base)+ln(cx,cy-r0-b*.06,cx,cy-r0-b*.62,b*.05,dark)))}
+  else if(n===2){g+=ring(a+b*.22,b*.16,base)
+    +spin(12,0,(i)=>dot(cx,cy-(a+b*.62),b*.2,i%2?base:light))
+    +spin(12,15,()=>dot(cx,cy-(a+b*.8),b*.1,light,.8))
+    +`<circle cx='50' cy='50' r='${f(a+b*.94)}' fill='none' stroke='${base}' stroke-opacity='.533' stroke-width='${f(b*.1)}' stroke-linecap='round' stroke-dasharray='${f(b*.12)} ${f(b*.3)}'/>`}
+  else if(n===3){g+=ring(a+b*.24,b*.18,base)
+    +spin(16,0,(i)=>ln(cx,cy-(a+b*.42),cx,cy-(a+b*(i%2?.72:.94)),b*.13,i%2?light:base))}
+  else if(n===4){g+=ring(a+b*.14,b*.12,dark)
+    +spin(14,0,()=>`<circle cx='50' cy='${f(cy-(a+b*.55))}' r='${f(b*.4)}' fill='none' stroke='${base}' stroke-width='${f(b*.11)}'/>`)
+    +spin(14,0,()=>dot(cx,cy-(a+b*.55),b*.09,light))}
+  else if(n===5){const N=16,r1=a+b*.32,r2=a+b*.98,d=2*Math.PI/N,rh=r1*.97;let dd='';
+    for(let i=0;i<N;i++){const t=d*i-Math.PI/2;[[r1,0],[r2,.2],[r2,.5],[r1,.7]].forEach((q,j)=>{dd+=(i===0&&j===0?'M':'L')+f(cx+q[0]*Math.cos(t+d*q[1]))+' '+f(cy+q[0]*Math.sin(t+d*q[1]))})}
+    dd+=`ZM${f(cx+rh)} ${cy}A${f(rh)} ${f(rh)} 0 1 0 ${f(cx-rh)} ${cy}A${f(rh)} ${f(rh)} 0 1 0 ${f(cx+rh)} ${cy}Z`;
+    g+=`<clipPath id='cg'><path d='${dd}' clip-rule='evenodd'/></clipPath><g clip-path='url(#cg)'>${sweep((rh+r2)/2,r2-rh+1,[base,dark,light,base,dark,light,base])}</g>`
+      +ring(a+b*.12,b*.1,base)+ring(r1+b*.12,b*.07,W,.565)}
+  else if(n===6){r0=a+b*.18;g+=ring(r0,b*.16,dark);const y0=cy-r0,fl=(len,w)=>`M${f(cx-w)} ${f(y0)}C${f(cx-w)} ${f(y0-len*.5)} ${f(cx-w*.2)} ${f(y0-len*.6)} ${f(cx)} ${f(y0-len)}C${f(cx+w*.2)} ${f(y0-len*.6)} ${f(cx+w)} ${f(y0-len*.5)} ${f(cx+w)} ${f(y0)}Z`;
+    g+=spin(12,0,()=>rot(10,cx,y0,pth(fl(b*.8,b*.25),base)+pth(fl(b*.5,b*.13),'#FFB74D')))}
+  else if(n===7){rm=a+b*.5;g+=sweep(rm,b*.28,[base,'#F48FB1',light,'#7E57C2',base])
+    +spin(4,0,()=>pth(spk(cx,cy-rm,b*.58),W))+spin(4,45,()=>pth(spk(cx,cy-rm,b*.34),light))+spin(8,22.5,()=>dot(cx,cy-rm,b*.07,W,.753))}
+  else if(n===8){rm=a+b*.5;g+=sweep(rm,b*.34,[light,base,dark,base,light])+ring(rm-b*.13,b*.05,W,.627)
+    +spin(12,15,()=>dot(cx,cy-rm,b*.07,W,.878))
+    +spin(4,0,()=>pth(`M${f(cx)} ${f(cy-rm-b*.46)}L${f(cx+b*.3)} ${f(cy-rm)}L${f(cx)} ${f(cy-rm+b*.46)}L${f(cx-b*.3)} ${f(cy-rm)}Z`,light,null,dark,b*.06))}
+  else if(n===9){yb=cy-(a+b*.1);g+=spin(12,0,(i)=>pth(`M${f(cx)} ${f(yb-b*.9)}L${f(cx+b*.3)} ${f(yb-b*.9*.45)}L${f(cx)} ${f(yb)}L${f(cx-b*.3)} ${f(yb-b*.9*.45)}Z`,i%2?light:base)+ln(cx,yb-b*.9,cx,yb,b*.04,W,.69))+ring(a+b*.1,b*.1,W,.627)}
+  else{rm=a+b*.3;const gold='#FFD700',y0=cy-(a+b*.3);g+=sweep(rm,b*.26,[gold,'#FFF59D','#FFB300','#FFF59D',gold]);
+    for(const sg of[1,-1])for(let k=0;k<6;k++)g+=rot(sg*(54+k*21),cx,cy,rot(-sg*28,cx,y0,pth(leaf(cx,y0,b*.62,b*.2),k%2?'#FFB300':'#FFE082')));
+    const w=b*.6,h=b*.6;
+    g+=pth(`M${f(cx-w)} ${f(y0)}L${f(cx-w)} ${f(y0-h*.55)}L${f(cx-w*.5)} ${f(y0-h*.25)}L${f(cx)} ${f(y0-h)}L${f(cx+w*.5)} ${f(y0-h*.25)}L${f(cx+w)} ${f(y0-h*.55)}L${f(cx+w)} ${f(y0)}Z`,gold,null,'#B26A00',b*.05)
+      +dot(cx,y0-h*.38,b*.09,'#FF5252')+dot(cx-w,y0-h*.55,b*.08,W)+dot(cx,y0-h,b*.09,W)+dot(cx+w,y0-h*.55,b*.08,W)}
+  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>${g}</svg>`;
+}
+(()=>{const st=document.createElement('style');st.id='frStyle';let c='';for(let n=1;n<=10;n++)c+=`[data-fr="${n}"]{--fri:url("data:image/svg+xml,${encodeURIComponent(frameSvg(n))}")}`;st.textContent=c;document.head.appendChild(st)})();
+const frA=(n)=>n>=1&&n<=10?` data-fr="${n}"`:'';
+
 function frSheet(){
   const li=lvIdx(),cur=(me&&me.frame)||0,ph=me&&me.av&&avCache[me.av],col=nickCol(me.nick),ini=esc((String(me.nick||'?').replace(/^@/,'')[0]||'?').toUpperCase());
-  const av=(n)=>`<span class="av${n?' fr':''}" style="${frS(n)}background-color:${col};${ph?`background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':ini}</span>`;
+  const av=(n)=>`<span class="av${n?' fr':''}"${frA(n)} style="${frS(n)}background-color:${col};${ph?`background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':ini}</span>`;
   const cards=[0,1,2,3,4,5,6,7,8,9,10].map(n=>{const lk=n>0&&li<n-1;return `<button class="frc${n===cur?' on':''}${lk?' lk':''}" data-f="${n}">${av(n)}<b style="font-size:13px">${n?LVN[n-1]:'Без рамки'}</b><small>${n?(lk?'🔒 ур. '+n:'Ур. '+n):'—'}</small></button>`}).join('');
   const o=sheetOpen('Рамка аватара','<div class="mute small" style="margin-top:6px">Каждый уровень открывает новую рамку. Её видят в общем чате все.</div><div class="gbox"><div class="frg">'+cards+'</div></div>');
   o.querySelectorAll('.frc').forEach(b=>b.onclick=()=>{const n=Number(b.dataset.f);if(n>0&&li<n-1){toast('Откроется на уровне '+n+' «'+LVN[n-1]+'»');return}
     api('/api/chat/frame_set',{frame:n}).then(()=>{me.frame=n;o.remove();toast(n?'Рамка применена':'Рамка снята');meTab()}).catch(x=>toast(x.message))});
 }
 function coverMenu(){
+  if(lvIdx()<1){toast('Обложка откроется на 2-м уровне «Знакомый» 🔒');return}
   listSheet('Обложка профиля',LS.get('cover')?['🖼 Выбрать из галереи','Убрать обложку']:['🖼 Выбрать из галереи'],(i)=>{if(i===1){LS.set('cover','');meTab();return}coverPick()});
 }
+function shrinkImg(im,max){const m=Math.max(im.naturalWidth,im.naturalHeight);if(m<=max)return im;const k=max/m,c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(im,0,0,c.width,c.height);return c}
+// окно «кадрирование»: двигаем фото пальцем, масштаб ползунком, в рамке ровно то, что увидят другие
+function cropSheet(o){
+  const u=URL.createObjectURL(o.file),im=new Image();
+  im.onerror=()=>{URL.revokeObjectURL(u);toast('Не удалось открыть картинку')};
+  im.onload=()=>{
+    const src=shrinkImg(im,2000),iw=src.naturalWidth||src.width,ih=src.naturalHeight||src.height;
+    const sh=sheetOpen(o.title,'<div class="mute small" style="margin:6px 0 10px">Двигайте фото пальцем и приближайте ползунком. В рамке то, что увидят другие.</div><div class="crp'+(o.round?' rd':'')+'" id="crp" style="aspect-ratio:'+o.r+'"><img id="crpi" alt="" draggable="false" src="'+u+'"></div><input class="ptr" type="range" id="crz" min="100" max="300" value="100" aria-label="Масштаб"><button class="b" id="crok">Сохранить</button><button class="b ghost" id="crx">Отмена</button>');
+    const box=$('#crp',sh),pic=$('#crpi',sh),zr=$('#crz',sh);
+    let fw=box.clientWidth,fh=box.clientHeight,z=1,ox=0,oy=0;
+    if(!fh){fh=Math.round(fw/o.r);box.style.height=fh+'px'}
+    const sc=()=>Math.max(fw/iw,fh/ih)*z;
+    const paint=()=>{const s=sc(),w=iw*s,h=ih*s;ox=Math.min(0,Math.max(fw-w,ox));oy=Math.min(0,Math.max(fh-h,oy));pic.style.width=w+'px';pic.style.height=h+'px';pic.style.left=ox+'px';pic.style.top=oy+'px'};
+    ox=(fw-iw*sc())/2;oy=(fh-ih*sc())/2;paint();
+    zr.oninput=()=>{const s0=sc(),cx=(fw/2-ox)/s0,cy=(fh/2-oy)/s0;z=zr.value/100;const s1=sc();ox=fw/2-cx*s1;oy=fh/2-cy*s1;paint()};
+    box.onwheel=(e)=>{e.preventDefault();zr.value=Math.min(300,Math.max(100,Number(zr.value)-e.deltaY/4));zr.oninput()};
+    let dr=null;
+    box.onpointerdown=(e)=>{dr={x:e.clientX,y:e.clientY};try{box.setPointerCapture(e.pointerId)}catch(_){}box.style.cursor='grabbing'};
+    box.onpointermove=(e)=>{if(!dr)return;ox+=e.clientX-dr.x;oy+=e.clientY-dr.y;dr={x:e.clientX,y:e.clientY};paint()};
+    box.onpointerup=box.onpointercancel=()=>{dr=null;box.style.cursor=''};
+    const end=()=>{URL.revokeObjectURL(u);sh.remove()};
+    $('#crx',sh).onclick=end;
+    $('#crok',sh).onclick=async()=>{const bt=$('#crok',sh);bt.disabled=true;
+      try{const s=sc(),c=document.createElement('canvas');c.width=o.out[0];c.height=o.out[1];
+        const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(src,-ox/s,-oy/s,fw/s,fh/s,0,0,c.width,c.height);
+        await o.done(c);end()}
+      catch(x){bt.disabled=false;toast(x.message||'Не удалось сохранить')}};
+  };
+  im.src=u;
+}
 function coverPick(){
-  pickImage(async(f)=>{
-    try{const im=await openImg(f);
-      const W=720,H=240,c=document.createElement('canvas');c.width=W;c.height=H;const k=Math.max(W/im.w,H/im.h),w=im.w*k,hh=im.h*k;
-      c.getContext('2d').drawImage(im.src,(W-w)/2,(H-hh)/2,w,hh);im.done();
-      LS.set('cover',c.toDataURL('image/jpeg',.78));if(!LS.get('cover'))throw new Error('Не хватило места для обложки');toast('Обложка обновлена');meTab()}
-    catch(x){toast(x.message||'Не удалось загрузить фото')}
-  });
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;
+    cropSheet({title:'Обложка профиля',file:f,r:2.4,out:[960,400],done:async(c)=>{
+      let d='';for(const q of[.84,.7,.55]){const t=c.toDataURL('image/jpeg',q);LS.set('cover',t);if(LS.get('cover')===t){d=t;break}}
+      if(!d)throw new Error('Не хватило места для обложки');toast('Обложка обновлена');meTab()}})};
+  inp.click();
+}
+// ---------- узоры по бокам профиля ----------
+const PATN={dots:'Точки',grid:'Сетка',waves:'Волны',diamonds:'Ромбы',stars:'Звёзды',hearts:'Сердечки',pharm:'Аптека',honey:'Соты',stripes:'Полосы',snow:'Снежинки',bubbles:'Пузырьки'};
+const PATD={
+dots:[48,48,(c)=>`<circle cx='12' cy='12' r='2.6' fill='${c}'/><circle cx='36' cy='36' r='2.6' fill='${c}'/>`],
+grid:[32,32,(c)=>`<path d='M0 .5H32M.5 0V32' fill='none' stroke='${c}' stroke-width='1'/>`],
+waves:[48,48,(c)=>`<path d='M0 12Q12 3 24 12T48 12M0 36Q12 45 24 36T48 36' fill='none' stroke='${c}' stroke-width='1.8' stroke-linecap='round'/>`],
+diamonds:[48,48,(c)=>`<path d='M24 3L45 24 24 45 3 24Z' fill='none' stroke='${c}' stroke-width='1.4' stroke-linejoin='round'/><circle cx='24' cy='24' r='2.2' fill='${c}'/>`],
+stars:[48,48,(c)=>`<path d='M12 4l2 6 6 2-6 2-2 6-2-6-6-2 6-2z' fill='${c}'/><path d='M36 28l1.4 4.2 4.2 1.4-4.2 1.4L36 39.2l-1.4-4.2-4.2-1.4 4.2-1.4z' fill='${c}'/>`],
+hearts:[48,48,(c)=>`<path transform='translate(1 3) scale(.75)' d='M12 21C4 14 2 9 2 6.5a4.5 4.5 0 0 1 10-1.5 4.5 4.5 0 0 1 10 1.5C22 9 20 14 12 21z' fill='${c}'/><path transform='translate(27 25) scale(.5)' d='M12 21C4 14 2 9 2 6.5a4.5 4.5 0 0 1 10-1.5 4.5 4.5 0 0 1 10 1.5C22 9 20 14 12 21z' fill='${c}'/>`],
+pharm:[48,48,(c)=>`<path d='M10 5h4v5h5v4h-5v5h-4v-5H5v-4h5z' fill='${c}'/><g transform='rotate(-40 35 35)' fill='none' stroke='${c}' stroke-width='1.6'><rect x='27' y='31' width='16' height='8' rx='4'/><path d='M35 31v8'/></g><circle cx='38' cy='10' r='1.8' fill='${c}'/>`],
+honey:[27.71,48,(c)=>`<path d='M0 8L13.86 0 27.71 8M0 8V24M27.71 8V24M0 24L13.86 32 27.71 24M13.86 32V48' fill='none' stroke='${c}' stroke-width='1.2' stroke-linejoin='round'/>`],
+stripes:[24,24,(c)=>`<path d='M-4 4L4 -4M-4 28L28 -4M20 28L28 20' fill='none' stroke='${c}' stroke-width='2.2'/>`],
+snow:[48,48,(c)=>`<path d='M14 7V21M7.9 10.5L20.1 17.5M7.9 17.5L20.1 10.5' fill='none' stroke='${c}' stroke-width='1.5' stroke-linecap='round'/><circle cx='38' cy='36' r='2' fill='${c}'/><circle cx='36' cy='10' r='1.3' fill='${c}'/>`],
+bubbles:[48,48,(c)=>`<g fill='none' stroke='${c}' stroke-width='1.5'><circle cx='14' cy='14' r='8'/><circle cx='38' cy='36' r='5'/></g><circle cx='38' cy='10' r='2' fill='${c}'/><circle cx='11' cy='38' r='1.6' fill='${c}'/>`]
+};
+function patCfg(){try{const v=JSON.parse(LS.get('pfpat')||'null');if(v&&PATD[v.p])return{p:v.p,c:v.c||'acc',s:[0,1,2].includes(v.s)?v.s:1,o:Math.min(100,Math.max(10,Number(v.o)||55))}}catch(e){}return{p:'',c:'acc',s:1,o:55}}
+const patColor=(c)=>c==='acc'?(getComputedStyle(document.body).getPropertyValue('--blue').trim()||'#3B8EF3'):c;
+function patStyle(cfg,k){
+  const d=PATD[cfg.p];if(!d)return'';
+  const m=[.75,1,1.45][cfg.s]*(k||1),w=d[0]*m,h=d[1]*m;
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='${d[0]}' height='${d[1]}' viewBox='0 0 ${d[0]} ${d[1]}'>${d[2](patColor(cfg.c))}</svg>`;
+  return `background-image:url("data:image/svg+xml,${encodeURIComponent(svg)}");background-size:${w}px ${h}px;--dx:${w}px;--dy:${h}px`;
+}
+function patApply(){
+  const el=$('#pfpat');if(!el)return;const c=patCfg();
+  if(!PATD[c.p]){el.style.display='none';return}
+  el.style.display='';el.style.opacity=c.o/100;el.firstElementChild.style.cssText=patStyle(c);
+}
+function patSheet(){
+  let cfg=patCfg();
+  const cols=['acc','#FFFFFF','#FFD54F','#FF6FA8','#5EE08A','#B58CFF','#FF9A4D','#4FD6FF'],keys=['',...Object.keys(PATN)],sz=['Мелкие','Средние','Крупные'];
+  const o=sheetOpen('Узор профиля','<div class="mute small" style="margin:6px 0 4px">Узор появится по бокам вашего профиля. Его видите только вы.</div><div class="gbox">'
+    +'<div class="ptg">'+keys.map(k=>'<button class="ptc" data-k="'+k+'"><span class="ptp">'+(k?'':'✕')+'</span><b>'+(k?PATN[k]:'Без узора')+'</b></button>').join('')+'</div>'
+    +'<div class="ptl">Цвет</div><div class="wr" id="ptw">'+cols.map(c=>'<button class="dot'+(c==='acc'?' ac':'')+'" data-c="'+c+'" aria-label="Цвет"'+(c==='acc'?'':' style="background:'+c+'"')+'></button>').join('')+'</div>'
+    +'<div class="ptl">Размер</div><div class="wr" id="pts">'+sz.map((t,n)=>'<button class="chip" data-s="'+n+'">'+t+'</button>').join('')+'</div>'
+    +'<div class="ptl">Яркость</div><input type="range" class="ptr" id="pto" min="10" max="100" step="5" value="'+cfg.o+'" aria-label="Яркость"></div>'
+    +'<button class="b" id="ptok">Готово</button>');
+  const save=()=>{LS.set('pfpat',JSON.stringify(cfg));patApply()};
+  const mark=()=>{
+    o.querySelectorAll('.ptc').forEach(b=>{const k=b.dataset.k;b.classList.toggle('on',k===cfg.p);if(k)b.firstChild.style.cssText=patStyle({p:k,c:cfg.c,s:1},.7)});
+    o.querySelectorAll('#ptw .dot').forEach(b=>b.classList.toggle('on',b.dataset.c===cfg.c));
+    o.querySelectorAll('#pts .chip').forEach(b=>b.classList.toggle('on',Number(b.dataset.s)===cfg.s));
+  };
+  mark();
+  o.querySelectorAll('.ptc').forEach(b=>b.onclick=()=>{cfg.p=b.dataset.k;save();mark()});
+  o.querySelectorAll('#ptw .dot').forEach(b=>b.onclick=()=>{cfg.c=b.dataset.c;save();mark()});
+  o.querySelectorAll('#pts .chip').forEach(b=>b.onclick=()=>{cfg.s=Number(b.dataset.s);save();mark()});
+  $('#pto',o).oninput=(e)=>{cfg.o=Number(e.target.value);save()};
+  $('#ptok',o).onclick=()=>o.remove();
 }
 // каналы общего чата
 const CHS=[{id:'general',e:'💬',n:'Общий чат',d:'Болтаем обо всём'},{id:'help',e:'🛟',n:'Помощь',d:'Вопросы по VPN и приложению'},{id:'vpn',e:'🛡️',n:'VPN',d:'Серверы, скорость, клиенты'},{id:'flood',e:'🎲',n:'Флуд',d:'Мемы, игры и всё остальное'},{id:'news',e:'📣',n:'Новости',d:'Объявления · пишут только модераторы'}];
@@ -778,7 +1044,7 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
   function avHtml(m){
     const nick=String(m.nick||'?'),ph=m.av&&avCache[m.av];
     if(m.av&&!ph)setTimeout(()=>avLoad(m.uid,m.av),0);
-    return `<span class="av n${m.fr?' fr':''}" data-uid="${m.uid||''}" data-nick="${esc(nick)}" data-av="${m.av||''}" style="${frS(m.fr)}background-color:${nickCol(nick)}${ph?`;background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':esc([...nick][0].toUpperCase())}</span>`;
+    return `<span class="av n${m.fr?' fr':''}"${frA(m.fr)} data-uid="${m.uid||''}" data-nick="${esc(nick)}" data-av="${m.av||''}" style="${frS(m.fr)}background-color:${nickCol(nick)}${ph?`;background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':esc([...nick][0].toUpperCase())}</span>`;
   }
   function add(m){
     if(m.id<=last)return;last=m.id;if(last&&list.firstChild&&list.firstChild.classList.contains('mute'))list.innerHTML='';
@@ -799,6 +1065,7 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
     const ph=m.has_image?`<div class="ph" data-id="${m.id}"></div>`:'';
     const rq=m.reply_to?`<div class="rq" data-q="${m.q_id||''}"><b>${esc(m.q_nick||'')}</b> ${m.q_id?esc(m.q_text||''):'<i>сообщение удалено</i>'}</div>`:'';
     const hit=!!rep&&!own&&isHit(m);if(hit&&loaded&&document.hidden)notify('PharmShop · '+m.nick,String(m.text||'').slice(0,100),'mn'+m.id);
+    if(loaded)snd(own?'send':'msg');
     list.insertAdjacentHTML('beforeend',`<div class="mr ${own?'me':''} ${cont?'cont':''} ${loaded?'new':''}">${av}<div class="m ${own?'me':''} ${cont?'ct':''}${hit?' mnm':''}" data-id="${m.id}" data-ts="${m.ts}" data-uid="${m.uid||''}" data-badge="${m.badge?1:''}" data-nick="${esc(m.nick||'')}">${nm}${rq}${ph}${m.text?mnfy(support?linkify(esc(m.text)):esc(m.text),showNames):''}<span class="t">${clock(m.ts)}${rc&&own?' <b class="tk">✓</b>':''}</span></div></div>`);
     if(m.has_image)loadPh(list.lastElementChild.querySelector('.ph'));
   }
@@ -1009,44 +1276,14 @@ function achAll(ach){
   const o=sheetOpen('','<div class="ach-hd"><b>Все достижения</b><span class="mute small">'+got+' из '+ach.length+'</span></div><div class="gbox"><div class="pf-ach all">'+ach.map((a,n)=>achCell(a,n)).join('')+'</div></div>');
   o.querySelector('.pf-ach').onclick=(e)=>{const c=e.target.closest('.pf-c');if(c){o.remove();achSheet(ach[Number(c.dataset.n)])}};
 }
-// Выбор картинки из галереи. Поле выбора обязано лежать в документе: в iOS-PWA и части браузеров отцеплённое поле теряется, и выбор молча пропадает.
-function pickImage(cb){
-  const old=document.getElementById('pickImg');if(old)old.remove();
-  const inp=document.createElement('input');inp.id='pickImg';inp.type='file';inp.accept='image/*';
-  inp.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
-  document.body.appendChild(inp);
-  inp.onchange=()=>{const f=inp.files&&inp.files[0];inp.remove();if(f)cb(f)};
-  inp.oncancel=()=>inp.remove();
-  inp.click();
-}
-// Открывает картинку: обычным способом, а если не вышло (например HEIC) — через createImageBitmap.
-async function openImg(f){
-  const url=URL.createObjectURL(f);
-  try{
-    const img=new Image();
-    await new Promise((ok,no)=>{img.onload=ok;img.onerror=()=>no(new Error('x'));img.src=url});
-    return {src:img,w:img.naturalWidth,h:img.naturalHeight,done:()=>URL.revokeObjectURL(url)};
-  }catch(e){
-    URL.revokeObjectURL(url);
-    if(window.createImageBitmap){
-      try{const b=await createImageBitmap(f);return {src:b,w:b.width,h:b.height,done:()=>{}}}catch(e2){}
-    }
-    throw new Error('Не удалось открыть картинку');
-  }
-}
 function pickAvatar(){
-  pickImage(async(f)=>{
-    try{
-      const im=await openImg(f);
-      const s=Math.min(im.w,im.h),c=document.createElement('canvas');c.width=c.height=128;
-      c.getContext('2d').drawImage(im.src,(im.w-s)/2,(im.h-s)/2,s,s,0,0,128,128);im.done();
-      let q=.85,b64='';
-      do{b64=c.toDataURL('image/jpeg',q).split(',')[1];q-=.15}while(b64.length>55000&&q>.2);
-      if(!b64)throw new Error('Не удалось обработать фото');
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;
+    cropSheet({title:'Фото профиля',file:f,r:1,round:true,out:[192,192],done:async(c)=>{
+      let q=.9,b64='';do{b64=c.toDataURL('image/jpeg',q).split(',')[1];q-=.1}while(b64.length>55000&&q>.2);
       const r=await api('/api/chat/avatar_set',{image:b64});
-      avCache[r.av]=b64;toast('Фото обновлено');meTab();
-    }catch(x){toast(x.message||'Не удалось загрузить фото')}
-  });
+      avCache[r.av]=b64;toast('Фото обновлено');meTab()}})};
+  inp.click();
 }
 async function meTab(){
   window.RC=0;
@@ -1069,15 +1306,18 @@ async function meTab(){
   const I_ED='<svg viewBox="0 0 24 24" fill="none"><path d="M4 20l1-4.200L16.300 4.500a2.100 2.100 0 0 1 3 0l.2.2a2.100 2.100 0 0 1 0 3L8.200 19z" fill="url(#gY)"/><path d="M15 6l3 3" stroke="#F0501E" stroke-width="1.800"/><path d="M4 20l1-4.200 3.200 3.200z" fill="#FFE3B8"/></svg>';
   const pl=(n,a,b,c)=>{n=Math.abs(n)%100;const d=n%10;return n>10&&n<20?c:d>1&&d<5?b:d===1?a:c};
   view.innerHTML=`<div class="pf-page"><div class="pf-glow${cvr?' cv':''}"${cvr?' style="background-image:url('+cvr+')"':''}></div>
+  <div class="pf-pat" id="pfpat"><i></i></div>
   <div class="pf-top"><h2>Профиль</h2><button class="chip pfsup" style="margin:0">💬 Поддержка</button></div>
   <div class="pf-hero">
+    <div class="pf-cvr${cvr?' has':''}" id="pfcvr"${cvr?' style="background-image:url('+cvr+')"':''}></div>
     <div class="pf-avrow">
       <button class="pf-sb l" id="pffr" aria-label="Рамка аватара">${I_FR}</button>
-      <div class="pf-avw" id="pfavw">${avatarEl(me)}<div class="pf-cam">${I_CAM}</div></div>
+      <div class="pf-avw" id="pfavw"${frA(me.frame)}>${avatarEl(me)}<div class="pf-cam">${I_CAM}</div></div>
       <button class="pf-sb r" id="pfcv" aria-label="Обложка профиля">${I_IMG}</button>
     </div>
     <div class="pf-nick"><b>${esc(me.nick)}</b>${me.crown?CROWN:''}${me.badge?'<span style="color:var(--blue)">✓</span>':''}<button class="pf-ed" id="pfed" aria-label="Сменить ник">${I_ED}</button></div>
     <div class="pf-pill" id="pflv"><span>${lvT[li][2]}</span>${lvT[li][1]} · уровень ${li+1}</div>
+    <div class="pf-act"><button class="chip" id="pfpt">✨ Узор профиля</button></div>
   </div>
   <div class="pf-lv" id="pflv2"><div class="pf-bar"><i data-w="${pc}"></i></div><div class="pf-lvc">${nx?'С нами '+plural(dw,'день','дня','дней')+' · до «'+nx[1]+'» ещё '+(nx[0]-dw):'С нами '+plural(dw,'день','дня','дней')+' · максимальный уровень'}</div></div>
   <div class="pf-tiles">
@@ -1098,7 +1338,7 @@ async function meTab(){
     $('#nc',o).onclick=()=>o.remove();
     $('#ch',o).onclick=async()=>{const n=$('#nn',o).value.trim().replace(/^@/,'');if(!n)return;try{await api('/api/chat/register',{nick:n});LS.set('nick',n);o.remove();meTab()}catch(x){$('#ne',o).textContent=x.message}};
   };
-  $('#pffr').onclick=frSheet;$('#pfcv').onclick=coverMenu;
+  $('#pffr').onclick=frSheet;$('#pfcv').onclick=coverMenu;$('#pfcvr').onclick=coverMenu;$('#pfpt').onclick=patSheet;patApply();
   if(me.av){
     const put=(b)=>{const e=$('#pfav');if(e&&g===gen)e.outerHTML=`<img class="pf-av${me.frame?' fr':''}" style="${frS(me.frame)}" id="pfav" alt="" src="data:image/jpeg;base64,${b}">`};
     if(avCache[me.av])put(avCache[me.av]);
@@ -1931,13 +2171,13 @@ function msgMenu(b){
   if(it.length)listSheet(nick||'Сообщение',it.map(x=>x[0]),(i)=>it[i][1]());
 }
 function whatsNew(){
-  const it=[['📶','Статус сервисов и QR','Проверка связи со всеми звеньями и QR-код подписки для другого устройства.'],['📜','Правила чата и новые окна','Правила при регистрации (и во вкладке «Чат»), диалоги теперь в стиле приложения. В чате до 150 символов, без КАПСА, ссылок и запрещённых тем.'],['🎭','Рамки и обложка','Рамка аватара за каждый уровень, обложка профиля из галереи.'],['📺','Каналы, ответы и @упоминания','Выбирайте канал в общем чате, отвечайте на сообщения и отмечайте людей по нику.'],['📖','Инструкции и график трафика','Пошаговое подключение для каждой платформы и расход трафика по дням.'],['🛡️','Новый раздел VPN','Красивый вход, карточка подписки с кольцом дней и трафиком, покупка в пару касаний.'],['🚀','10 новых достижений VPN','Запуск, Семейный, Надолго, Продление, Запас трафика, Апгрейд, Заморозка, Новая ссылка, Порядок и 100 ГБ.'],['🛠️','Экран техработ','Если чат закрыт на обслуживание, вы увидите понятный экран и сможете сразу проверить, открылся ли он.']];
+  const it=[['🔊','Звуки','Мягкие сигналы при нажатиях, переключателях и сообщениях в чате. Громкость и что именно озвучивать настраивается. Звуки создаются самим приложением.'],['💬','Настройки чата','Обои (точки, сетка, свечение), плотность сообщений, размер текста в чате, показ аватарок, времени и галочек прочтения.'],['📏','Плотность списков','Плотно, обычно или просторно: влияет на строки и карточки в настройках.'],['🔤','Шрифты','Шесть вариантов шрифта для всего приложения: системный, округлый, с засечками, моноширинный, читаемый и рукописный.'],['🎨','Свой цвет','Любой акцентный цвет через палитру. Текст на кнопках сам подстраивается под яркость.'],['⏰','Тема по времени','Тёмная ночью и светлая днём, часы переключения выбираете сами.'],['🌈','Нижняя панель','Цветные вкладки с плавающей подсветкой, волна при нажатии и радужная полоска. Стиль (цветная, однотонная, простая), подписи и полоска настраиваются.'],['✨','Больше анимаций','Плавное открытие разделов настроек, окон и уведомлений, появление списков по очереди, отклик на нажатия. Отключается в «Плавные переходы».'],['🔍','Поиск по настройкам','Находит любой переключатель по названию, подписи или похожему слову и подсвечивает его. Последние запросы сохраняются.'],['⚙️','Новые настройки','Главный экран со списком разделов и карточкой профиля. Сверху видно текущее значение каждого раздела, разделы открываются отдельными экранами.'],['📶','Статус сервисов и QR','Проверка связи со всеми звеньями и QR-код подписки для другого устройства.'],['📜','Правила чата и новые окна','Правила при регистрации (и во вкладке «Чат»), диалоги теперь в стиле приложения. В чате до 150 символов, без КАПСА, ссылок и запрещённых тем.'],['🎭','Рамки и обложка','Десять рамок аватара с узорами (листья, пузырьки, лучи, кружево, шестерёнка, пламя, искры, сталь, кристаллы, лавры с короной), как в приложении для Android. Обложка профиля со 2-го уровня.'],['🎀','Узоры и кадрирование','Узор по бокам профиля (точки, соты, звёзды, аптека и другие) с выбором цвета, размера и яркости. Фото и обложку теперь можно подвинуть и приблизить перед сохранением.'],['📺','Каналы, ответы и @упоминания','Выбирайте канал в общем чате, отвечайте на сообщения и отмечайте людей по нику.'],['📖','Инструкции и график трафика','Пошаговое подключение для каждой платформы и расход трафика по дням.'],['🛡️','Новый раздел VPN','Красивый вход, карточка подписки с кольцом дней и трафиком, покупка в пару касаний.'],['🚀','10 новых достижений VPN','Запуск, Семейный, Надолго, Продление, Запас трафика, Апгрейд, Заморозка, Новая ссылка, Порядок и 100 ГБ.'],['🛠️','Экран техработ','Если чат закрыт на обслуживание, вы увидите понятный экран и сможете сразу проверить, открылся ли он.']];
   sheetOpen('Что нового',it.map(x=>'<div style="display:flex;gap:10px;margin:12px 0"><span style="font-size:20px">'+x[0]+'</span><div><b>'+x[1]+'</b><div class="mute small">'+x[2]+'</div></div></div>').join(''));
 }
 document.addEventListener('click',(e)=>{if(LS.get('hap')&&e.target.closest('button,.card')&&navigator.vibrate)navigator.vibrate(8)});
 // ---------- вкладка «Настройки» (как в Android) ----------
-const VER='1.3.0',BUILD=7,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
-const isLight=()=>{const m=TH('mode',1);return m===2||(m===0&&matchMedia('(prefers-color-scheme:light)').matches)};
+const VER='1.6.0',BUILD=10,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
+const isLight=()=>lightNow();
 const HID=()=>LS.get('hidt').split(',').filter(Boolean);
 const lockMode=()=>LS.get('lock');
 const ERRS=[];
@@ -1972,14 +2212,38 @@ addEventListener('resize',bgInit);
 matchMedia('(prefers-color-scheme:light)').addEventListener&&matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>applyUI());
 
 function applyUI(){
-  {const sk=TH('skin',0),B=document.body;B.dataset.skin=sk;B.dataset.lt=isLight()?1:0;B.classList.toggle('gl',sk>=7);B.classList.toggle('noanim',!TH('anim',ANIM_D))}
+  {const sk=TH('skin',0),B=document.body;B.dataset.skin=sk;B.dataset.lt=isLight()?1:0;B.classList.toggle('gl',sk>=7);B.classList.toggle('noanim',!TH('anim',ANIM_D));B.classList.toggle('notr',!TH('tr',1));
+    B.dataset.nbs=TH('nbs',0);B.dataset.nbl=TH('nbl',0);B.classList.toggle('nbr0',!TH('nbr',1));
+    B.dataset.ld=TH('ld',1);B.dataset.cw=TH('cw',0);B.dataset.cd=TH('cd',1);B.dataset.cts=TH('cts',1);
+    B.classList.toggle('cav0',!TH('cav',1));B.classList.toggle('ct0',!TH('ct',1));B.classList.toggle('ck0',!TH('ck',1))}
   document.body.classList.toggle('cc',!!TH('cc',0));document.body.classList.toggle('nb',!!TH('nb',0));
   const h=HID();document.querySelectorAll('nav button').forEach(b=>b.hidden=h.includes(b.dataset.t));
-  bgInit();
+  bgInit();navPill();
 }
 let hFrom='';
 const goBase=go;
 go=function(t){if(t==='help'&&tab!=='help')hFrom=tab;goBase(t);view.classList.remove('fi');if(TH('tr',1)){void view.offsetWidth;view.classList.add('fi')}};
+{const g0=go;go=function(t){g0(t);navPill()}}
+function navPill(){
+  const nv=document.querySelector('nav');if(!nv)return;
+  let p=nv.querySelector('.nv-pill'),first=false;
+  if(!p){p=document.createElement('i');p.className='nv-pill';p.style.transition='none';nv.prepend(p);first=true}
+  const b=nv.querySelector('button.on:not([hidden])');
+  if(!b||!b.offsetWidth){p.style.opacity=0;return}
+  p.style.opacity=1;p.style.width=(b.offsetWidth-8)+'px';p.style.transform='translateX('+(b.offsetLeft+4)+'px)';
+  p.style.setProperty('--pc',getComputedStyle(b).getPropertyValue('--c'));
+  if(first)requestAnimationFrame(()=>requestAnimationFrame(()=>{p.style.transition=''}));
+}
+addEventListener('resize',navPill);addEventListener('orientationchange',()=>setTimeout(navPill,200));
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(navPill);
+// волна при нажатии на кнопки меню и строки настроек
+document.addEventListener('pointerdown',(e)=>{
+  if(!TH('tr',1)||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const t=e.target.closest('nav button,.st-row,.st-me,.gb');if(!t||t.disabled)return;
+  const r=t.getBoundingClientRect(),n=Math.max(r.width,r.height)*1.6,x=document.createElement('span');
+  x.className='rip';x.style.cssText='width:'+n+'px;height:'+n+'px;left:'+(e.clientX-r.left-n/2)+'px;top:'+(e.clientY-r.top-n/2)+'px';
+  t.appendChild(x);setTimeout(()=>x.remove(),600);
+},{passive:true});
 
 // ----- блокировка: PIN и отпечаток (WebAuthn) -----
 let locked=false,hidAt=0;
@@ -2123,7 +2387,7 @@ async function checkUpd(manual){
 }
 
 // ----- экран -----
-let sTab=0;
+let sPg=null,sQ='';
 const sec=(t)=>`<div class="sec">${t}</div>`;
 const seg=(k,o,d,raw)=>`<div class="seg">${o.map(([v,t])=>`<button data-k="${k}" data-v="${v}"${raw?' data-r="1"':''} class="${(raw?LS.get(k,d):TH(k,d))==v?'on':''}">${t}</button>`).join('')}</div>`;
 const tgl=(k,t,s,o={})=>{const v=o.f?!!LS.get(k):!!TH(k,o.d??0);
@@ -2168,9 +2432,9 @@ async function applyIcon(){
 
 function sbLook(){
   const Lt=isLight(),ic=Number(LS.get('icon','0'));
-  return sec('Тема')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Режим</div>${seg('mode',[[1,'🌙 Тёмная'],[2,'☀️ Светлая'],[0,'🌓 Система']],1)}<div class="mute small" style="margin-bottom:8px">Тема</div><div class="skins">${SKINS.map(s=>{const p=Lt?s[4]:s[3],on=TH('skin',0)===s[0];return `<button class="sk${on?' on':''}" data-k="skin" data-v="${s[0]}" style="background-color:${p[0]};color:${Lt?'#17171A':'#fff'}"><i>${s[1]}</i><b>${s[2]}</b><div class="dts">${[p[0],p[2],p[3]].map(x=>`<span style="background:${x}"></span>`).join('')}</div>${on?'<em>✓</em>':''}</button>`}).join('')}</div></div>`
-  +sec('Акцентный цвет')+`<div class="card"><div class="wr" style="margin:0"><button class="chip${TH('acc',0)===0?' on':''}" data-k="acc" data-v="0">Как в теме</button>${ACCS.map(a=>`<button class="dot${TH('acc',0)===a[0]?' on':''}" style="background:${a[2]}" aria-label="${a[1]}" data-k="acc" data-v="${a[0]}"></button>`).join('')}</div></div>`
-  +sec('Интерфейс')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Размер текста</div>${seg('ts',[[0,'Мелкий'],[1,'Обычный'],[2,'Крупный']],1)}<div class="mute small" style="margin-bottom:6px">Скругление карточек</div>${seg('cs',[[0,'Меньше'],[1,'Обычное'],[2,'Больше']],1)}<div class="mute small" style="margin-bottom:6px">Карточки</div>${seg('cc',[[0,'Обычные'],[1,'Компактные']],0)}<div class="mute small" style="margin-bottom:6px">Какая вкладка открывается при запуске</div>${seg('stt',[['vpn','VPN'],['chat','Чат'],['me','Профиль'],['set','Настройки']],'vpn',1)}${tgl('nb','Скрывать цветную плашку','Убрать баннер над аватаркой в профиле')}</div>`
+  return sec('Тема')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Режим</div>${seg('mode',[[1,'🌙 Тёмная'],[2,'☀️ Светлая'],[0,'🌓 Система']],1)}${tgl('sch','Менять по времени','Тёмная ночью, светлая днём. Пока включено, режим выше не действует')}${TH('sch',0)?stp('sf','Тёмная с',21)+stp('st','Светлая с',7):''}<div class="mute small" style="margin:8px 0">Тема</div><div class="skins">${SKINS.map(s=>{const p=Lt?s[4]:s[3],on=TH('skin',0)===s[0];return `<button class="sk${on?' on':''}" data-k="skin" data-v="${s[0]}" style="background-color:${p[0]};color:${Lt?'#17171A':'#fff'}"><i>${s[1]}</i><b>${s[2]}</b><div class="dts">${[p[0],p[2],p[3]].map(x=>`<span style="background:${x}"></span>`).join('')}</div>${on?'<em>✓</em>':''}</button>`}).join('')}</div></div>`
+  +sec('Акцентный цвет')+`<div class="card"><div class="wr" style="margin:0"><button class="chip${TH('acc',0)===0?' on':''}" data-k="acc" data-v="0">Как в теме</button>${ACCS.map(a=>`<button class="dot${TH('acc',0)===a[0]?' on':''}" style="background:${a[2]}" aria-label="${a[1]}" data-k="acc" data-v="${a[0]}"></button>`).join('')}${cuDot()}</div></div>`
+  +sec('Интерфейс')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Размер текста</div>${seg('ts',[[0,'Мелкий'],[1,'Обычный'],[2,'Крупный']],1)}<div class="mute small" style="margin-bottom:6px">Скругление карточек</div>${seg('cs',[[0,'Меньше'],[1,'Обычное'],[2,'Больше']],1)}<div class="mute small" style="margin-bottom:6px">Карточки</div>${seg('cc',[[0,'Обычные'],[1,'Компактные']],0)}<div class="mute small" style="margin-bottom:6px">Плотность списков</div>${seg('ld',[[0,'Плотно'],[1,'Обычно'],[2,'Просторно']],1)}<div class="mute small" style="margin-bottom:6px">Какая вкладка открывается при запуске</div>${seg('stt',[['vpn','VPN'],['chat','Чат'],['me','Профиль'],['set','Настройки']],'vpn',1)}${tgl('nb','Скрывать цветную плашку','Убрать баннер над аватаркой в профиле')}</div>`
   +sec('Разделы в меню')+`<div class="card"><div class="mute small">Скройте то, чем не пользуетесь. Раздел снова появится, как только вы его включите.</div>${[['vpn','VPN'],['chat','Чат'],['me','Профиль']].map(([k,t])=>`<div class="sw-r"><div><b>${t}</b></div><button class="sw${HID().includes(k)?'':' on'}" data-hs="${k}" aria-label="${t}"></button></div>`).join('')}</div>`
   +sec('Иконка приложения')+`<div class="card"><div class="mute small" style="margin-bottom:10px">Выберите кота для значка на рабочем столе</div><div class="cats">${CATS.map(([i,n])=>`<button class="cat${ic===i?' on':''}" data-ic="${i}">${catSvg(i)}<span>${n}${ic===i?' ✓':''}</span></button>`).join('')}</div><div class="mute small" style="margin-top:10px">Значок берётся при установке PWA, так что выбирайте кота до установки. Если приложение уже на рабочем столе и значок не поменялся, удалите его и установите заново.</div></div>`
   +sec('Анимации и отклик')+`<div class="card">${tgl('anim','Анимированный фон','Снег, листья, звёзды и другие эффекты выбранной темы',{d:ANIM_D})}<div class="mute small" style="margin:4px 0 6px">Сколько частиц на фоне</div>${seg('pc',[[0,'Меньше'],[1,'Обычно'],[2,'Больше']],1)}${tgl('tr','Плавные переходы','Экраны и карточки появляются с анимацией',{d:1})}${tgl('hap','Вибрация при нажатии','Лёгкий отклик на касание кнопок и карточек (не работает на iPhone)',{f:1})}</div>`
@@ -2188,13 +2452,104 @@ function sbMisc(){
   +sec('Обновления')+`<div class="card">${tgl('au','Обновлять автоматически','Когда вы возвращаетесь в приложение, новая версия ставится сама')}<button class="gb" data-a="upd">Проверить обновления</button></div>`
   +sec('Помощь')+`<div class="card"><div class="mute small">Что-то работает не так? Отправьте отчёт: версия, устройство и последние ошибки уйдут в поддержку.</div><div class="g2"><button class="gb pr" data-a="rep">Сообщить об ошибке</button><button class="gb" data-a="new">Что нового</button></div></div>`
   +sec('Сброс')+`<div class="card"><div class="mute small">Вернёт тему, размер текста и переключатели оформления и безопасности к исходным. PIN, чаты, вход в VPN, уведомления и обновления не затрагиваются.</div><button class="gb" data-a="rst" style="margin-top:10px;color:var(--red);border-color:var(--red)">Сбросить настройки</button></div>`
-  +sec('Данные приложения')+`<div class="card"><div class="mute small">Что приложение собирает, когда это уходит администратору и что не собирается никогда.</div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="gb" data-a="dat">Какие данные собирает приложение</button><button class="gb" data-a="cht">Приватность чатов</button></div></div>`
-  +`<div class="mute small" style="text-align:center;margin:20px 0 8px">Уведомления в браузере: ${perm}<br>Приложение в активной разработке<br>Версия PWA ${VER} (сборка ${BUILD})</div><div style="text-align:center;padding-bottom:10px"><button class="chip" data-a="upd" style="margin:0">Проверить обновления</button></div>`;
+  +sec('Данные приложения')+`<div class="card"><div class="mute small">Что приложение собирает, когда это уходит администратору и что не собирается никогда.</div><div style="display:flex;flex-direction:column;gap:8px;margin-top:10px"><button class="gb" data-a="dat">Какие данные собирает приложение</button><button class="gb" data-a="cht">Приватность чатов</button></div></div>`;
+}
+// ----- новые разделы: шрифт, нижняя панель, звуки, чат -----
+const stp=(k,t,d)=>`<div class="sw-r"><div><b>${t}</b></div><div class="stp"><button data-sp="${k}" data-df="${d}" data-dl="-1" aria-label="Раньше">−</button><span>${String(TH(k,d)).padStart(2,'0')}:00</span><button data-sp="${k}" data-df="${d}" data-dl="1" aria-label="Позже">+</button></div></div>`;
+const cuDot=()=>{const on=TH('acc',0)===9,c=LS.get('accc','#3B8EF3');return `<label class="dot cu${on?' on':''}" style="--cc:${c}" aria-label="Свой цвет"><input type="color" id="accc" value="${c}"></label>`};
+function sbNew(){
+  const cur=TH('font',0);
+  return sec('Шрифт')+`<div class="card"><div class="fnts">${FONTS.map((f,i)=>`<button class="fn${cur===i?' on':''}" data-k="font" data-v="${i}" style="font-family:${f[1]}"><b>Аа</b><span>${f[0]}</span></button>`).join('')}</div><div class="mute small" style="margin-top:10px">Берутся шрифты, которые есть на вашем устройстве, поэтому на разных телефонах вид может немного отличаться.</div></div>`
+  +sec('Нижняя панель')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Стиль</div>${seg('nbs',[[0,'Цветная'],[1,'Однотонная'],[2,'Простая']],0)}<div class="mute small" style="margin-bottom:6px">Подписи</div>${seg('nbl',[[0,'Все'],[1,'У активной'],[2,'Без']],0)}${tgl('nbr','Радужная полоска','Тонкая цветная линия над панелью',{d:1})}</div>`
+  +sec('Звуки')+`<div class="card">${tgl('snd','Звуки','Короткие мягкие сигналы. Создаются самим приложением, ничего не скачивается')}<div class="mute small" style="margin:4px 0 6px">Громкость</div>${seg('sv',[[0,'Тихо'],[1,'Средне'],[2,'Громко']],1)}${tgl('sndt','Нажатия и переключатели','Тихий щелчок при нажатии',{d:1})}${tgl('sndc','Сообщения в чате','Сигнал о новом и отправленном сообщении',{d:1})}<button class="gb" data-a="snd" style="margin-top:6px">Проверить звук</button><div class="mute small" style="margin-top:8px">Звук включится после первого нажатия в приложении. Если телефон в беззвучном режиме, звука может не быть.</div></div>`
+  +sec('Вид чата')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Обои</div>${seg('cw',[[0,'Нет'],[1,'Точки'],[2,'Сетка'],[3,'Свечение']],0)}<div class="mute small" style="margin-bottom:6px">Плотность сообщений</div>${seg('cd',[[0,'Плотно'],[1,'Обычно'],[2,'Просторно']],1)}<div class="mute small" style="margin-bottom:6px">Размер текста в чате</div>${seg('cts',[[0,'Мелкий'],[1,'Обычный'],[2,'Крупный']],1)}</div>`
+  +sec('Сообщения')+`<div class="card">${tgl('cav','Аватарки','Показывать фото рядом с сообщениями',{d:1})}${tgl('ct','Время','Время под каждым сообщением',{d:1})}${tgl('ck','Галочки прочтения','Показывать, прочитано ли ваше сообщение',{d:1})}</div>`;
+}
+// ----- звуки (синтез через WebAudio, файлов нет) -----
+let AC=null;const sndAt={};
+function snd(k){
+  if(!TH('snd',0))return;
+  if(k==='ui'&&!TH('sndt',1))return;if((k==='msg'||k==='send')&&!TH('sndc',1))return;
+  const n=Date.now();if(sndAt[k]&&n-sndAt[k]<(k==='ui'?40:250))return;sndAt[k]=n;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();
+    const vol=[.05,.12,.25][TH('sv',1)],t0=AC.currentTime;
+    const seq={ui:[[900,0,.03]],on:[[660,0,.07],[990,.07,.09]],off:[[760,0,.07],[500,.07,.09]],msg:[[784,0,.09],[1175,.09,.14]],send:[[520,0,.06],[700,.06,.08]]}[k]||[];
+    seq.forEach(([f,d,l])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;o.connect(g);g.connect(AC.destination);
+      g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(vol,t0+d+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+d+l);o.start(t0+d);o.stop(t0+d+l+.02)});
+  }catch(e){}
+}
+document.addEventListener('click',(e)=>{
+  const sw=e.target.closest('.sw');if(sw){snd(sw.classList.contains('on')?'off':'on');return}
+  if(e.target.closest('nav button,.st-row,.st-me,.gb,button.chip,button.b,.seg button,.vbtn'))snd('ui');
+},true);
+// ----- главный экран настроек: список разделов + поиск -----
+const secParts=(h)=>h.split('<div class="sec">').slice(1).map(x=>[x.slice(0,x.indexOf('</div>')),'<div class="sec">'+x]);
+const secMap=()=>{const o={};[sbLook,sbSec,sbMisc,sbNew].forEach(f=>secParts(f()).forEach(([t,h])=>o[t]=h));return o};
+const notifSub=()=>typeof Notification==='undefined'?'Не поддерживаются':({granted:'Разрешены',denied:'Запрещены',default:'Не включены'}[Notification.permission]);
+const SPG=[
+  ['look','🎨','#3B8EF3','Оформление',()=>({1:'Тёмная',2:'Светлая',0:'Системная'}[TH('mode',1)]||'Тёмная')+(TH('sch',0)?' по времени':'')+' · '+(SKINS.find(s=>s[0]===TH('skin',0))||SKINS[0])[2],['Тема','Акцентный цвет','Шрифт','Интерфейс','Разделы в меню','Заказы']],
+  ['mot','🌈','#A78BFA','Панель и анимации',()=>['Цветная','Однотонная','Простая'][TH('nbs',0)]+' панель · '+(TH('anim',ANIM_D)?'анимации вкл':'анимации выкл'),['Нижняя панель','Анимации и отклик']],
+  ['sec','🔒','#34C759','Безопасность',()=>({pin:'PIN включён',bio:'Вход по отпечатку'}[lockMode()]||'Вход без PIN'),['Вход в приложение','Защита данных']],
+  ['ntf','🔔','#FF9A3D','Уведомления',notifSub,['Уведомления']],
+  ['chs','🗨️','#22C1DC','Чат',()=>'Обои: '+['нет','точки','сетка','свечение'][TH('cw',0)],['Вид чата','Сообщения']],
+  ['snd','🔊','#FFC233','Звуки',()=>TH('snd',0)?'Включены':'Выключены',['Звуки']],
+  ['ico','🐾','#F472B6','Иконка приложения',()=>(CATS.find(c=>c[0]===Number(LS.get('icon','0')))||CATS[0])[1],['Иконка приложения']],
+  ['upd','🔄','#22C1DC','Обновления',()=>TH('au',0)?'Автоматически':'Вручную',['Обновления']],
+  ['hlp','💬','#8B7CFF','Помощь и отчёт об ошибке',()=>'Сообщить об ошибке, что нового',['Помощь']],
+  ['dat','🛡️','#9A9DA3','Данные и приватность',()=>'Что собирает приложение',['Данные приложения']]
+];
+// слова-синонимы для поиска (то, чего нет в самих подписях)
+const SYN={'Тема':'тёмная темная светлая режим цвет скин dark light расписание ночью днём автоматически время','Акцентный цвет':'цвет акцент палитра свой','Шрифт':'шрифт гарнитура начертание','Интерфейс':'размер текст скругление компактные плашка запуск вкладка плотность списки','Разделы в меню':'скрыть меню вкладки','Анимации и отклик':'вибрация анимация фон частицы снег переходы','Заказы':'шаги статус полоса','Нижняя панель':'меню панель подписи вкладки полоска радуга стиль','Звуки':'звук сигнал громкость щелчок','Вид чата':'обои фон плотность размер текст','Сообщения':'аватарки время галочки прочитано','Вход в приложение':'pin пин код отпечаток биометрия пароль блокировка','Защита данных':'приватность скрыть суммы ники буфер оплата ссылка подписки','Уведомления':'push пуш оповещения','Обновления':'версия update обновить','Помощь':'баг ошибка поддержка отчёт что нового','Данные приложения':'приватность чат данные собирает','Иконка приложения':'кот значок рабочий стол','Сброс':'сбросить по умолчанию'};
+const stLines=(h)=>h.replace(/<\/(div|b|button|span|em|i)>|<br>/g,'\n').replace(/<[^>]+>/g,'').split('\n').map(x=>x.trim()).filter(x=>x.length>1);
+const stRow=(a,ic,col,t,sub)=>`<button class="st-row" ${a}><span class="st-ic" style="background:${col}22">${ic}</span><span class="st-tx"><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span><span class="st-ch">›</span></button>`;
+function stHome(){
+  const nick=LS.get('nick'),show=!HID().includes('me');
+  const grp=(ids)=>'<div class="st-grp">'+ids.map(id=>{const p=SPG.find(x=>x[0]===id);return stRow(`data-pg="${id}"`,p[1],p[2],p[3],esc(p[4]()))}).join('')+'</div>';
+  return (show?`<button class="st-grp st-me" data-me="1"><span class="st-av" style="background:${nick?nickCol(nick):'var(--blue)'}">${nick?esc(String(nick).replace(/^@/,'')[0]||'?').toUpperCase():'🐱'}</span><span class="st-tx"><b>${nick?esc(nick):'Профиль'}</b><small>Открыть профиль</small></span><span class="st-ch">›</span></button>`:'')
+    +grp(['look','mot','sec','ntf'])+grp(['chs','snd','ico'])+grp(['upd','hlp','dat'])
+    +`<div class="st-grp"><button class="st-row" data-a="rst"><span class="st-ic" style="background:#FF5A5F22">↺</span><span class="st-tx"><b style="color:var(--red)">Сбросить настройки</b></span></button></div>`
+    +`<div class="mute small" style="text-align:center;margin:14px 0 8px">Приложение в активной разработке<br>Версия PWA ${VER} (сборка ${BUILD})</div>`;
+}
+function stSearch(q){
+  q=q.trim().toLowerCase();const m=secMap(),out=[];
+  const add=(p,t,attrs)=>{
+    const lines=stLines(m[t]),hit=lines.find(l=>l.toLowerCase().includes(q)&&l!==t),syn=(SYN[t]||'').includes(q),tt=t.toLowerCase().includes(q)||p[3].toLowerCase().includes(q);
+    if(!hit&&!syn&&!tt)return;
+    out.push(`<button class="st-row" ${attrs}><span class="st-ic" style="background:${p[2]}22">${p[1]}</span><span class="st-tx"><b>${t}</b><small>${hit&&!tt?esc(hit)+' · ':''}${p[3]}</small></span><span class="st-ch">›</span></button>`);
+  };
+  SPG.forEach(p=>p[5].forEach(t=>add(p,t,`data-pg="${p[0]}" data-sx="${t}"`)));
+  add(['rst','↺','#FF5A5F','Сброс'],'Сброс','data-a="rst"');
+  return out.length?'<div class="st-grp">'+out.join('')+'</div>':'<div class="mute" style="text-align:center;margin:40px 0">Ничего не найдено.<br><span class="small">Попробуйте другое слово, например «тема», «PIN» или «вибрация».</span></div>';
+}
+function pageHtml(id){
+  const p=SPG.find(x=>x[0]===id);if(!p)return '';const m=secMap();
+  return p[5].map(t=>(m[t]||'').replace('<div class="sec">','<div class="sec" data-sx="'+t+'">')).join('');
 }
 function sbRender(){
-  const sb=$('#sb');if(!sb)return;const top=sb.scrollTop;
-  sb.innerHTML=[sbLook,sbSec,sbMisc][sTab]();sb.scrollTop=top;
-  document.querySelectorAll('#stb button').forEach(b=>b.classList.toggle('on',Number(b.dataset.i)===sTab));
+  const sb=$('#sb');if(!sb)return;const top=sb.scrollTop,srch=!sPg&&!!sQ.trim();
+  sb.classList.toggle('sr',srch);
+  sb.innerHTML=sPg?pageHtml(sPg):srch?stSearch(sQ):stHome();sb.scrollTop=top;
+}
+const recGet=()=>{try{const l=JSON.parse(LS.get('srch','[]'));return Array.isArray(l)?l.slice(0,6):[]}catch(e){return[]}};
+const recAdd=(q)=>{q=String(q||'').trim();if(q.length<2)return;LS.set('srch',JSON.stringify([q,...recGet().filter(x=>x.toLowerCase()!==q.toLowerCase())].slice(0,6)))};
+function sNav(){
+  const p=SPG.find(x=>x[0]===sPg);
+  $('#sh').innerHTML=p?`<button class="chip" id="stbk" style="margin:0">‹ Назад</button><h2 style="font-size:calc(20px*var(--ts))">${p[3]}</h2><span style="width:74px"></span>`:'<h2>Настройки</h2><button class="chip" style="margin:0">💬 Поддержка</button>';
+  const rc=recGet();
+  $('#sq').innerHTML=p?'':'<label class="st-srch"><span>🔍</span><input id="sqi" type="search" placeholder="Найти настройку…" value="'+esc(sQ)+'" autocomplete="off" enterkeyhint="search"></label>'+(rc.length?'<div class="st-rec" id="rec"'+(sQ.trim()?' style="display:none"':'')+'>'+rc.map(q=>'<button class="chip" data-q="'+esc(q)+'">🕘 '+esc(q)+'</button>').join('')+'<button class="chip" data-qc="1" aria-label="Очистить недавние">✕</button></div>':'');
+  if(p)$('#stbk').onclick=()=>{sPg=null;sNav()};
+  else{
+    $('#sh .chip').onclick=()=>go('help');
+    const qi=$('#sqi'),rec=$('#rec');
+    qi.oninput=(e)=>{sQ=e.target.value;if(rec)rec.style.display=sQ.trim()?'none':'';sbRender()};
+    qi.onkeydown=(e)=>{if(e.key==='Enter'){recAdd(sQ);qi.blur()}};
+    $('#sq').onclick=(e)=>{const b=e.target.closest('button');if(!b)return;
+      if(b.dataset.qc){LS.set('srch','[]');sNav();return}
+      if(b.dataset.q!==undefined){sQ=b.dataset.q;qi.value=sQ;if(rec)rec.style.display='none';sbRender()}};
+  }
+  {const sb=$('#sb');sb.classList.remove('go','bk');void sb.offsetWidth;if(TH('tr',1))sb.classList.add(p?'go':'bk')}
+  sbRender();$('#sb').scrollTop=0;
 }
 function reportSheet(){
   const txt=('Отчёт об ошибке (PWA '+VER+', сборка '+BUILD+')\nУстройство: '+navigator.userAgent.slice(0,150)+'\nЭкран: '+innerWidth+'×'+innerHeight+'\nПоследние ошибки:\n'+(ERRS.length?ERRS.join('\n'):'нет')).slice(0,900);
@@ -2205,6 +2560,8 @@ function reportSheet(){
 const info=(t,s)=>sheetOpen(t,'<div class="mute small" style="margin:8px 0">'+s+'</div>');
 async function sbClick(e){
   const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.me){go('me');return}
+  if(d.pg){if(d.sx)recAdd(sQ);sPg=d.pg;sNav();if(d.sx){const el=[...document.querySelectorAll('#sb .sec')].find(x=>x.dataset.sx===d.sx);if(el){el.scrollIntoView({block:'start'});el.classList.add('fl')}}return}
   if(d.k!==undefined){LS.set(d.r?d.k:'th_'+d.k,d.v);applyTheme();applyUI();sbRender()}
   else if(d.tg){
     const k=d.tg;
@@ -2222,6 +2579,8 @@ async function sbClick(e){
   else if(d.ic!==undefined){LS.set('icon',d.ic);applyIcon();sbRender()}
   else if(d.hs){const h=HID(),i=h.indexOf(d.hs);if(i>=0)h.splice(i,1);else h.push(d.hs);LS.set('hidt',h.join(','));applyUI();sbRender()}
   else if(d.lk!==undefined)setLock(d.lk);
+  else if(d.sp){LS.set('th_'+d.sp,(TH(d.sp,Number(d.df))+Number(d.dl)+24)%24);applyTheme();applyUI();sbRender()}
+  else if(d.a==='snd'){if(!TH('snd',0))toast('Сначала включите звуки');else snd('msg')}
   else if(d.a==='rep')reportSheet();
   else if(d.a==='new')whatsNew();
   else if(d.a==='upd')checkUpd(true);
@@ -2234,11 +2593,12 @@ async function sbClick(e){
   },true);
 }
 function setTab(){
-  window.RC=0;
-  view.innerHTML='<div class="pf-top"><h2>Настройки</h2><button class="chip" data-s="sup" style="margin:0">💬 Поддержка</button></div><div class="seg" id="stb" style="flex:none">'+['Оформление','Безопасность','Прочее'].map((t,i)=>`<button data-i="${i}">${t}</button>`).join('')+'</div><div class="vp" id="sb"></div>';
-  $('#stb').onclick=(e)=>{const b=e.target.closest('button');if(!b)return;sTab=Number(b.dataset.i);sbRender();$('#sb').scrollTop=0};
-  $('.pf-top .chip').onclick=()=>go('help');
-  $('#sb').onclick=sbClick;sbRender();
+  window.RC=0;sPg=null;sQ='';
+  view.innerHTML='<div class="pf-top" id="sh"></div><div id="sq" style="flex:none"></div><div class="vp" id="sb"></div>';
+  $('#sb').onclick=sbClick;
+  $('#sb').oninput=(e)=>{if(e.target.id==='accc'){LS.set('accc',e.target.value);LS.set('th_acc',9);applyTheme()}};
+  $('#sb').onchange=(e)=>{if(e.target.id==='accc'){applyUI();sbRender()}};
+  sNav();
 }
 
 // ----- профиль -----
@@ -2265,7 +2625,7 @@ applyUI();applyIcon();
 if(HID().includes(tab))tab='set';
 if(lockMode())lockScreen();
 
-{const WV='pwa-7',ret=LS.get('nick')||LS.get('tab');if(LS.get('seen')!==WV){LS.set('seen',WV);if(ret)setTimeout(whatsNew,900)}}
+{const WV='pwa-10',ret=LS.get('nick')||LS.get('tab');if(LS.get('seen')!==WV){LS.set('seen',WV);if(ret)setTimeout(whatsNew,900)}}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 go(tab);
 </script>
