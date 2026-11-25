@@ -84,8 +84,14 @@ const MIGRATIONS = [
   `ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''`,              // маленькая аватарка (JPEG в base64), та же, что в профиле приложения
   `ALTER TABLE users ADD COLUMN avatar_v INTEGER DEFAULT 0`,          // версия аватарки (время загрузки); 0 — аватарки нет
   `ALTER TABLE users ADD COLUMN crown INTEGER DEFAULT 0`,             // 1 — «зелёная корона»: собраны все достижения (сообщает приложение)
+  `ALTER TABLE users ADD COLUMN all_badges INTEGER DEFAULT 0`,        // 1 — администратор выдал все достижения (корона горит всегда)
   `ALTER TABLE room_messages ADD COLUMN reply_to INTEGER DEFAULT 0`,  // номер сообщения, на которое это — ответ (0 — не ответ)
+  `ALTER TABLE room_messages ADD COLUMN ch TEXT DEFAULT 'general'`,   // канал общего чата
+  `ALTER TABLE users ADD COLUMN frame INTEGER DEFAULT 0`,             // рамка аватара (0 — нет, 1..10 — по уровням)
+  `CREATE INDEX IF NOT EXISTS idx_room_ch ON room_messages (ch, id)`,
 ];
+const CH_IDS = ['general', 'help', 'vpn', 'flood', 'news'];   // каналы; в 'news' пишут только модераторы
+const FRAME_DAYS = [0, 1, 3, 7, 14, 30, 60, 100, 180, 365];  // рамка N открывается, когда с регистрации прошло FRAME_DAYS[N-1] дней (как уровни в профиле)
 const MAX_AVATAR = 60_000;       // символов base64 (~45 КБ): приложение присылает 128×128
 const MAX_DIAG = 4000;            // символов JSON с диагностикой устройства
 const MAX_IMAGE = 1_400_000; // символов base64 (~1 МБ картинки); лимит строки в D1 — 2 МБ
@@ -924,7 +930,7 @@ const RESERVED_WORDS = ['admin', 'administrator', 'moderator', 'moder', 'support
 const RESERVED_KEYS = RESERVED_WORDS.map(nickKey);
 const isReservedNick = (key) => RESERVED_KEYS.some((r) => key === r || key.startsWith(r));
 
-const CHAT_USER_SQL = `SELECT id, device, secret_hash, nick, badge, muted_until, nick_changed, last_seen, avatar_v, crown FROM users WHERE device = ?`;
+const CHAT_USER_SQL = `SELECT id, device, secret_hash, nick, badge, muted_until, nick_changed, last_seen, avatar_v, crown, all_badges, created, frame FROM users WHERE device = ?`;
 
 // Проверка пользователя чата. Возвращает { u, ip, now } или { e: Response }.
 async function chatUser(body, env, request) {
@@ -967,7 +973,7 @@ async function chatUserFast(body, env, request) {
   return a;
 }
 
-const meOf = (u, now) => ({ registered: true, uid: u.id, nick: u.nick, badge: u.badge ? 1 : 0, crown: u.crown ? 1 : 0, av: u.avatar_v || 0, muted_until: u.muted_until > now ? u.muted_until : 0 });
+const meOf = (u, now) => ({ registered: true, uid: u.id, nick: u.nick, badge: u.badge ? 1 : 0, crown: u.crown ? 1 : 0, all_badges: u.all_badges ? 1 : 0, av: u.avatar_v || 0, frame: u.frame || 0, created: u.created || 0, muted_until: u.muted_until > now ? u.muted_until : 0 });
 // Сколько сообщений человек написал (общий чат + личные): для достижения «за общение».
 async function countMsgs(env, uid) {
   const r = await env.DB.prepare(
@@ -975,6 +981,54 @@ async function countMsgs(env, uid) {
   ).bind(uid, uid).first();
   return r ? r.n || 0 : 0;
 }
+const CHAT_MSG_MAX = 150;   // длина сообщения в общем чате и личных (модераторы без ограничений)
+// Слишком много заглавных: от 8 букв, и больше 70% из них заглавные (ссылки не считаются)
+const capsBad = (t) => { const L = t.replace(/https?:\/\/\S+/g, '').match(/\p{L}/gu) || []; return L.length >= 8 && L.filter((c) => c !== c.toLowerCase()).length / L.length > 0.7; };
+// <<chat-filter
+// ---- Ссылки: http(s), www, t.me, wa.me, голые домены (site.com, site[.]ru, «сайт точка ком»)
+const LINK_RE = /(?:https?:\/\/|www\.|\bt\.me\/|\bwa\.me\/|\btg:\/\/|[a-z0-9-]+(?:\.|\[\.\]|\(\.\)|\s(?:dot|точка)\s)(?:com|net|org|ru|su|io|me|info|biz|xyz|top|club|online|site|shop|store|app|dev|cc|tv|ly|gl|by|ua|kz|to|gg|рф)(?![\p{L}\d])|\S+\s+точка\s+(?:ком|ру|нет|орг|инфо)(?![\p{L}]))/iu;
+// ---- Стоп-слова: насилие и незаконная деятельность (НЕ мат). Текст сначала нормализуется:
+// нижний регистр, ё→е, латинские двойники → кириллица, «н а р к о» → «нарко», повторы букв схлопываются.
+// Чтобы добавить правило — допишите строку в STOP_PATTERNS. Правила не должны задевать обычные фразы вроде «убить время».
+const STOP_LAT = { a: 'а', c: 'с', e: 'е', o: 'о', p: 'р', x: 'х', y: 'у', k: 'к', m: 'м', t: 'т', h: 'н', b: 'в', '0': 'о', '3': 'з' };
+const stopNorm = (t) => {
+  const s = String(t).toLowerCase().replace(/ё/g, 'е').replace(/[acepoxykmthb03]/g, (c) => STOP_LAT[c])
+    .replace(/(?<![\p{L}])((?:\p{L}[\s.\-_*,]+){3,}\p{L})(?![\p{L}])/gu, (m) => m.replace(/[\s.\-_*,]+/g, ''));
+  return s.replace(/(\p{L})\1{2,}/gu, '$1').replace(/\s+/g, ' ');
+};
+const DRUGS = String.raw`(?:наркот\p{L}*|нарко\p{L}*|гашиш\p{L}*|мефедрон\p{L}*|амфетамин\p{L}*|кокаин\p{L}*|героин\p{L}*|спайс\p{L}*|мдма|экстази|лсд)`;
+const STOP_PATTERNS = [
+  // угрозы и призывы к насилию
+  String.raw`(?:тебя|вас|его|ее|их|всех)\s+убь[юе]\p{L}*`, String.raw`убь(?:ю|ем)\s+(?:тебя|вас|его|ее|их|всех)`,
+  String.raw`(?:зарежу|зарежем|прирежу|придушу|задушу|застрелю|пристрелю|расстреляю|взорву|подожгу|изобью|покалечу|замочу|грохну|прикончу|расчленю|изнасилую|изнасилуем)(?![\p{L}])`,
+  String.raw`сожгу\s+(?:дом|тебя|вас|школ|квартир)`, String.raw`найду\s+и\s+(?:убь|избе|изобь)`,
+  String.raw`(?:взорва|подорва|заминиру)\p{L}*\s+(?:\p{L}+\s+)?(?:школ|метро|вокзал|администрац|торговый\s+центр|самолет|автобус|отдел\p{L}*\s+полиц)`,
+  String.raw`(?:массов\p{L}*\s+(?:убийств|расстрел)|теракт\p{L}*|скулшутин\p{L}*|колумбайн\p{L}*)`,
+  // призывы к самоубийству
+  String.raw`(?:убей\s*ся|убей\s+себя|повесь\s*ся|удавись|самоубейся|иди\s+(?:и\s+)?(?:убей|повесь)\p{L}*)`,
+  // наркотики: продажа, покупка, изготовление
+  String.raw`(?:куп\p{L}*|прода\p{L}*|достат\p{L}*|достан\p{L}*|закаж\p{L}*|сбыва\p{L}*|сбыт\p{L}*|барыж\p{L}*|торгу\p{L}*)\s+(?:\p{L}+\s+)?` + DRUGS,
+  String.raw`(?:мефедрон|героин|кокаин|амфетамин|метамфетамин)\p{L}*`, String.raw`наркошоп\p{L}*`, String.raw`закладк\p{L}*\s+(?:с\s+)?` + DRUGS,
+  String.raw`(?:даркнет|гидра|кракен)\p{L}*\s+(?:маркет|шоп|магазин|сайт)\p{L}*`,
+  // оружие и взрывчатка
+  String.raw`(?:куп\p{L}*|прода\p{L}*|достат\p{L}*|достан\p{L}*|закаж\p{L}*)\s+(?:\p{L}+\s+)?(?:оружи\p{L}*|огнестрел\p{L}*|пистолет\p{L}*|гранат\p{L}*|взрывчат\p{L}*|тротил\p{L}*|травматик\p{L}*|калашников\p{L}*)`,
+  String.raw`как\s+(?:сделать|изготовить|собрать|приготовить|синтезировать|варить|сварить)\s+(?:\p{L}+\s+){0,2}(?:бомб\p{L}*|взрывчат\p{L}*|взрывн\p{L}*|мефедрон\p{L}*|наркот\p{L}*|героин\p{L}*|кокаин\p{L}*|амфетамин\p{L}*|яд(?![\p{L}])|отрав\p{L}*)`,
+  String.raw`коктейл\p{L}*\s+молотов\p{L}*`,
+  // мошенничество, документы, взломы, данные
+  String.raw`обнал\p{L}*`, String.raw`кардинг\p{L}*`, String.raw`дроп\p{L}*\s+(?:карт|банк|счет)\p{L}*`, String.raw`отмыв\p{L}*\s+(?:деньг|средств)\p{L}*`,
+  String.raw`(?:фальшив|поддельн|левы)\p{L}*\s+(?:документ|паспорт|деньги|справк|права|диплом|больничн)\p{L}*`,
+  String.raw`(?:куп\p{L}*|прода\p{L}*|сдела\p{L}*)\s+(?:\p{L}+\s+)?(?:паспорт|водительск\p{L}*\s+удостоверени|диплом|справк|больничн)\p{L}*`,
+  String.raw`пробив\p{L}*\s+(?:по\s+)?(?:номер|баз|человек|адрес)\p{L}*`, String.raw`слив\p{L}*\s+(?:баз|данных)\p{L}*`,
+  String.raw`(?:взлом\p{L}*|взломаю|взломаем)\s+(?:\p{L}+\s+)?(?:аккаунт|страниц|почт|вк|телеграм|карт|кошел)\p{L}*`,
+  String.raw`(?:дидос|dd[оo]s)\p{L}*`, String.raw`(?:краден|укра[дл]ен)\p{L}*\s+(?:аккаунт|карт|данн|телефон)\p{L}*`,
+  // убийства на заказ, торговля людьми, эксплуатация детей
+  String.raw`(?:заказ\p{L}*|услуг\p{L}*|найм\p{L}*)\s+(?:\p{L}+\s+)?(?:убийств\p{L}*|киллер\p{L}*)`, String.raw`киллер\p{L}*\s+(?:услуг|найм|заказ)\p{L}*`,
+  String.raw`торгов\p{L}*\s+людьм\p{L}*`, String.raw`детск\p{L}*\s+порн\p{L}*`,
+];
+const STOP_RE = new RegExp('(?<![\\p{L}])(?:' + STOP_PATTERNS.join('|') + ')', 'u');
+const stopBad = (t) => STOP_RE.test(stopNorm(t));
+// chat-filter>>
+const chatTextProblem = (t) => t.length > CHAT_MSG_MAX ? `Сообщение длиннее ${CHAT_MSG_MAX} символов` : capsBad(t) ? 'Слишком много заглавных букв — напишите без КАПСА' : LINK_RE.test(t) ? 'Ссылки в чате отправлять нельзя' : stopBad(t) ? 'Сообщение нарушает правила чата' : '';
 const cleanChatText = (v) => String(v || '').replace(/\r\n?/g, '\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, CHAT_TEXT_MAX);
 
 async function chatMe(body, env, request) {
@@ -1084,14 +1138,38 @@ async function avatarGet(body, env, request) {
 async function crownSet(body, env, request) {
   const a = await chatUser(body, env, request);
   if (a.e) return a.e;
-  const v = body.crown === true || body.crown === 1 ? 1 : 0;
+  // выданные админом достижения приложение отменить не может: корона остаётся
+  const v = (body.crown === true || body.crown === 1 || a.u.all_badges) ? 1 : 0;
   if ((a.u.crown ? 1 : 0) !== v) { await env.DB.prepare('UPDATE users SET crown = ? WHERE id = ?').bind(v, a.u.id).run(); authDirty(); }
   return json({ ok: true, crown: v });
 }
 
+// Рамка аватара: выбрать можно только открытую по «уровню» (дням с регистрации).
+async function frameSet(body, env, request) {
+  const a = await chatUser(body, env, request);
+  if (a.e) return a.e;
+  const f = Math.floor(Number(body.frame));
+  if (!(f >= 0 && f <= FRAME_DAYS.length)) return err('Некорректная рамка');
+  if (f > 0 && Math.floor((a.now - (a.u.created || a.now)) / 864e5) < FRAME_DAYS[f - 1]) return err('Эта рамка ещё не открыта');
+  if ((a.u.frame || 0) !== f) { await env.DB.prepare('UPDATE users SET frame = ? WHERE id = ?').bind(f, a.u.id).run(); authDirty(); await bumpRoomRev(env); }   // лента перечитается у всех: рамка появится и у старых сообщений
+  return json({ ok: true, frame: f });
+}
+
+// Непрочитанные по каналам: клиент присылает seen — последний виденный номер сообщения в каждом канале.
+async function roomUnread(body, env, request) {
+  const a = await chatUserFast(body, env, request);
+  if (a.e) return a.e;
+  const seen = body.seen && typeof body.seen === 'object' ? body.seen : {};
+  const rows = await env.DB.batch(CH_IDS.map((c) =>
+    env.DB.prepare(`SELECT MAX(id) AS m, COALESCE(SUM(CASE WHEN id > ? AND uid != ? THEN 1 ELSE 0 END), 0) AS n FROM room_messages WHERE ch = ?`).bind(Number(seen[c]) || 0, a.u.id, c)));
+  const unread = {}, max = {};
+  CH_IDS.forEach((c, i) => { const r = (rows[i].results && rows[i].results[0]) || {}; unread[c] = Math.min(99, r.n || 0); max[c] = r.m || 0; });
+  return json({ unread, max });
+}
+
 // ----- общий чат (одна комната) -----
 // reply_to > 0 и q_id = null — оригинал, на который отвечали, уже удалён
-const ROOM_SQL = `SELECT r.id, r.uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, r.text, r.ts,
+const ROOM_SQL = `SELECT r.id, r.uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, COALESCE(u.frame, 0) AS fr, r.text, r.ts,
                          COALESCE(r.reply_to, 0) AS reply_to, q.id AS q_id, COALESCE(qu.nick, 'удалён') AS q_nick, substr(q.text, 1, 140) AS q_text
                     FROM room_messages r LEFT JOIN users u ON u.id = r.uid
                     LEFT JOIN room_messages q ON q.id = r.reply_to AND r.reply_to > 0
@@ -1139,12 +1217,15 @@ async function bumpRoomRx(env) {
   ).run();
   roomDirty();
 }
-async function roomFetch(env, after) {
+async function roomFetch(env, after, ch) {
+  // ch не задан (админка) — все каналы
+  const c = ch ? ` AND COALESCE(r.ch, 'general') = ?` : '';
+  const args = ch ? [ch] : [];
   if (after > 0) {
-    const { results } = await env.DB.prepare(`${ROOM_SQL} WHERE r.id > ? ORDER BY r.id LIMIT 100`).bind(after).all();
+    const { results } = await env.DB.prepare(`${ROOM_SQL} WHERE r.id > ?${c} ORDER BY r.id LIMIT 100`).bind(after, ...args).all();
     return results;
   }
-  const { results } = await env.DB.prepare(`${ROOM_SQL} ORDER BY r.id DESC LIMIT 100`).all();
+  const { results } = await env.DB.prepare(`${ROOM_SQL} WHERE 1 = 1${c} ORDER BY r.id DESC LIMIT 100`).bind(...args).all();
   return results.reverse();
 }
 
@@ -1156,13 +1237,14 @@ async function roomMessages(body, env, request) {
   if (a.e) return a.e;
   const st = await roomState(env);
   let after = Number(body.after) || 0;
+  const ch = CH_IDS.includes(String(body.ch)) ? String(body.ch) : 'general';
   const hasRx = body.rx !== undefined;
   const reset = body.rev === undefined || Number(body.rev) !== st.rev;
   if (!reset && hasRx && Number(body.rx) === st.rx && after >= st.id) {
     return json({ messages: [], rev: st.rev, rx: st.rx, reset: false, me: meOf(a.u, a.now) });
   }
   if (reset) after = 0;
-  const out = { messages: await roomFetch(env, after), rev: st.rev, rx: st.rx, reset, me: meOf(a.u, a.now) };
+  const out = { messages: await roomFetch(env, after, ch), rev: st.rev, rx: st.rx, reset, me: meOf(a.u, a.now) };
   if (reset || !hasRx || Number(body.rx) !== st.rx) out.reactions = await roomReactions(env, a.u.id);
   return json(out);
 }
@@ -1173,6 +1255,9 @@ async function roomSend(body, env, request) {
   const { u, now } = a;
   const text = cleanChatText(body.text);
   if (!text) return err('Пустое сообщение');
+  if (!a.u.badge) { const pr = chatTextProblem(text); if (pr) return err(pr, 400); }
+  const ch = CH_IDS.includes(String(body.ch)) ? String(body.ch) : 'general';
+  if (ch === 'news' && !u.badge) return err('В этом канале пишут только модераторы', 403);
   if (u.muted_until > now) {
     const mins = Math.ceil((u.muted_until - now) / 60000);
     return err(u.muted_until >= MUTE_FOREVER ? 'Вам закрыта отправка сообщений в общий чат' : `Вам закрыта отправка в общий чат ещё на ${mins} мин`, 403);
@@ -1191,7 +1276,7 @@ async function roomSend(body, env, request) {
     const q = await env.DB.prepare('SELECT id FROM room_messages WHERE id = ?').bind(replyTo).first();
     if (!q) replyTo = 0;
   } else replyTo = 0;
-  await env.DB.prepare('INSERT INTO room_messages (uid, text, ts, reply_to) VALUES (?, ?, ?, ?)').bind(u.id, text, now, replyTo).run();
+  await env.DB.prepare('INSERT INTO room_messages (uid, text, ts, reply_to, ch) VALUES (?, ?, ?, ?, ?)').bind(u.id, text, now, replyTo, ch).run();
   roomDirty();
   return json({ ok: true, msgs: await countMsgs(env, u.id), cooldown_ms: u.badge ? 0 : ROOM_COOLDOWN_MS });
 }
@@ -1353,6 +1438,7 @@ async function dmSend(body, env, request) {
   if (a.e) return a.e;
   const text = cleanChatText(body.text);
   if (!text) return err('Пустое сообщение');
+  if (!a.u.badge) { const pr = chatTextProblem(text); if (pr) return err(pr, 400); }
   const to = Number(body.to) || 0;
   if (to === a.u.id) return err('Нельзя писать самому себе');
   const peer = await env.DB.prepare('SELECT id FROM users WHERE id = ?').bind(to).first();
@@ -1375,7 +1461,7 @@ async function adminUsers(body, env) {
   const where = q ? `WHERE u.nick LIKE ? ESCAPE '\\'` : '';
   const args = q ? [likeOf(q)] : [];
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.nick, u.badge, u.muted_until, u.created, u.last_seen, u.last_ip, u.device,
+    `SELECT u.id, u.nick, u.badge, u.all_badges, u.crown, u.muted_until, u.created, u.last_seen, u.last_ip, u.device,
             (SELECT COUNT(*) FROM room_messages r WHERE r.uid = u.id) AS room_msgs,
             (SELECT COUNT(*) FROM dm_messages d WHERE d.sender = u.id) AS dm_msgs
        FROM users u ${where} ORDER BY u.badge DESC, u.last_seen DESC LIMIT ? OFFSET ?`
@@ -1394,8 +1480,20 @@ async function adminUserBadge(body, env) {
   const uid = Number(body.uid) || 0;
   const r = await env.DB.prepare('UPDATE users SET badge = ? WHERE id = ?').bind(body.badge ? 1 : 0, uid).run();
   authDirty();
+  await bumpRoomRev(env);   // лента общего чата перечитается: галочка появится и у старых сообщений
   if (!r.meta || !r.meta.changes) return err('Пользователь не найден', 404);
   return json({ ok: true });
+}
+
+// Выдать (или забрать) все достижения: приложение показывает все значки полученными, в чате горит зелёная корона.
+async function adminUserAllBadges(body, env) {
+  const uid = Number(body.uid) || 0;
+  const v = body.all ? 1 : 0;
+  const r = await env.DB.prepare('UPDATE users SET all_badges = ?, crown = ? WHERE id = ?').bind(v, v, uid).run();
+  authDirty();
+  await bumpRoomRev(env);   // корона появится и у старых сообщений в ленте
+  if (!r.meta || !r.meta.changes) return err('Пользователь не найден', 404);
+  return json({ ok: true, all: v });
 }
 
 // minutes: 0 — снять ограничение, -1 — навсегда
@@ -1556,6 +1654,8 @@ const app = {
     if (path === '/api/chat/avatar_set') return avatarSet(body, env, request);
     if (path === '/api/chat/avatar_get') return avatarGet(body, env, request);
     if (path === '/api/chat/crown') return crownSet(body, env, request);
+    if (path === '/api/chat/frame_set') return frameSet(body, env, request);
+    if (path === '/api/room/unread') return roomUnread(body, env, request);
     if (path === '/api/room/messages') return roomMessages(body, env, request);
     if (path === '/api/room/send') return roomSend(body, env, request);
     if (path === '/api/room/delete') return roomDelete(body, env, request);
@@ -1592,6 +1692,7 @@ const app = {
       if (path === '/api/admin/image') return adminImage(body, env);
       if (path === '/api/admin/users') return adminUsers(body, env);
       if (path === '/api/admin/user_badge') return adminUserBadge(body, env);
+      if (path === '/api/admin/user_all_badges') return adminUserAllBadges(body, env);
       if (path === '/api/admin/user_mute') return adminUserMute(body, env);
       if (path === '/api/admin/user_reset') return adminUserReset(body, env);
       if (path === '/api/admin/room_messages') return adminRoomMessages(body, env);
