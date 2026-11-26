@@ -1420,9 +1420,13 @@ const vOk=(r)=>r.code>=200&&r.code<300;
 
 async function vraw(m,p,b,o={}){
   const r=await fetch(API+'/api/vpn/call',{method:'POST',headers:{'content-type':'application/json'},
-    body:JSON.stringify({device,m,p,b:b==null?null:String(b),bearer:o.bearer||'',refresh:o.refresh||'',ref:o.ref||'/app/plans'})});
+    body:JSON.stringify({device,secret,m,p,b:b==null?null:String(b),bearer:o.bearer||'',refresh:o.refresh||'',ref:o.ref||'/app/plans'})});
   let j={};try{j=await r.json()}catch(e){}
-  if(!r.ok)throw new Error(j.error||('Ошибка '+r.status));
+  if(!r.ok){
+    // сервер теперь ограничивает частоту (429) и проверяет секрет устройства (403)
+    if(r.status===429)throw new Error('Слишком много запросов. Подождите минуту и повторите');
+    if(r.status===403)throw new Error('Сервер не узнал это устройство. Откройте вкладку «Чат» и повторите');
+    throw new Error(j.error||('Ошибка '+r.status))}
   return j; // {code,text,refresh}
 }
 function vErr(r){
@@ -2261,7 +2265,7 @@ function hap(k){
 }
 document.addEventListener('click',(e)=>{if(e.target.closest('.sw'))hap('sel');else if(e.target.closest('button,.card'))hap('light')});
 // ---------- вкладка «Настройки» (как в Android) ----------
-const VER='1.7.0',BUILD=11,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
+const VER='1.7.1',BUILD=12,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
 const isLight=()=>lightNow();
 const HID=()=>LS.get('hidt').split(',').filter(Boolean);
 const lockMode=()=>LS.get('lock');

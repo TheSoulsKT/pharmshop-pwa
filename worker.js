@@ -15,6 +15,8 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS push_user (device TEXT PRIMARY KEY, secret_hash TEXT NOT NULL, token TEXT NOT NULL, ts INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS push_admin (token TEXT PRIMARY KEY, code_fp TEXT NOT NULL, ts INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS fails (ip TEXT PRIMARY KEY, n INTEGER, ts INTEGER)`,
+  // счётчики частоты запросов (окно фиксированной длины): k = 'vpn:ip:…' | 'vpn:dev:…' | 'vpn:new:…', ts — начало окна
+  `CREATE TABLE IF NOT EXISTS rate_hits (k TEXT PRIMARY KEY, n INTEGER NOT NULL, ts INTEGER NOT NULL)`,
   // блокировки спамеров: kind = 'device' | 'ip'
   `CREATE TABLE IF NOT EXISTS blocks (
      kind TEXT NOT NULL, value TEXT NOT NULL, reason TEXT DEFAULT '', ts INTEGER NOT NULL, PRIMARY KEY (kind, value))`,
@@ -166,43 +168,49 @@ async function ensureSchema(db) {
 
 // Проверка доступа админа. Приложение входит по коду один раз (/api/admin/login), получает токен сессии
 // и дальше шлёт только его (X-Admin-Token). Старые версии приложения шлют код в X-Admin-Code — это пока работает
-// (чтобы отключить, задайте переменную LEGACY_ADMIN_CODE = off).
-// После 5 неверных попыток с одного адреса — блокировка на 15 минут.
+// (чтобы отключить, задайте переменную LEGACY_ADMIN_CODE = off: тогда код принимается только в /api/admin/login).
+// Блокировка (5 неверных кодов с одного адреса -> 15 минут) считается ТОЛЬКО за неверный код. Запрос без учётных данных,
+// просроченный или чужой токен, сканер — это обычный отказ 401 без счётчика и без блокировки. Блокировка закрывает только
+// проверку кода: действующий токен работает и с заблокированного адреса (общий IP, сканер рядом с админом).
 async function adminAuth(request, env, path) {
   const ip = request.headers.get('cf-connecting-ip') || 'unknown';
   const now = Date.now();
-  // сессия, уже проверенная по базе меньше минуты назад: частые опросы админки не ходят в D1 ради проверки токена
-  const tok0 = request.headers.get('x-admin-token') || '';
-  if (path !== '/api/admin/login' && tok0.length >= 32) {
-    const c = ADMIN_MEM.get(tok0);
+  const isLogin = path === '/api/admin/login';
+  const token = request.headers.get('x-admin-token') || '';
+  const code = request.headers.get('x-admin-code') || '';
+
+  // 1) токен: сессия, уже проверенная по базе меньше минуты назад, не ходит в D1
+  if (!isLogin && token.length >= 32) {
+    const c = ADMIN_MEM.get(token);
     if (c && c > now) return true;
+    const fp = env.ADMIN_CODE ? await sha256('fp:' + env.ADMIN_CODE) : '';
+    if (fp) {
+      const s = await env.DB.prepare('SELECT code_fp, exp FROM sessions WHERE hash = ?').bind(await sha256(token)).first();
+      if (s && s.exp > now && s.code_fp === fp) {
+        if (ADMIN_MEM.size > 50) ADMIN_MEM.clear();
+        ADMIN_MEM.set(token, Math.min(s.exp, now + ADMIN_TTL));
+        return true;
+      }
+    }
+    // токен не подошёл (просрочен, отозван, ADMIN_CODE сменили): это не подбор кода, счётчик не трогаем.
+    // Если вместе с токеном пришёл код (старые версии), ниже он проверится как обычно.
   }
+
+  // 2) код: только при входе или пока не выключен LEGACY_ADMIN_CODE
+  const codeAllowed = isLogin || env.LEGACY_ADMIN_CODE !== 'off';
+  if (!codeAllowed || code.length === 0 || !env.ADMIN_CODE) return false;   // кода нет или он здесь не принимается: не считаем
+
   const row = await env.DB.prepare('SELECT n, ts FROM fails WHERE ip = ?').bind(ip).first();
   if (row && row.n >= 5 && now - row.ts < LOCK_MS) return 'locked';
-
-  const fp = env.ADMIN_CODE ? await sha256('fp:' + env.ADMIN_CODE) : '';
-  const code = request.headers.get('x-admin-code') || '';
-  const token = request.headers.get('x-admin-token') || '';
-  let ok = false;
-  if (path !== '/api/admin/login' && token.length >= 32 && fp) {
-    const s = await env.DB.prepare('SELECT code_fp, exp FROM sessions WHERE hash = ?').bind(await sha256(token)).first();
-    ok = !!s && s.exp > now && s.code_fp === fp;
-    if (ok) {
-      if (ADMIN_MEM.size > 50) ADMIN_MEM.clear();
-      ADMIN_MEM.set(token, Math.min(s.exp, now + ADMIN_TTL));
-    }
-  } else if (code.length > 0 && !!env.ADMIN_CODE && (path === '/api/admin/login' || env.LEGACY_ADMIN_CODE !== 'off')) {
-    ok = (await sha256(code)) === (await sha256(env.ADMIN_CODE));
+  if ((await sha256(code)) === (await sha256(env.ADMIN_CODE))) {
+    if (row) await env.DB.prepare('DELETE FROM fails WHERE ip = ?').bind(ip).run();
+    return true;
   }
-  if (!ok) {
-    const n = row && now - row.ts < LOCK_MS ? row.n + 1 : 1;
-    await env.DB.prepare(
-      'INSERT INTO fails (ip, n, ts) VALUES (?, ?, ?) ON CONFLICT(ip) DO UPDATE SET n = excluded.n, ts = excluded.ts'
-    ).bind(ip, n, now).run();
-    return false;
-  }
-  if (row) await env.DB.prepare('DELETE FROM fails WHERE ip = ?').bind(ip).run();
-  return true;
+  const n = row && now - row.ts < LOCK_MS ? row.n + 1 : 1;
+  await env.DB.prepare(
+    'INSERT INTO fails (ip, n, ts) VALUES (?, ?, ?) ON CONFLICT(ip) DO UPDATE SET n = excluded.n, ts = excluded.ts'
+  ).bind(ip, n, now).run();
+  return false;
 }
 
 // Вход по коду: выдаёт токен сессии на 30 дней. Токен — 32 случайных байта, в базе только его SHA-256.
@@ -1580,16 +1588,50 @@ async function adminDmMessages(body, env) {
 }
 
 // ----- прокси личного кабинета VPN для PWA (в браузере прямые запросы к pvpn.vitrinka.net закрыты CORS) -----
-// Запрос: { device, m, p, b, bearer, refresh, ref } -> ответ: { code, text, refresh }.
+// Запрос: { device, secret, m, p, b, bearer, refresh, ref } -> ответ: { code, text, refresh }.
+// secret — тот же секрет устройства, что в чате и заказах (если сервер устройство ещё не знает, запоминается первый).
+// Лимиты: VPN_RATE_IP запросов в минуту с IP, VPN_RATE_DEVICE — с устройства, новых устройств с одного IP — VPN_RATE_NEW_DEV в час.
 // refresh — значение cookie client_refresh: сервер подставляет его в запрос и отдаёт новое из Set-Cookie.
 const VPN_BASE = 'https://pvpn.vitrinka.net';
 const VPN_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 const VPN_PATH = /^\/api\/[A-Za-z0-9_\-./~%?&=+:,;@!$*()]*$/;
 const VPN_TOKEN = /^[A-Za-z0-9._~+\/=-]{1,4000}$/;
 const VPN_REF = /^\/[A-Za-z0-9_\-./]{0,100}$/;
-async function vpnCall(body) {
+const VPN_RATE_IP = 60;          // запросов в минуту с одного IP (IP бывает общим, поэтому щедро)
+const VPN_RATE_DEVICE = 30;      // запросов в минуту с одного устройства
+const VPN_RATE_NEW_DEV = 5;      // новых устройств с одного IP за час
+
+// Счётчик в окне фиксированной длины: вернёт, сколько запросов уже было в текущем окне (включая этот).
+async function rateHit(env, key, windowMs) {
+  const now = Date.now();
+  const r = await env.DB.prepare(
+    `INSERT INTO rate_hits (k, n, ts) VALUES (?1, 1, ?2)
+     ON CONFLICT(k) DO UPDATE SET n = CASE WHEN ts <= ?3 THEN 1 ELSE n + 1 END, ts = CASE WHEN ts <= ?3 THEN ?2 ELSE ts END
+     RETURNING n`
+  ).bind(key, now, now - windowMs).first();
+  if (Math.random() < 0.01) await env.DB.prepare('DELETE FROM rate_hits WHERE ts < ?').bind(now - 2 * 3600_000).run();
+  return r ? r.n : 1;
+}
+
+async function vpnCall(body, env, request) {
   const device = String(body.device || '');
-  if (!UUID.test(device)) return err('Некорректный запрос');
+  const secret = String(body.secret || '');
+  if (!UUID.test(device) || secret.length < 16 || secret.length > 200) return err('Некорректный запрос');
+  const ip = (request.headers.get('cf-connecting-ip') || 'unknown').slice(0, 64);
+  // частота: сначала по IP (считается и для неверных секретов), затем по устройству
+  if ((await rateHit(env, 'vpn:ip:' + ip, 60_000)) > VPN_RATE_IP) return err('Слишком много запросов', 429);
+  if ((await rateHit(env, 'vpn:dev:' + device, 60_000)) > VPN_RATE_DEVICE) return err('Слишком много запросов', 429);
+  // подтверждение устройства: секрет должен совпасть с известным серверу (чат, push, заказы), иначе запоминается первый
+  const hash = await sha256(secret);
+  const known = await env.DB.prepare(
+    `SELECT secret_hash FROM threads WHERE device = ? UNION ALL SELECT secret_hash FROM users WHERE device = ?
+     UNION ALL SELECT secret_hash FROM push_user WHERE device = ? UNION ALL SELECT secret_hash FROM devices WHERE device = ?`
+  ).bind(device, device, device, device).all();
+  if (known.results.some((r) => r.secret_hash !== hash)) return err('Нет доступа', 403);
+  if (!known.results.length) {
+    if ((await rateHit(env, 'vpn:new:' + ip, 3600_000)) > VPN_RATE_NEW_DEV) return err('Слишком много запросов', 429);
+    await env.DB.prepare('INSERT OR IGNORE INTO devices (device, secret_hash, ts) VALUES (?, ?, ?)').bind(device, hash, Date.now()).run();
+  }
   const m = String(body.m || 'GET').toUpperCase();
   const p = String(body.p || '');
   if (!VPN_METHODS.includes(m)) return err('Некорректный запрос');
@@ -1652,7 +1694,7 @@ const app = {
 
     const maint = await chatMaintenance(env, path);
     if (maint) return maint;
-    if (path === '/api/vpn/call') return vpnCall(body);
+    if (path === '/api/vpn/call') return vpnCall(body, env, request);
     if (path === '/api/orders/report') return ordersReport(body, env);
     if (path === '/api/chat/send') return userSend(body, env, ctx, request);
     if (path === '/api/chat/messages') return userMessages(body, env);
