@@ -598,6 +598,49 @@ body.noanim .pf-pat i{animation:none}
 .pf-page .pf-avw[data-fr] .pf-av{box-shadow:none}
 .frc .av{margin:6px 0}
 .mr>.av[data-fr]{margin-left:4px;margin-right:4px}
+
+/* v1.7: цвета ника по уровням, плавное закрытие окон, плавные вкладки */
+:root{--nh:#fff;--nc1:#7BC96F;--nc2:#4FC3F7;--nc3:#FFD54F;--nc4:#FF8A65;--nc5:#FFB300;--nc6:#FF5252;--nc7:#BA68C8;--nc8:#7986CB;--nc9:#26C6DA;--nc10:#FFC400}
+body[data-lt="1"]{--nh:#000;--nc1:#3F9B35;--nc2:#0C85BF;--nc3:#A87A00;--nc4:#D4502A;--nc5:#C77700;--nc6:#D62F2F;--nc7:#8E3DB0;--nc8:#3F51B5;--nc9:#0A8FA5;--nc10:#B88600}
+.nt.nc1{color:var(--nc1)}.nt.nc2{color:var(--nc2)}.nt.nc3{color:var(--nc3)}.nt.nc4{color:var(--nc4)}
+.nt.nc5{color:var(--nc5);text-shadow:0 0 10px color-mix(in srgb,var(--nc5) 40%,transparent)}
+.nt.nc6{color:var(--nc6);text-shadow:0 0 10px color-mix(in srgb,var(--nc6) 40%,transparent)}
+.nt.nc7{color:var(--nc7);text-shadow:0 0 11px color-mix(in srgb,var(--nc7) 45%,transparent)}
+.nt.nc8,.nt.nc9,.nt.nc10{color:transparent;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;background-size:200% 100%;animation:ncflow 6s linear infinite}
+.nt.nc8{background-image:linear-gradient(90deg,var(--nc8),#B388FF,#42A5F5,var(--nc8))}
+.nt.nc9{background-image:linear-gradient(90deg,var(--nc9),color-mix(in srgb,var(--nc9) 45%,var(--nh)),var(--nc9))}
+.nt.nc10{background-image:linear-gradient(90deg,var(--nc10),color-mix(in srgb,var(--nc10) 40%,var(--nh)),var(--nc10),#FF9800,var(--nc10))}
+@keyframes ncflow{to{background-position:-200% 0}}
+body.noanim .nt.nc8,body.noanim .nt.nc9,body.noanim .nt.nc10,body.notr .nt.nc8,body.notr .nt.nc9,body.notr .nt.nc10{animation:none}
+@media(prefers-reduced-motion:reduce){.nt.nc8,.nt.nc9,.nt.nc10{animation:none}}
+.frc .nt{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;font-weight:700;padding:14px 0 12px}
+.nvw{display:flex;gap:10px;align-items:center;justify-content:center;margin:12px 0 2px;font-size:20px;font-weight:700}
+@keyframes ovo{to{opacity:0}}@keyframes sho{to{transform:translateY(100%)}}@keyframes dlo{to{opacity:0;transform:scale(.94) translateY(8px)}}
+.ov.out{animation:ovo .22s ease both!important;pointer-events:none}
+.ov.out .sh{animation:sho .24s cubic-bezier(.4,0,1,1) both!important}
+.ov.out .dlg{animation:dlo .18s ease both!important}
+.sh{overscroll-behavior:contain}.sh.drag{transition:none!important;animation:none!important}.sh.rel{transition:transform .22s cubic-bezier(.2,.9,.3,1)}
+.sh:before{content:"";display:block;width:38px;height:4px;border-radius:2px;background:var(--line);margin:-6px auto 10px}
+@keyframes tabin{from{opacity:0}}.tin{animation:tabin .22s ease both}
+.toast.out{animation:toastout .2s ease both!important}@keyframes toastout{to{opacity:0;transform:translate(-50%,8px)}}
+button.b,button.chip,.sh .it,.frc{transition:transform .14s ease,background-color .2s,opacity .2s}
+button.b:active,button.chip:active,.sh .it:active,.frc:active{transform:scale(.97)}
+@media(prefers-reduced-motion:reduce){.tin{animation:none}}
+body.notr .tin{animation:none}
+
+/* v1.7: скелетоны и ответ свайпом */
+.sl{display:block;background:linear-gradient(90deg,var(--card) 25%,var(--line) 50%,var(--card) 75%);background-size:200% 100%;animation:vsk 1.4s linear infinite;border-radius:12px}
+body.noanim .sl,body.notr .sl{animation:none}
+@media(prefers-reduced-motion:reduce){.sl{animation:none}}
+.sls{display:flex;flex-direction:column;gap:12px;padding:6px 6px 0}
+.slm{display:flex;align-items:flex-end;gap:8px}.slm.r{flex-direction:row-reverse}
+.slm .av{width:32px;height:32px;border-radius:50%;flex:none}
+.slm .b{border-radius:18px 18px 18px 6px}.slm.r .b{border-radius:18px 18px 6px 18px}
+.slp{display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:26px}
+.slt{display:flex;gap:10px;width:100%;margin-top:14px}.slt .sl{flex:1;height:64px;border-radius:16px}
+#list{overflow-x:hidden}#list .mr{position:relative;touch-action:pan-y}
+.swr{position:absolute;left:100%;top:50%;margin:-16px 0 0 14px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:17px;background:color-mix(in srgb,var(--blue) 18%,var(--card));color:var(--blue);opacity:0;transform:scale(.5);transition:transform .15s ease,opacity .15s ease,background-color .15s}
+.swr.on{transform:scale(1.12);background:var(--blue);color:var(--on)}
 </style></head><body>
 <div id="view"></div>
 <nav><button data-t="vpn"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H20M17 12v3M20 12v2.5"/></g></svg><span>VPN</span></button><button data-t="chat"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="8" cy="8" r="3.4"/><path d="M1 21.5A7 7 0 0 1 15 21.5"/><circle cx="17" cy="8.5" r="2.7"/><path d="M13 18.5A4 4 0 0 1 21 18.5"/></g></svg><span>Чат</span></button><button data-t="me"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="8" r="4"/><path d="M4 23A8 8 0 0 1 20 23"/></g></svg><span>Профиль</span></button><button data-t="set"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12 12) scale(.84) translate(-12 -12)"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></g></svg><span>Настройки</span></button></nav>
@@ -648,13 +691,14 @@ async function api(path,extra={}){
   return j;
 }
 const CROWN='<svg class="crown" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18L3 7l5.5 5L12 5l3.5 7L21 7l-.5 11z"/><path d="M4 21h16"/></svg>';
-const nameHtml=(m)=>`<span class="n" data-uid="${m.uid||''}" data-nick="${esc(m.nick)}" style="color:${nickCol(m.nick)}">${esc(m.nick)}${m.crown?CROWN:''}${m.badge?' <span style="color:var(--blue)">✓</span>':''}</span>`;
+const ncA=(n)=>n>=1&&n<=10?' nc'+n:'';
+const nameHtml=(m)=>`<span class="n" data-uid="${m.uid||''}" data-nick="${esc(m.nick)}" style="color:${nickCol(m.nick)}"><span class="nt${ncA(m.nc)}">${esc(m.nick)}</span>${m.crown?CROWN:''}${m.badge?' <span style="color:var(--blue)">✓</span>':''}</span>`;
 const clock=(ts)=>new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 let tab=LS.get('stt','vpn'),sub=0,timer=null,me=null,nextAt=Number(LS.get('nextAt','0'));
 const view=$('#view');
 function stop(){clearTimeout(timer);timer=null;gen++}
 let gen=0;
-function go(t){tab=t;LS.set('tab',t);stop();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({chat:chatTab,help:helpTab,vpn:vpnScreen,me:meTab,set:setTab})[t]()}
+function go(t){tab=t;LS.set('tab',t);stop();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({chat:chatTab,help:helpTab,vpn:vpnScreen,me:meTab,set:setTab})[t]();if(!document.body.classList.contains('notr')){view.classList.remove('tin');void view.offsetWidth;view.classList.add('tin')}}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 
 // ---------- общая лента ----------
@@ -746,8 +790,15 @@ function frSheet(){
   const av=(n)=>`<span class="av${n?' fr':''}"${frA(n)} style="${frS(n)}background-color:${col};${ph?`background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':ini}</span>`;
   const cards=[0,1,2,3,4,5,6,7,8,9,10].map(n=>{const lk=n>0&&li<n-1;return `<button class="frc${n===cur?' on':''}${lk?' lk':''}" data-f="${n}">${av(n)}<b style="font-size:13px">${n?LVN[n-1]:'Без рамки'}</b><small>${n?(lk?'🔒 ур. '+n:'Ур. '+n):'—'}</small></button>`}).join('');
   const o=sheetOpen('Рамка аватара','<div class="mute small" style="margin-top:6px">Каждый уровень открывает новую рамку. Её видят в общем чате все.</div><div class="gbox"><div class="frg">'+cards+'</div></div>');
-  o.querySelectorAll('.frc').forEach(b=>b.onclick=()=>{const n=Number(b.dataset.f);if(n>0&&li<n-1){toast('Откроется на уровне '+n+' «'+LVN[n-1]+'»');return}
+  o.querySelectorAll('.frc').forEach(b=>b.onclick=()=>{const n=Number(b.dataset.f);if(n>0&&li<n-1){hap('err');toast('Откроется на уровне '+n+' «'+LVN[n-1]+'»');return}
     api('/api/chat/frame_set',{frame:n}).then(()=>{me.frame=n;o.remove();toast(n?'Рамка применена':'Рамка снята');meTab()}).catch(x=>toast(x.message))});
+}
+function ncSheet(){
+  const li=lvIdx(),cur=(me&&me.nc)||0,nick=esc(String(me.nick||'?').replace(/^@/,''));
+  const cards=[0,1,2,3,4,5,6,7,8,9,10].map(n=>{const lk=n>0&&li<n-1;return `<button class="frc${n===cur?' on':''}${lk?' lk':''}" data-f="${n}"><b class="nt${ncA(n)}"${n?'':` style="color:${nickCol(me.nick)}"`}>${nick}</b><small>${n?(lk?'🔒 ур. '+n:'Ур. '+n+' · '+LVN[n-1]):'Авто'}</small></button>`}).join('');
+  const o=sheetOpen('Цвет ника','<div class="mute small" style="margin-top:6px">Каждый уровень открывает новый цвет. Его видят все в общем чате. С 6-го уровня ник светится, а с 8-го переливается.</div><div class="gbox"><div class="frg">'+cards+'</div></div>');
+  o.querySelectorAll('.frc').forEach(b=>b.onclick=()=>{const n=Number(b.dataset.f);if(n>0&&li<n-1){hap('err');toast('Откроется на уровне '+n+' «'+LVN[n-1]+'»');return}
+    api('/api/chat/nickcolor_set',{color:n}).then(()=>{me.nc=n;hap('ok');o.remove();toast(n?'Цвет применён':'Цвет сброшен на авто');meTab()}).catch(x=>toast(x.message))});
 }
 function coverMenu(){
   if(lvIdx()<1){toast('Обложка откроется на 2-м уровне «Знакомый» 🔒');return}
@@ -974,9 +1025,11 @@ function trafSheet(){
    +(tot?`<div class="mute small">За 14 дней: <b style="color:var(--text)">${tfmt(tot)}</b> · в среднем ${tfmt(tot/14)} в день<br>Больше всего: ${keys[pk].slice(5).split('-').reverse().join('.')} — ${tfmt(vals[pk])}</div>`:'<div class="mute small">Пока нет данных за эти дни.</div>')
    +`<div class="mute small" style="margin-top:8px">График строится по данным подписки, которые приложение запоминает при каждом заходе во вкладку VPN${pts<2?'. Заходите почаще — столбики появятся со следующего дня.':'. В дни, когда вы не заходили, расход попадает на день следующего захода.'}</div>`);
 }
+const skChat=()=>'<div class="sls">'+[[58,1],[42,1],[66,0],[36,0],[52,1],[62,0]].map(([w,l])=>`<div class="slm${l?'':' r'}">${l?'<span class="sl av"></span>':''}<span class="sl b" style="width:${w}%;height:${w>50?56:40}px"></span></div>`).join('')+'</div>';
+const skProf=()=>'<div class="pf-top"><h2>Профиль</h2><button class="chip pfsup" style="margin:0">💬 Поддержка</button></div><div class="slp"><span class="sl" style="width:122px;height:122px;border-radius:50%"></span><span class="sl" style="width:160px;height:26px"></span><span class="sl" style="width:130px;height:34px;border-radius:999px"></span><div class="slt"><span class="sl"></span><span class="sl"></span><span class="sl"></span></div><span class="sl" style="width:100%;height:86px;border-radius:18px"></span></div>';
 function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
   const g=gen,rc=window.RC;let last=0,rev=-1,lastDay='',prevKey=null,prevTs=0,loaded=false,stick=false,unseen=0,added=0,pending='',sending=false,idle=0,paused=false,stKey='',lastR={};const avReq={};
-  view.insertAdjacentHTML('beforeend',`${support?'<div id="st"></div>':''}<div class="lw"><div id="list"><div class="mute">${empty}</div></div><button id="tobot" aria-label="Вниз">${DOWN_SVG}<b></b></button></div><div class="err" id="e"></div>${support?'<div id="prev" hidden></div>':''}${rep?'<div id="mnl" hidden></div><div id="rb" hidden></div>':''}<div class="row">${support?`<button id="att" type="button" aria-label="Прикрепить фото">${ATT_SVG}</button><input type="file" id="fi" accept="image/*" hidden>`:''}<textarea id="f" rows="1" placeholder="Сообщение" maxlength="${max||1000}" enterkeyhint="send"></textarea><button id="send" class="empty" aria-label="Отправить">${SEND_SVG}</button></div>`);
+  view.insertAdjacentHTML('beforeend',`${support?'<div id="st"></div>':''}<div class="lw"><div id="list">${skChat()}</div><button id="tobot" aria-label="Вниз">${DOWN_SVG}<b></b></button></div><div class="err" id="e"></div>${support?'<div id="prev" hidden></div>':''}${rep?'<div id="mnl" hidden></div><div id="rb" hidden></div>':''}<div class="row">${support?`<button id="att" type="button" aria-label="Прикрепить фото">${ATT_SVG}</button><input type="file" id="fi" accept="image/*" hidden>`:''}<textarea id="f" rows="1" placeholder="Сообщение" maxlength="${max||1000}" enterkeyhint="send"></textarea><button id="send" class="empty" aria-label="Отправить">${SEND_SVG}</button></div>`);
   const list=$('#list'),f=$('#f'),send=$('#send'),e=$('#e'),tobot=$('#tobot'),badge=$('#tobot b');
 
   let reply=null;window._repFn=rep?(id,nick,text)=>{reply={id,nick,text};renderRb();f.focus()}:null;
@@ -1047,7 +1100,7 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
     return `<span class="av n${m.fr?' fr':''}"${frA(m.fr)} data-uid="${m.uid||''}" data-nick="${esc(nick)}" data-av="${m.av||''}" style="${frS(m.fr)}background-color:${nickCol(nick)}${ph?`;background-image:url(data:image/jpeg;base64,${ph})`:''}">${ph?'':esc([...nick][0].toUpperCase())}</span>`;
   }
   function add(m){
-    if(m.id<=last)return;last=m.id;if(last&&list.firstChild&&list.firstChild.classList.contains('mute'))list.innerHTML='';
+    if(m.id<=last)return;last=m.id;if(last&&list.firstChild&&(list.firstChild.classList.contains('mute')||list.firstChild.classList.contains('sls')))list.innerHTML='';
     const own=mine(m);if(!own)added++;
     const dk=new Date(m.ts).toDateString();
     if(dk!==lastDay){lastDay=dk;prevKey=null;list.insertAdjacentHTML('beforeend','<div class="dsep">'+new Date(m.ts).toLocaleDateString([],{day:'numeric',month:'long'})+'</div>')}
@@ -1055,6 +1108,16 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
       list.addEventListener('contextmenu',(e)=>{const b=e.target.closest('.m');if(b&&showNames){e.preventDefault();msgMenu(b)}});
       list.addEventListener('touchstart',(e)=>{const b=e.target.closest('.m');if(b&&showNames)tm=setTimeout(()=>msgMenu(b),550)},{passive:true});
       ['touchend','touchmove','touchcancel'].forEach(t=>list.addEventListener(t,()=>clearTimeout(tm),{passive:true}));
+      if(rep&&showNames){let row=null,sx=0,sy=0,dx=0,act=false,fired=false,ind=null;
+        const reset=()=>{if(row){const r=row;r.style.transition='transform .24s cubic-bezier(.2,.9,.3,1)';r.style.transform='';setTimeout(()=>{r.style.transition='';if(ind&&ind.parentNode===r)ind.remove()},260)}row=null;act=false;fired=false};
+        list.addEventListener('touchstart',(e)=>{const r=e.target.closest('.mr');if(!r||e.touches.length!==1||e.target.closest('a,.ph img,button')||!r.querySelector('.m[data-id]'))return;row=r;sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;act=false;fired=false;ind=null},{passive:true});
+        list.addEventListener('touchmove',(e)=>{if(!row)return;const x=e.touches[0].clientX,y=e.touches[0].clientY,ax=sx-x,ay=Math.abs(y-sy);
+          if(!act){if(ay>10&&ay>ax){row=null;return}if(ax>10&&ax>ay){act=true;ind=document.createElement('i');ind.className='swr';ind.textContent='↩';row.appendChild(ind);row.style.transition='none'}else return}
+          dx=ax<0?0:ax;const tx=dx<64?dx:64+(dx-64)*.2;row.style.transform='translateX(-'+Math.min(tx,84)+'px)';
+          if(ind){ind.style.opacity=Math.min(1,tx/40);ind.style.transform='scale('+(.5+Math.min(.5,tx/80))+')';ind.classList.toggle('on',tx>=50)}
+          if(tx>=50&&!fired){fired=true;hap('med')}else if(tx<50)fired=false},{passive:true});
+        list.addEventListener('touchend',()=>{if(!row)return;if(act&&fired){const b=row.querySelector('.m[data-id]'),nn=b.querySelector('.n'),nick=nn?nn.dataset.nick:(b.dataset.nick||'');if(window._repFn)window._repFn(Number(b.dataset.id),nick,msgTxt(b))}reset()},{passive:true});
+        list.addEventListener('touchcancel',reset,{passive:true})}
       list.addEventListener('click',(e)=>{const im=e.target.closest('.ph img');if(im){lightbox(im.src);return}
         const n=e.target.closest('.n[data-uid]');if(n&&n.dataset.uid&&me&&Number(n.dataset.uid)!==me.uid)dmOpen(Number(n.dataset.uid),n.dataset.nick)})}
     const key=own?'me':String(m.uid||m.from||'o'),cont=prevKey===key&&m.ts-prevTs<300000;
@@ -1085,12 +1148,12 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
         if(atEnd||before===0||stick)toEnd(before!==0);
         else{unseen+=added;sync()}
       }else idle++;
-      stick=false;loaded=true;
+      stick=false;loaded=true;{const sk=list.querySelector(':scope>.sls');if(sk)list.innerHTML='<div class="mute">'+empty+'</div>'}
       if(support&&r.status){const keep=atEnd||before===0||stick;renderSt(r);if(keep)list.scrollTop=list.scrollHeight}
       e.textContent='';
     }catch(x){
       if(x.maint)return;   // api() уже открыл экран техработ
-      e.textContent=x.message;
+      e.textContent=x.message;{const sk=list.querySelector(':scope>.sls');if(sk)list.innerHTML='<div class="mute">'+empty+'</div>'}
     }
     if(g!==gen)return;
     if(document.hidden){paused=true;return}
@@ -1119,14 +1182,14 @@ function pane({fetchFn,sendFn,mine,showNames,cool,empty,support,rep,max}){
     try{await sendFn(text,img,rp&&rp.id);clearTimeout(timer);sending=false;send.style.opacity='';poll()}
     catch(x){if(rp){reply=rp;renderRb()}sending=false;send.style.opacity='';stick=false;f.value=text;pending=img;showPrev();grow();if(!x.maint)e.textContent=x.message;if(x.retry){nextAt=Date.now()+x.retry;LS.set('nextAt',nextAt)}else if(cool()){nextAt=0}tick()}
   }
-  send.onclick=doSend;f.onkeydown=(k)=>{if(k.key==='Enter'&&!k.shiftKey&&!k.isComposing){k.preventDefault();doSend()}};
+  send.onclick=doSend;f.onkeydown=(k)=>{if(k.key==='Enter'&&!k.shiftKey&&!k.isComposing){k.preventDefault();hap('light');doSend()}};
   tick();poll();
 }
 
 // ---------- чат ----------
 async function chatTab(){
   window.RC=0;window._mt=0;
-  view.innerHTML='<div class="vsk" style="height:70px"></div><div class="vsk"></div>';const g=gen;
+  view.innerHTML=skChat();const g=gen;
   cfgP=null;const sc=await sectionCfg('chat'); // чат можно закрыть на тех. работы: в настройках раздел chat → enabled:false
   if(g!==gen)return;
   if(sc&&sc.enabled===false)return chatClosed(sc);
@@ -1287,7 +1350,7 @@ function pickAvatar(){
 }
 async function meTab(){
   window.RC=0;
-  view.innerHTML='<div class="pf-top"><h2>Профиль</h2><button class="chip pfsup" style="margin:0">💬 Поддержка</button></div><div class="mute">Загрузка…</div>';const g=gen;
+  view.innerHTML=skProf();const g=gen;
   try{me=await api('/api/chat/me')}catch(x){view.innerHTML=`<div class="err">${esc(x.message)}</div>`;return}
   if(g!==gen)return;
   if(!me.registered){view.innerHTML='<div class="pf-top"><h2>Профиль</h2><button class="chip pfsup" style="margin:0">💬 Поддержка</button></div><div class="card mute">Выберите ник во вкладке «Чат», чтобы он появился здесь.</div>';return}
@@ -1297,6 +1360,7 @@ async function meTab(){
   const lvT=[[0,'Новичок','🌱'],[1,'Знакомый','👋'],[3,'Свой','🙂'],[7,'Постоялец','🏠'],[14,'Бывалый','⚡'],[30,'Опытный','🔥'],[60,'Знаток','🧠'],[100,'Ветеран','🛡️'],[180,'Мастер','💎'],[365,'Легенда','🏆']];
   const t0=Number(me.created)||Number(LS.get('since'));
   const dw=Math.max(0,Math.floor((Date.now()-t0)/864e5));let li=0;lvT.forEach((t,n)=>{if(dw>=t[0])li=n});
+  {const sv=LS.get('lvSeen');if(!sv)LS.set('lvSeen',String(li));else if(li>Number(sv)){LS.set('lvSeen',String(li));setTimeout(()=>{if(tab==='me'){toast('🎉 Новый уровень «'+lvT[li][1]+'»! Открыты рамка и цвет ника');burst(innerWidth/2,innerHeight/3)}},600)}}
   const nx=lvT[li+1],pc=nx?Math.min(100,Math.round(dw/nx[0]*100)):100;
   const cvr=LS.get('cover');
   const IP=(d)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
@@ -1305,7 +1369,7 @@ async function meTab(){
   const I_FR=IP('<circle cx="12" cy="12" r="8.500"/><circle cx="12" cy="12" r="4.200"/><path d="M12 1.500v2M12 20.500v2M1.500 12h2M20.500 12h2"/>');
   const I_ED='<svg viewBox="0 0 24 24" fill="none"><path d="M4 20l1-4.200L16.300 4.500a2.100 2.100 0 0 1 3 0l.2.2a2.100 2.100 0 0 1 0 3L8.200 19z" fill="url(#gY)"/><path d="M15 6l3 3" stroke="#F0501E" stroke-width="1.800"/><path d="M4 20l1-4.200 3.200 3.200z" fill="#FFE3B8"/></svg>';
   const pl=(n,a,b,c)=>{n=Math.abs(n)%100;const d=n%10;return n>10&&n<20?c:d>1&&d<5?b:d===1?a:c};
-  view.innerHTML=`<div class="pf-page"><div class="pf-glow${cvr?' cv':''}"${cvr?' style="background-image:url('+cvr+')"':''}></div>
+  view.innerHTML=`<div class="pf-page tin"><div class="pf-glow${cvr?' cv':''}"${cvr?' style="background-image:url('+cvr+')"':''}></div>
   <div class="pf-pat" id="pfpat"><i></i></div>
   <div class="pf-top"><h2>Профиль</h2><button class="chip pfsup" style="margin:0">💬 Поддержка</button></div>
   <div class="pf-hero">
@@ -1315,9 +1379,9 @@ async function meTab(){
       <div class="pf-avw" id="pfavw"${frA(me.frame)}>${avatarEl(me)}<div class="pf-cam">${I_CAM}</div></div>
       <button class="pf-sb r" id="pfcv" aria-label="Обложка профиля">${I_IMG}</button>
     </div>
-    <div class="pf-nick"><b>${esc(me.nick)}</b>${me.crown?CROWN:''}${me.badge?'<span style="color:var(--blue)">✓</span>':''}<button class="pf-ed" id="pfed" aria-label="Сменить ник">${I_ED}</button></div>
+    <div class="pf-nick"><b class="nt${ncA(me.nc)}">${esc(me.nick)}</b>${me.crown?CROWN:''}${me.badge?'<span style="color:var(--blue)">✓</span>':''}<button class="pf-ed" id="pfed" aria-label="Сменить ник">${I_ED}</button></div>
     <div class="pf-pill" id="pflv"><span>${lvT[li][2]}</span>${lvT[li][1]} · уровень ${li+1}</div>
-    <div class="pf-act"><button class="chip" id="pfpt">✨ Узор профиля</button></div>
+    <div class="pf-act"><button class="chip" id="pfnc">🎨 Цвет ника</button><button class="chip" id="pfpt">✨ Узор профиля</button></div>
   </div>
   <div class="pf-lv" id="pflv2"><div class="pf-bar"><i data-w="${pc}"></i></div><div class="pf-lvc">${nx?'С нами '+plural(dw,'день','дня','дней')+' · до «'+nx[1]+'» ещё '+(nx[0]-dw):'С нами '+plural(dw,'день','дня','дней')+' · максимальный уровень'}</div></div>
   <div class="pf-tiles">
@@ -1338,7 +1402,7 @@ async function meTab(){
     $('#nc',o).onclick=()=>o.remove();
     $('#ch',o).onclick=async()=>{const n=$('#nn',o).value.trim().replace(/^@/,'');if(!n)return;try{await api('/api/chat/register',{nick:n});LS.set('nick',n);o.remove();meTab()}catch(x){$('#ne',o).textContent=x.message}};
   };
-  $('#pffr').onclick=frSheet;$('#pfcv').onclick=coverMenu;$('#pfcvr').onclick=coverMenu;$('#pfpt').onclick=patSheet;patApply();
+  $('#pffr').onclick=frSheet;$('#pfnc').onclick=ncSheet;$('#pfcv').onclick=coverMenu;$('#pfcvr').onclick=coverMenu;$('#pfpt').onclick=patSheet;patApply();
   if(me.av){
     const put=(b)=>{const e=$('#pfav');if(e&&g===gen)e.outerHTML=`<img class="pf-av${me.frame?' fr':''}" style="${frS(me.frame)}" id="pfav" alt="" src="data:image/jpeg;base64,${b}">`};
     if(avCache[me.av])put(avCache[me.av]);
@@ -1549,13 +1613,23 @@ function statusKind(raw){
 // ---------- мелкие окна ----------
 function toast(t){
   const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);
-  setTimeout(()=>e.remove(),2600);
+  setTimeout(()=>{e.classList.add('out');setTimeout(()=>e.remove(),220)},2600);
+}
+// плавное закрытие окон (o.remove() теперь уводит окно вниз/гасит) и закрытие смахиванием шторки вниз
+function ovSmooth(o,drag){
+  const rm=o.remove.bind(o);let c=0;
+  o.remove=()=>{if(c)return;c=1;if(document.body.classList.contains('notr')||matchMedia('(prefers-reduced-motion:reduce)').matches){rm();return}o.classList.add('out');setTimeout(rm,250)};
+  if(!drag)return;const sh=o.querySelector('.sh');if(!sh)return;let y0=0,dy=0,on=false;
+  sh.addEventListener('touchstart',(e)=>{if(sh.scrollTop>0||e.touches.length!==1)return;y0=e.touches[0].clientY;dy=0;on=true},{passive:true});
+  sh.addEventListener('touchmove',(e)=>{if(!on)return;dy=e.touches[0].clientY-y0;if(dy<=0){dy=0;sh.style.transform='';return}sh.classList.add('drag');sh.style.transform='translateY('+dy+'px)';o.style.background='rgba(0,0,0,'+(.5*Math.max(0,1-dy/420)).toFixed(2)+')'},{passive:true});
+  sh.addEventListener('touchend',()=>{if(!on)return;on=false;sh.classList.remove('drag');
+    if(dy>110){hap('light');o.remove()}else if(dy>0){sh.classList.add('rel');sh.style.transform='';o.style.background='';setTimeout(()=>sh.classList.remove('rel'),240)}});
 }
 function sheetOpen(title,html){
   const o=document.createElement('div');o.className='ov';
   o.innerHTML='<div class="sh"><b>'+esc(title)+'</b>'+html+'</div>';
   o.onclick=(e)=>{if(e.target===o)o.remove()};
-  document.body.appendChild(o);return o;
+  document.body.appendChild(o);ovSmooth(o,true);return o;
 }
 function listSheet(title,items,cb){
   const o=sheetOpen(title,items.map((t,i)=>'<button class="it" data-i="'+i+'">'+esc(t)+'</button>').join(''));
@@ -1573,7 +1647,7 @@ function dlgOpen(html,lock){
   const o=document.createElement('div');o.className='ov dl';
   o.innerHTML='<div class="dlg" role="dialog" aria-modal="true">'+html+'</div>';
   if(!lock)o.onclick=(e)=>{if(e.target===o)o.remove()};
-  document.body.appendChild(o);return o;
+  document.body.appendChild(o);ovSmooth(o,false);return o;
 }
 function confirmSheet(title,text,ok,cb,danger){
   const o=dlgOpen('<div class="di'+(danger?' dg':'')+'">'+(danger?'⚠️':'ℹ️')+'</div><h3>'+esc(title)+'</h3><p>'+esc(text)+'</p><div class="dbt"><button class="b sec" id="sc">Отмена</button><button class="b'+(danger?' dg':'')+'" id="sk">'+esc(ok)+'</button></div>');
@@ -2163,20 +2237,31 @@ function tickMarks(list,r){const pr=r.peer_read,rt=r.read_ts;if(pr==null&&rt==nu
   list.querySelectorAll('.m.me').forEach(el=>{const t=el.querySelector('.tk');if(t)t.textContent=(pr!=null?Number(el.dataset.id)<=pr:Number(el.dataset.ts)<=rt)?'✓✓':'✓'})}
 const msgRun=(ok,p,b)=>api(p,b).then(()=>toast(ok)).catch(x=>toast(x.message));
 function msgMenu(b){
+  hap('med');
   const uid=Number(b.dataset.uid),id=Number(b.dataset.id),own=me&&uid===me.uid,nn=b.querySelector('.n'),nick=nn?nn.dataset.nick:(b.dataset.nick||''),mod=me&&me.badge,it=[];
   if(window._repFn&&id)it.push(['↩ Ответить',()=>window._repFn(id,nick||'',msgTxt(b))]);
+  if(msgTxt(b))it.push(['📋 Копировать текст',()=>{const t=msgTxt(b);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{hap('ok');toast('Скопировано')}).catch(()=>toast('Не удалось скопировать'))}]);
   if(!own&&uid)it.push(['✉ Написать в личку',()=>dmOpen(uid,nick)]);
   if(own||mod)it.push(['🗑 Удалить сообщение',()=>msgRun('Сообщение удалено','/api/room/delete',{id})]);
   if(mod&&!own&&!b.dataset.badge){[['на час',60],['на сутки',1440],['на неделю',10080]].forEach(([t,m])=>it.push(['🔇 Заглушить '+t,()=>msgRun('Готово','/api/room/mute',{uid,minutes:m})]));it.push(['🔊 Снять ограничение',()=>msgRun('Ограничение снято','/api/room/mute',{uid,minutes:0})])}
   if(it.length)listSheet(nick||'Сообщение',it.map(x=>x[0]),(i)=>it[i][1]());
 }
 function whatsNew(){
-  const it=[['🔊','Звуки','Мягкие сигналы при нажатиях, переключателях и сообщениях в чате. Громкость и что именно озвучивать настраивается. Звуки создаются самим приложением.'],['💬','Настройки чата','Обои (точки, сетка, свечение), плотность сообщений, размер текста в чате, показ аватарок, времени и галочек прочтения.'],['📏','Плотность списков','Плотно, обычно или просторно: влияет на строки и карточки в настройках.'],['🔤','Шрифты','Шесть вариантов шрифта для всего приложения: системный, округлый, с засечками, моноширинный, читаемый и рукописный.'],['🎨','Свой цвет','Любой акцентный цвет через палитру. Текст на кнопках сам подстраивается под яркость.'],['⏰','Тема по времени','Тёмная ночью и светлая днём, часы переключения выбираете сами.'],['🌈','Нижняя панель','Цветные вкладки с плавающей подсветкой, волна при нажатии и радужная полоска. Стиль (цветная, однотонная, простая), подписи и полоска настраиваются.'],['✨','Больше анимаций','Плавное открытие разделов настроек, окон и уведомлений, появление списков по очереди, отклик на нажатия. Отключается в «Плавные переходы».'],['🔍','Поиск по настройкам','Находит любой переключатель по названию, подписи или похожему слову и подсвечивает его. Последние запросы сохраняются.'],['⚙️','Новые настройки','Главный экран со списком разделов и карточкой профиля. Сверху видно текущее значение каждого раздела, разделы открываются отдельными экранами.'],['📶','Статус сервисов и QR','Проверка связи со всеми звеньями и QR-код подписки для другого устройства.'],['📜','Правила чата и новые окна','Правила при регистрации (и во вкладке «Чат»), диалоги теперь в стиле приложения. В чате до 150 символов, без КАПСА, ссылок и запрещённых тем.'],['🎭','Рамки и обложка','Десять рамок аватара с узорами (листья, пузырьки, лучи, кружево, шестерёнка, пламя, искры, сталь, кристаллы, лавры с короной), как в приложении для Android. Обложка профиля со 2-го уровня.'],['🎀','Узоры и кадрирование','Узор по бокам профиля (точки, соты, звёзды, аптека и другие) с выбором цвета, размера и яркости. Фото и обложку теперь можно подвинуть и приблизить перед сохранением.'],['📺','Каналы, ответы и @упоминания','Выбирайте канал в общем чате, отвечайте на сообщения и отмечайте людей по нику.'],['📖','Инструкции и график трафика','Пошаговое подключение для каждой платформы и расход трафика по дням.'],['🛡️','Новый раздел VPN','Красивый вход, карточка подписки с кольцом дней и трафиком, покупка в пару касаний.'],['🚀','10 новых достижений VPN','Запуск, Семейный, Надолго, Продление, Запас трафика, Апгрейд, Заморозка, Новая ссылка, Порядок и 100 ГБ.'],['🛠️','Экран техработ','Если чат закрыт на обслуживание, вы увидите понятный экран и сможете сразу проверить, открылся ли он.']];
+  const it=[['↩️','Ответ свайпом','Потяните сообщение влево, чтобы ответить на него. Вкладки и чат при загрузке показывают «скелетоны» вместо пустого экрана.'],['🎨','Цвета ника','За каждый уровень открывается свой цвет ника: от зелёного до золотого. С 6-го уровня ник светится, с 8-го переливается. Его видят все в чате. Выбор в профиле, кнопка «Цвет ника».'],['📳','Отклик на iPhone','Вибро-отклик теперь работает и на iPhone (iOS 17.4 и новее): нажатия, переключатели, меню сообщений, праздник нового уровня. Включается в «Анимации и отклик».'],['🫧','Плавные окна','Окна и диалоги закрываются с анимацией, а шторки можно смахнуть вниз. Вкладки и уведомления сменяются плавно. В меню сообщения появилось «Копировать текст».'],['🔊','Звуки','Мягкие сигналы при нажатиях, переключателях и сообщениях в чате. Громкость и что именно озвучивать настраивается. Звуки создаются самим приложением.'],['💬','Настройки чата','Обои (точки, сетка, свечение), плотность сообщений, размер текста в чате, показ аватарок, времени и галочек прочтения.'],['📏','Плотность списков','Плотно, обычно или просторно: влияет на строки и карточки в настройках.'],['🔤','Шрифты','Шесть вариантов шрифта для всего приложения: системный, округлый, с засечками, моноширинный, читаемый и рукописный.'],['🎨','Свой цвет','Любой акцентный цвет через палитру. Текст на кнопках сам подстраивается под яркость.'],['⏰','Тема по времени','Тёмная ночью и светлая днём, часы переключения выбираете сами.'],['🌈','Нижняя панель','Цветные вкладки с плавающей подсветкой, волна при нажатии и радужная полоска. Стиль (цветная, однотонная, простая), подписи и полоска настраиваются.'],['✨','Больше анимаций','Плавное открытие разделов настроек, окон и уведомлений, появление списков по очереди, отклик на нажатия. Отключается в «Плавные переходы».'],['🔍','Поиск по настройкам','Находит любой переключатель по названию, подписи или похожему слову и подсвечивает его. Последние запросы сохраняются.'],['⚙️','Новые настройки','Главный экран со списком разделов и карточкой профиля. Сверху видно текущее значение каждого раздела, разделы открываются отдельными экранами.'],['📶','Статус сервисов и QR','Проверка связи со всеми звеньями и QR-код подписки для другого устройства.'],['📜','Правила чата и новые окна','Правила при регистрации (и во вкладке «Чат»), диалоги теперь в стиле приложения. В чате до 150 символов, без КАПСА, ссылок и запрещённых тем.'],['🎭','Рамки и обложка','Десять рамок аватара с узорами (листья, пузырьки, лучи, кружево, шестерёнка, пламя, искры, сталь, кристаллы, лавры с короной), как в приложении для Android. Обложка профиля со 2-го уровня.'],['🎀','Узоры и кадрирование','Узор по бокам профиля (точки, соты, звёзды, аптека и другие) с выбором цвета, размера и яркости. Фото и обложку теперь можно подвинуть и приблизить перед сохранением.'],['📺','Каналы, ответы и @упоминания','Выбирайте канал в общем чате, отвечайте на сообщения и отмечайте людей по нику.'],['📖','Инструкции и график трафика','Пошаговое подключение для каждой платформы и расход трафика по дням.'],['🛡️','Новый раздел VPN','Красивый вход, карточка подписки с кольцом дней и трафиком, покупка в пару касаний.'],['🚀','10 новых достижений VPN','Запуск, Семейный, Надолго, Продление, Запас трафика, Апгрейд, Заморозка, Новая ссылка, Порядок и 100 ГБ.'],['🛠️','Экран техработ','Если чат закрыт на обслуживание, вы увидите понятный экран и сможете сразу проверить, открылся ли он.']];
   sheetOpen('Что нового',it.map(x=>'<div style="display:flex;gap:10px;margin:12px 0"><span style="font-size:20px">'+x[0]+'</span><div><b>'+x[1]+'</b><div class="mute small">'+x[2]+'</div></div></div>').join(''));
 }
-document.addEventListener('click',(e)=>{if(LS.get('hap')&&e.target.closest('button,.card')&&navigator.vibrate)navigator.vibrate(8)});
+// ----- отклик (haptic): Android — vibrate, iPhone (iOS 17.4+) — «щелчок» скрытого переключателя -----
+let _hl=null;
+function _hTick(){try{if(!_hl){_hl=document.createElement('label');_hl.setAttribute('aria-hidden','true');_hl.style.display='none';const i=document.createElement('input');i.type='checkbox';i.setAttribute('switch','');_hl.appendChild(i);document.head.appendChild(_hl)}_hl.click()}catch(e){}}
+const HP={light:[8],sel:[5],med:[16],ok:[10,45,18],err:[28,45,28,45,28]},HPI={light:[0],sel:[0],med:[0],ok:[0,110],err:[0,90,180]};
+function hap(k){
+  if(!LS.get('hap'))return;if(!HP[k])k='light';
+  if(navigator.vibrate){navigator.vibrate(HP[k]);return}
+  HPI[k].forEach(t=>t?setTimeout(_hTick,t):_hTick());
+}
+document.addEventListener('click',(e)=>{if(e.target.closest('.sw'))hap('sel');else if(e.target.closest('button,.card'))hap('light')});
 // ---------- вкладка «Настройки» (как в Android) ----------
-const VER='1.6.0',BUILD=10,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
+const VER='1.7.0',BUILD=11,ANIM_D=matchMedia('(prefers-reduced-motion:reduce)').matches?0:1;
 const isLight=()=>lightNow();
 const HID=()=>LS.get('hidt').split(',').filter(Boolean);
 const lockMode=()=>LS.get('lock');
@@ -2437,7 +2522,7 @@ function sbLook(){
   +sec('Интерфейс')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Размер текста</div>${seg('ts',[[0,'Мелкий'],[1,'Обычный'],[2,'Крупный']],1)}<div class="mute small" style="margin-bottom:6px">Скругление карточек</div>${seg('cs',[[0,'Меньше'],[1,'Обычное'],[2,'Больше']],1)}<div class="mute small" style="margin-bottom:6px">Карточки</div>${seg('cc',[[0,'Обычные'],[1,'Компактные']],0)}<div class="mute small" style="margin-bottom:6px">Плотность списков</div>${seg('ld',[[0,'Плотно'],[1,'Обычно'],[2,'Просторно']],1)}<div class="mute small" style="margin-bottom:6px">Какая вкладка открывается при запуске</div>${seg('stt',[['vpn','VPN'],['chat','Чат'],['me','Профиль'],['set','Настройки']],'vpn',1)}${tgl('nb','Скрывать цветную плашку','Убрать баннер над аватаркой в профиле')}</div>`
   +sec('Разделы в меню')+`<div class="card"><div class="mute small">Скройте то, чем не пользуетесь. Раздел снова появится, как только вы его включите.</div>${[['vpn','VPN'],['chat','Чат'],['me','Профиль']].map(([k,t])=>`<div class="sw-r"><div><b>${t}</b></div><button class="sw${HID().includes(k)?'':' on'}" data-hs="${k}" aria-label="${t}"></button></div>`).join('')}</div>`
   +sec('Иконка приложения')+`<div class="card"><div class="mute small" style="margin-bottom:10px">Выберите кота для значка на рабочем столе</div><div class="cats">${CATS.map(([i,n])=>`<button class="cat${ic===i?' on':''}" data-ic="${i}">${catSvg(i)}<span>${n}${ic===i?' ✓':''}</span></button>`).join('')}</div><div class="mute small" style="margin-top:10px">Значок берётся при установке PWA, так что выбирайте кота до установки. Если приложение уже на рабочем столе и значок не поменялся, удалите его и установите заново.</div></div>`
-  +sec('Анимации и отклик')+`<div class="card">${tgl('anim','Анимированный фон','Снег, листья, звёзды и другие эффекты выбранной темы',{d:ANIM_D})}<div class="mute small" style="margin:4px 0 6px">Сколько частиц на фоне</div>${seg('pc',[[0,'Меньше'],[1,'Обычно'],[2,'Больше']],1)}${tgl('tr','Плавные переходы','Экраны и карточки появляются с анимацией',{d:1})}${tgl('hap','Вибрация при нажатии','Лёгкий отклик на касание кнопок и карточек (не работает на iPhone)',{f:1})}</div>`
+  +sec('Анимации и отклик')+`<div class="card">${tgl('anim','Анимированный фон','Снег, листья, звёзды и другие эффекты выбранной темы',{d:ANIM_D})}<div class="mute small" style="margin:4px 0 6px">Сколько частиц на фоне</div>${seg('pc',[[0,'Меньше'],[1,'Обычно'],[2,'Больше']],1)}${tgl('tr','Плавные переходы','Экраны и карточки появляются с анимацией',{d:1})}${tgl('hap','Вибрация при нажатии','Лёгкий отклик на касание кнопок, переключателей и меню. На iPhone работает с iOS 17.4',{f:1})}</div>`
   +sec('Заказы')+`<div class="card"><div class="mute small" style="margin-bottom:6px">Как показывать шаги заказа</div>${seg('os',[[0,'Значок'],[1,'Полоса']],1)}<div class="mute small">Так будет выглядеть заказ, который оплачен и выдаётся:</div>${ordPrev()}</div>`;
 }
 function sbSec(){
@@ -2609,6 +2694,7 @@ function achSheet(a){
   $('#ax',o).onclick=()=>o.remove();
 }
 function burst(x,y){
+  hap('ok');
   if(!TH('tr',1))return;const E=['✨','🎉','💜','⭐','🔥','💙'];
   for(let i=0;i<14;i++){const s=document.createElement('span');s.className='bst';s.textContent=E[i%E.length];const a=Math.random()*6.28,r=60+Math.random()*80;
     s.style.cssText='left:'+x+'px;top:'+y+'px;--dx:'+Math.cos(a)*r+'px;--dy:'+(Math.sin(a)*r-40)+'px';document.body.appendChild(s);setTimeout(()=>s.remove(),900)}

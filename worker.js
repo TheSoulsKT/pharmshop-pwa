@@ -88,6 +88,7 @@ const MIGRATIONS = [
   `ALTER TABLE room_messages ADD COLUMN reply_to INTEGER DEFAULT 0`,  // номер сообщения, на которое это — ответ (0 — не ответ)
   `ALTER TABLE room_messages ADD COLUMN ch TEXT DEFAULT 'general'`,   // канал общего чата
   `ALTER TABLE users ADD COLUMN frame INTEGER DEFAULT 0`,             // рамка аватара (0 — нет, 1..10 — по уровням)
+  `ALTER TABLE users ADD COLUMN nick_color INTEGER DEFAULT 0`,        // цвет ника (0 — авто, 1..10 — по уровням, как рамки)
   `CREATE INDEX IF NOT EXISTS idx_room_ch ON room_messages (ch, id)`,
 ];
 const CH_IDS = ['general', 'help', 'vpn', 'flood', 'news'];   // каналы; в 'news' пишут только модераторы
@@ -930,7 +931,7 @@ const RESERVED_WORDS = ['admin', 'administrator', 'moderator', 'moder', 'support
 const RESERVED_KEYS = RESERVED_WORDS.map(nickKey);
 const isReservedNick = (key) => RESERVED_KEYS.some((r) => key === r || key.startsWith(r));
 
-const CHAT_USER_SQL = `SELECT id, device, secret_hash, nick, badge, muted_until, nick_changed, last_seen, avatar_v, crown, all_badges, created, frame FROM users WHERE device = ?`;
+const CHAT_USER_SQL = `SELECT id, device, secret_hash, nick, badge, muted_until, nick_changed, last_seen, avatar_v, crown, all_badges, created, frame, nick_color FROM users WHERE device = ?`;
 
 // Проверка пользователя чата. Возвращает { u, ip, now } или { e: Response }.
 async function chatUser(body, env, request) {
@@ -973,7 +974,7 @@ async function chatUserFast(body, env, request) {
   return a;
 }
 
-const meOf = (u, now) => ({ registered: true, uid: u.id, nick: u.nick, badge: u.badge ? 1 : 0, crown: u.crown ? 1 : 0, all_badges: u.all_badges ? 1 : 0, av: u.avatar_v || 0, frame: u.frame || 0, created: u.created || 0, muted_until: u.muted_until > now ? u.muted_until : 0 });
+const meOf = (u, now) => ({ registered: true, uid: u.id, nick: u.nick, badge: u.badge ? 1 : 0, crown: u.crown ? 1 : 0, all_badges: u.all_badges ? 1 : 0, av: u.avatar_v || 0, frame: u.frame || 0, nc: u.nick_color || 0, created: u.created || 0, muted_until: u.muted_until > now ? u.muted_until : 0 });
 // Сколько сообщений человек написал (общий чат + личные): для достижения «за общение».
 async function countMsgs(env, uid) {
   const r = await env.DB.prepare(
@@ -1155,6 +1156,17 @@ async function frameSet(body, env, request) {
   return json({ ok: true, frame: f });
 }
 
+// Цвет ника: открывается по тем же «уровням» (дням с регистрации), что и рамки. 0 — автоматический цвет.
+async function nickColorSet(body, env, request) {
+  const a = await chatUser(body, env, request);
+  if (a.e) return a.e;
+  const c = Math.floor(Number(body.color));
+  if (!(c >= 0 && c <= FRAME_DAYS.length)) return err('Некорректный цвет');
+  if (c > 0 && Math.floor((a.now - (a.u.created || a.now)) / 864e5) < FRAME_DAYS[c - 1]) return err('Этот цвет ещё не открыт');
+  if ((a.u.nick_color || 0) !== c) { await env.DB.prepare('UPDATE users SET nick_color = ? WHERE id = ?').bind(c, a.u.id).run(); authDirty(); await bumpRoomRev(env); }   // лента перечитается у всех: цвет сменится и у старых сообщений
+  return json({ ok: true, color: c });
+}
+
 // Непрочитанные по каналам: клиент присылает seen — последний виденный номер сообщения в каждом канале.
 async function roomUnread(body, env, request) {
   const a = await chatUserFast(body, env, request);
@@ -1169,7 +1181,7 @@ async function roomUnread(body, env, request) {
 
 // ----- общий чат (одна комната) -----
 // reply_to > 0 и q_id = null — оригинал, на который отвечали, уже удалён
-const ROOM_SQL = `SELECT r.id, r.uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, COALESCE(u.frame, 0) AS fr, r.text, r.ts,
+const ROOM_SQL = `SELECT r.id, r.uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, COALESCE(u.frame, 0) AS fr, COALESCE(u.nick_color, 0) AS nc, r.text, r.ts,
                          COALESCE(r.reply_to, 0) AS reply_to, q.id AS q_id, COALESCE(qu.nick, 'удалён') AS q_nick, substr(q.text, 1, 140) AS q_text
                     FROM room_messages r LEFT JOIN users u ON u.id = r.uid
                     LEFT JOIN room_messages q ON q.id = r.reply_to AND r.reply_to > 0
@@ -1343,7 +1355,7 @@ async function roomMute(body, env, request) {
 
 // ----- личные сообщения -----
 const pairOf = (x, y) => (x < y ? [x, y] : [y, x]);
-const DM_SQL = `SELECT d.id, d.sender AS uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, d.text, d.ts
+const DM_SQL = `SELECT d.id, d.sender AS uid, COALESCE(u.nick, 'удалён') AS nick, COALESCE(u.badge, 0) AS badge, COALESCE(u.crown, 0) AS crown, COALESCE(u.avatar_v, 0) AS av, COALESCE(u.nick_color, 0) AS nc, d.text, d.ts
                   FROM dm_messages d LEFT JOIN users u ON u.id = d.sender WHERE d.a = ? AND d.b = ?`;
 // Номер последнего личного сообщения (по всем перепискам), в памяти воркера на DM_TTL.
 async function dmState(env) {
@@ -1655,6 +1667,7 @@ const app = {
     if (path === '/api/chat/avatar_get') return avatarGet(body, env, request);
     if (path === '/api/chat/crown') return crownSet(body, env, request);
     if (path === '/api/chat/frame_set') return frameSet(body, env, request);
+    if (path === '/api/chat/nickcolor_set') return nickColorSet(body, env, request);
     if (path === '/api/room/unread') return roomUnread(body, env, request);
     if (path === '/api/room/messages') return roomMessages(body, env, request);
     if (path === '/api/room/send') return roomSend(body, env, request);
